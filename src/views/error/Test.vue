@@ -188,8 +188,6 @@ export default {
         plugin.async = true;
         document.body.appendChild(plugin);
         this.getTemplate();
-        this.getIpInfo();
-        // this.startTracking();
     },
     methods: {
         getDivClass(index){
@@ -203,7 +201,7 @@ export default {
         getTemplate(){
             axios
             .get(
-                "http://localhost:8000/api/v1/public/apps/templates/"+this.$route.params.id
+                "/public/apps/templates/"+this.$route.params.id
             )
             .then((response) => {
                 console.log(response);
@@ -227,22 +225,6 @@ export default {
                 console.log(JSON.stringify(error));
             });
         },
-        getIpInfo(){
-            axios.get("https://ipinfo.io/?token=37b3a65957bff3")
-            .then(response => {
-                let data = response.data;
-
-                this.session.ip_address = data.ip;
-                this.session.location = data.loc;
-                this.session.city = data.city;
-                this.session.country = data.country;
-                this.session.region = data.region;
-                this.session.template = this.template.id;
-            })
-            .catch((error) =>{
-                console.log(JSON.stringify(error));
-            })
-        }
     }
 };
 </script>
