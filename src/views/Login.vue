@@ -263,6 +263,7 @@ export default {
             })
           })
           .catch(error => {
+            alert(JSON.stringify(error))
             if (error.response) {
               this.hasError = true;
             } else if (error.message) {
