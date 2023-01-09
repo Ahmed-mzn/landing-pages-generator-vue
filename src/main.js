@@ -10,7 +10,7 @@ import axios from 'axios'
 // inti store
 store.commit('auth/initializeStore')
 
-axios.defaults.baseURL = 'http://test.ahmedzeini.com/api/v1'
+axios.defaults.baseURL = 'http://landing.socilabot.dev/api/v1'
 
 // Global Components
 import './global-components'
