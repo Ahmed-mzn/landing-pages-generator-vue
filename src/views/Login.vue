@@ -255,7 +255,7 @@ export default {
                 localStorage.setItem('userid', response.data.id)
 
                 this.$router
-                .push('/dashboard')
+                .push('/')
                 .then(() => { this.$router.go() });
             })
             .catch(error => {

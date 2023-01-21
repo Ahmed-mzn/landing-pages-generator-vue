@@ -5,6 +5,52 @@
             rounded="sm"
             spinner-variant="primary"
         >
+        <b-row>
+            <b-col cols="10">
+                <v-select
+                    v-model="selected1"
+                    dir="rtl"
+                    multiple
+                    :options="products"
+                    label="title"
+                    class="select-size-lg"
+                    placeholder="حدد المنتجات"
+                >
+                    <template #option="{ title, description, image, price }">
+                        <div
+                            class="d-flex justify-content-start align-items-center"
+                        >
+                            <b-img
+                                rounded=""
+                                :src="image"
+                                blank-color="#ccc"
+                                width="40"
+                                alt="placeholder"
+                                class="mr-2"
+                            />
+                            <div class="user-page-info">
+                                <h6 class="mb-0">
+                                {{title}}
+                                </h6>
+                                <small class="text-muted">{{description}}</small>
+                            </div>
+                            <div class="ml-auto">
+                                <b-badge variant="light-primary">SAR {{price}}</b-badge>
+                            </div>
+                        </div>
+                    </template>
+                </v-select>
+            </b-col>
+            <b-col cols="2">
+                <b-button
+                    variant="primary"
+                    class="btn-icon"
+                    size="lg"
+                >
+                    <feather-icon icon="PlusIcon" />
+                </b-button>
+            </b-col>
+        </b-row>
             <div class="media-list media-bordered">
                 <b-media v-for="product in products" :key="product.id">
                     <template #aside>
@@ -326,38 +372,39 @@ import {
 import { ValidationProvider, ValidationObserver, localize, extend } from 'vee-validate'
 import { required, url, numbers } from '@validations'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
-
+import vSelect from 'vue-select'
 import axios from 'axios'
 export default {
     components:{
-        ToastificationContent,
-        ValidationProvider,
-        ValidationObserver,
-        BCard,
-        BCardText,
-        BRow,
-        BCol,
-        BButton,
-        BLink,
-        BAvatar,
-        BBadge,
-        BTabs,
-        BTab,
-        BMedia,
-        BImg,
-        BFormInput,
-        BFormGroup,
-        BForm,
-        BOverlay,
-        VBModal,
-        BModal,
-        BFormCheckbox
+        ToastificationContent, ValidationProvider, ValidationObserver, BCard, BCardText, BRow, BCol, BButton, 
+        BLink, BAvatar, BBadge, BTabs, BTab, BMedia, BImg, BFormInput, BFormGroup, BForm, BOverlay, VBModal, 
+        BModal, BFormCheckbox, vSelect
     },
     directives: {
         'b-modal': VBModal,
     },
     data(){
         return {
+      selected1: [
+      ],
+      books: [
+        {
+          title: 'Database',
+          icon: 'DatabaseIcon',
+        },
+        {
+          title: 'Codepen',
+          icon: 'CodepenIcon',
+        },
+        {
+          title: 'Aperture ',
+          icon: 'ApertureIcon',
+        },
+        {
+          title: 'Command',
+          icon: 'CommandIcon',
+        },
+      ],
             showFormLoader: false,
             products: [],
             activateDiscount: false,
@@ -550,3 +597,6 @@ export default {
     }
 }
 </script>
+<style lang="scss">
+    @import '~@core/scss/vue/libs/vue-select.scss';
+</style>

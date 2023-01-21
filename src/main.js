@@ -10,7 +10,36 @@ import axios from 'axios'
 // inti store
 store.commit('auth/initializeStore')
 
-axios.defaults.baseURL = 'https://landing.socialbot.dev/api/v1'
+axios.defaults.baseURL = 'http://localhost:8000/api/v1'
+
+axios.interceptors.response.use(
+  (response) => {
+    if(response.status == 401){
+      axios.defaults.headers.common['Authorization'] = ''
+      localStorage.removeItem('token')
+      localStorage.removeItem('email')
+      localStorage.removeItem('userid')
+      localStorage.removeItem('fullname')
+      localStorage.removeItem('phonenumber')
+      this.$store.commit('auth/removeToken')
+      router.push("/login");
+    }
+    return response
+  },
+  (error) => {
+    if(error.response.status == 401){
+      axios.defaults.headers.common['Authorization'] = ''
+      localStorage.removeItem('token')
+      localStorage.removeItem('email')
+      localStorage.removeItem('userid')
+      localStorage.removeItem('fullname')
+      localStorage.removeItem('phonenumber')
+      store.commit('auth/removeToken')
+      router.push("/login");
+    }
+  }
+)
+
 
 // Global Components
 import './global-components'

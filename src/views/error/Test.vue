@@ -209,17 +209,6 @@ export default {
                 document.title = this.template.meta_title;
                 var link = document.querySelector("link[rel*='icon']");
                 link.href = this.template.logo;
-                this.form.template = this.template.id;
-                this.form.product = this.template.products[0].id;
-                this.form.product_obj = this.template.products[0];
-
-                let html = document.getElementById("html");
-                html.style = `--bs-secondary: ${this.template.secondary_color};--bs-secondary-rgb: 245,210,96;--bs-primary: ${this.template.primary_color};--bs-primary-rgb: 183,194,38;`;
-
-                this.form.name = this.getCookie('name');
-                this.form.phone_number = this.getCookie('phonenumber');
-                this.form.city = this.getCookie('city');
-                this.form.address = this.getCookie('address');
             })
             .catch((error) => {
                 console.log(JSON.stringify(error));

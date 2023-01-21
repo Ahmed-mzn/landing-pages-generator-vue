@@ -3,7 +3,10 @@
         <div class="d-flex justify-content-start">
             <!-- <b-avatar size="lg" variant="light-primary">
             </b-avatar> -->
-                <feather-icon size="30" icon="ArrowRightIcon" />
+                
+                <b-avatar :to="{name:'landing-app'}" variant="default">
+                    <feather-icon href="/landing-app" class="text-primary" size="30" icon="ArrowRightIcon" />
+                </b-avatar>
             <div class="d-flex flex-column ml-1">
                 <div class="mb-1">
                     <h4 class="mb-0">
