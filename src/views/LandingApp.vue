@@ -180,6 +180,7 @@
                   <b-button
                     variant="primary"
                     class="ml-1"
+                    @click="showTemplateModal = true"
                   >
                     <feather-icon
                       icon="PlusIcon"
@@ -243,21 +244,36 @@
 
         <b-row align-v="stretch">
           <b-col cols="6" xl="3" lg="4" md="4" v-for="template in app.templates" :key="template.id">
-            <b-link :to="{name: 'templates', params: {id: template.id}}">
-            <b-card
-              :header="template.template_name + 'صفحة الهبوط '"
-              header-tag="h6"
-            >
-              <b-img
-                fluid
-                class="mb-2"
-                :src="require('@/assets/images/pages/skeleton400_still.gif')"
-              />
-              <b-card-text>
-                <small class="text-muted">آخر تحديث منذ 3 دقائق</small>
-              </b-card-text>
-            </b-card>
-            </b-link>
+              <b-card
+                :header="template.template_name + 'صفحة الهبوط '"
+                header-tag="h6"
+              >
+                <b-link :to="{name: 'templates', params: {id: template.id}}">
+                  <b-img
+                    fluid
+                    class="mb-2"
+                    :src="require('@/assets/images/pages/skeleton400_still.gif')"
+                  />
+                </b-link>
+                <b-card-text>
+                  <small class="text-muted">منذ 3 دقائق</small>
+                  <!-- <b-link @click="moreTemplate"><feather-icon class="float-right" icon="MoreVerticalIcon" /></b-link> -->
+                    <b-dropdown
+                      id="dropdown-1"
+                      no-caret
+                      v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                      text="Primary"
+                      variant="default"
+                    >
+                      <template #button-content>
+                        <feather-icon icon="MoreVerticalIcon" />
+                      </template>
+                      <b-dropdown-item>Option 1</b-dropdown-item>
+                      <b-dropdown-item>Option 2</b-dropdown-item>
+                      <b-dropdown-item>Option 3</b-dropdown-item>
+                    </b-dropdown>
+                </b-card-text>
+              </b-card>
           </b-col>
         </b-row>
       </template>
@@ -267,7 +283,7 @@
         id="modal-1"
         ref="modal-edit"
         v-model="editModalShow"
-        title="تحديث المنتج"
+        title="تحديث النطاق"
         ok-title="احفظ التغيير"
         cancel-title="إلغاء"
         cancel-variant="outline-secondary"
@@ -301,6 +317,127 @@
         </b-form>
     </validation-observer>
     </b-modal>
+    <!-- modal vertical center -->
+    <b-modal
+      v-model="showTemplateModal"
+      id="modal-center"
+      centered
+      size="lg"
+      cancel-variant="outline-secondary"
+      title="إنشاء صفحة هبوط جديدة"
+      cancel-title="إلغاء"
+      ok-title="إنشاء"
+      @hidden="resetModalAddTemplate"
+      @ok="handleOkAddTemplate"
+    >
+      <validation-observer ref="simpleRules">
+        <b-form class="mt-3 mb-3">
+          <b-row>
+            <b-col cols="11">
+              <b-form-group
+                label="اسم الصفحة"
+                label-for="largeInput"
+              >
+              <b-input-group aria-label="aaa" size="lg" prepend="/https://example.com/users">
+                <b-form-input id="largeInput" v-model="templateForm.template_name" placeholder="template_name" />
+              </b-input-group>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <h1 class="mb-2">اختر الفئة</h1>
+          <b-link @click="seletcTemplate('template_one')">
+            <b-row class="d-flex flex-row">
+              <b-col cols="10">
+                <b-media>
+                  <template #aside>
+                    <b-avatar
+                      rounded
+                      variant="light-info"
+                      size="55"
+                    >
+                      <feather-icon size="25" icon="BriefcaseIcon" />
+                    </b-avatar>
+                  </template>
+                  <h6 class="media-heading ">
+                    العنوان هنا
+                  </h6>
+                  <small class="text-muted">
+                    وصف هنا أيضا.
+                  </small>
+                </b-media>
+              </b-col>
+              <b-col cols="2" class="align-self-center">
+                <b-form-radio
+                  v-model="templateForm.template_code"
+                  name="some-radios"
+                  value="template_one"
+                />
+              </b-col>
+            </b-row>
+          </b-link>
+          <b-link @click="seletcTemplate('template_two')">
+            <b-row @click="seletcTemplate('template_two')" class="d-flex flex-row mt-2">
+              <b-col cols="10">
+                <b-media>
+                  <template #aside>
+                    <b-avatar
+                      rounded
+                      variant="light-warning"
+                      size="55"
+                    >
+                      <feather-icon size="25" icon="ShoppingBagIcon" />
+                    </b-avatar>
+                  </template>
+                  <h6 class="media-heading">
+                    العنوان هنا
+                  </h6>
+                  <small class="text-muted">
+                    وصف هنا أيضا.
+                  </small>
+                </b-media>
+              </b-col>
+              <b-col cols="2" class="align-self-center">
+                <b-form-radio
+                  v-model="templateForm.template_code"
+                  name="some-radios"
+                  value="template_two"
+                />
+              </b-col>
+            </b-row>
+          </b-link>
+          <b-link @click="seletcTemplate('template_three')">
+            <b-row @click="seletcTemplate('template_three')" class="d-flex flex-row mt-2">
+              <b-col cols="10">
+                <b-media>
+                  <template #aside>
+                    <b-avatar
+                      rounded
+                      variant="light-success"
+                      size="55"
+                    >
+                      <feather-icon size="25" icon="ShoppingCartIcon" />
+                    </b-avatar>
+                  </template>
+                  <h6 class="media-heading">
+                    العنوان هنا
+                  </h6>
+                  <small class="text-muted">
+                    وصف هنا أيضا.
+                  </small>
+                </b-media>
+              </b-col>
+              <b-col cols="2" class="align-self-center">
+                <b-form-radio
+                  v-model="templateForm.template_code"
+                  name="some-radios"
+                  value="template_three"
+                />
+              </b-col>
+            </b-row>
+          </b-link>
+        </b-form>
+      </validation-observer>
+    </b-modal>
   </div>
 </template>
 
@@ -309,44 +446,30 @@
 import { ValidationProvider, ValidationObserver, localize } from 'vee-validate'
 
 import { required, url } from '@validations'
-
+import Ripple from 'vue-ripple-directive'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
-import { BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput,
-BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup, BInputGroupPrepend, BOverlay, BModal, VBModal } from 'bootstrap-vue'
+import { BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BFormRadio,
+BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup, BInputGroupPrepend, BOverlay, BModal, VBModal, BDropdown, BDropdownItem
+} from 'bootstrap-vue'
 import axios from 'axios'
 export default {
-  components: {
-    ToastificationContent,
-    ValidationProvider, 
-    ValidationObserver,
-    BCard,
-    BCardText,
-    BRow,
-    BCol,
-    BButton,
-    BAvatar,
-    BLink,
-    BImg,
-    BForm,
-    BFormFile,
-    BFormGroup,
-    BFormInput,
-    BAlert,
-    BMedia,
-    BMediaAside,
-    BMediaBody,
-    BInputGroup,
-    BInputGroupPrepend,
-    BOverlay,
-    BModal,
-    VBModal
+  components: { ToastificationContent, ValidationProvider,  ValidationObserver, BCard, BCardText, BRow, BCol, BButton, BAvatar,
+    BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup,
+    BInputGroupPrepend, BOverlay, BModal, VBModal, BFormRadio, BDropdown, BDropdownItem
   },
   directives: {
-      'b-modal': VBModal,
+    'b-modal': VBModal,
+    Ripple
   },
   data(){
     return {
+      templateForm:{
+        app: null,
+        template_code: 'template_one',
+        template_name: '',
+      },
+      showTemplateModal: false,
       show: true,
       app: {
         id: 0,
@@ -381,6 +504,51 @@ export default {
     localize('ar');
   },
   methods:{
+    moreTemplate(){
+      console.log('more');
+    },
+    handleOkAddTemplate(bvModalEvt) {
+        // Prevent modal from closing
+        bvModalEvt.preventDefault()
+        // Trigger submit handler
+        this.createTemplate()
+    },
+    resetModalAddTemplate(){
+      this.templateForm.template_name = ''
+      this.templateForm.template_code = 'template_one'
+    },
+    seletcTemplate(template){
+      this.templateForm.template_code = template
+    },
+    createTemplate(){
+      this.templateForm.app = this.app.id
+      axios.post('templates/create_blank_template', this.templateForm)
+      .then(response => {
+        this.$toast({
+            component: ToastificationContent,
+            props: {
+                title: 'إشعار',
+                icon: 'CheckIcon',
+                text: 'تم إضافة صفحة الهبوط بنجاح.',
+                variant: 'success',
+            },
+        })
+        this.showTemplateModal = false
+        this.getApp();
+      })
+      .catch(error => {
+        this.$toast({
+            component: ToastificationContent,
+            props: {
+            title: 'إنذار',
+            icon: 'AlertCircleIcon',
+            text: 'حدث خطأ أثناء إضافة صفحة الهبوط.',
+            variant: 'danger',
+            },
+        })
+        console.log(JSON.stringify(error));
+      })
+    },
     updateDomain(){
       axios.put(`/domains/${this.app.domain.id}`, this.domainForm)
       .then(() => {
@@ -413,10 +581,10 @@ export default {
       this.editModalShow = false
     },
     handleOk(bvModalEvt) {
-        // Prevent modal from closing
-        bvModalEvt.preventDefault()
-        // Trigger submit handler
-        this.updateDomain()
+      // Prevent modal from closing
+      bvModalEvt.preventDefault()
+      // Trigger submit handler
+      this.updateDomain()
     },
     submitForm(){
       this.showFormLoader = true;

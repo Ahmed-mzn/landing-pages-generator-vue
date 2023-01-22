@@ -5,52 +5,62 @@
             rounded="sm"
             spinner-variant="primary"
         >
-        <b-row>
-            <b-col cols="10">
-                <v-select
-                    v-model="selected1"
-                    dir="rtl"
-                    multiple
-                    :options="products"
-                    label="title"
-                    class="select-size-lg"
-                    placeholder="حدد المنتجات"
-                >
-                    <template #option="{ title, description, image, price }">
-                        <div
-                            class="d-flex justify-content-start align-items-center"
-                        >
-                            <b-img
-                                rounded=""
-                                :src="image"
-                                blank-color="#ccc"
-                                width="40"
-                                alt="placeholder"
-                                class="mr-2"
-                            />
-                            <div class="user-page-info">
-                                <h6 class="mb-0">
-                                {{title}}
-                                </h6>
-                                <small class="text-muted">{{description}}</small>
+            <b-row class="mt-3">
+                <b-col cols="12">
+                    <label class="label">اختر المنتجات</label>
+                </b-col>
+                <b-col cols="10">
+                    <v-select
+                        v-model="selectedProducts"
+                        dir="rtl"
+                        multiple
+                        :options="allProducts"
+                        label="title"
+                        placeholder="حدد المنتجات"
+                    >
+                        <template #option="{ title, description, image, price }">
+                            <div
+                                class="d-flex justify-content-start align-items-center"
+                            >
+                                <b-img
+                                    rounded=""
+                                    :src="image"
+                                    blank-color="#ccc"
+                                    width="40"
+                                    alt="placeholder"
+                                    class="mr-2"
+                                />
+                                <div class="user-page-info">
+                                    <h6 class="mb-0">
+                                    {{title}}
+                                    </h6>
+                                    <small class="text-muted">{{description}}</small>
+                                </div>
+                                <div class="ml-auto">
+                                    <b-badge variant="light-primary">SAR {{price}}</b-badge>
+                                </div>
                             </div>
-                            <div class="ml-auto">
-                                <b-badge variant="light-primary">SAR {{price}}</b-badge>
-                            </div>
-                        </div>
-                    </template>
-                </v-select>
-            </b-col>
-            <b-col cols="2">
-                <b-button
-                    variant="primary"
-                    class="btn-icon"
-                    size="lg"
-                >
-                    <feather-icon icon="PlusIcon" />
-                </b-button>
-            </b-col>
-        </b-row>
+                        </template>
+                    </v-select>
+                </b-col>
+                <b-col cols="2">
+                    <b-button
+                        variant="primary"
+                        class="btn-icon"
+                        @click="addModalShow = true"
+                    >
+                        <feather-icon icon="PlusIcon" />
+                    </b-button>
+                </b-col>
+            </b-row>
+            <b-button
+                class="mt-2 mb-2"
+                variant="primary"
+                type="submit"
+                @click="assignProduct"
+            >
+                أضف المنتجات
+            </b-button>
             <div class="media-list media-bordered">
                 <b-media v-for="product in products" :key="product.id">
                     <template #aside>
@@ -95,138 +105,8 @@
                     </div>
                 </b-media>
             </div>
-            <validation-observer ref="simpleRules">
-                <b-form>
-                    <b-row>
-                        <b-col cols="12">
-                            <b-form-group
-                                label="عنوان المنتج"
-                                label-for="title"
-                            >
-                                <validation-provider
-                                #default="{ errors }"
-                                name="عنوان المنتج"
-                                rules="required"
-                                >
-                                <b-form-input
-                                    v-model="product.title"
-                                    :state="errors.length > 0 ? false:null"
-                                    placeholder="عنوان المنتج"
-                                    id="title"
-                                />
-                                <small class="text-danger">{{ errors[0] }}</small>
-                                </validation-provider>
-                            </b-form-group>
-                        </b-col>
-                        <b-col cols="12">
-                            <b-form-group
-                                label="وصف قصير"
-                                label-for="description"
-                            >
-                                <validation-provider
-                                #default="{ errors }"
-                                name="وصف قصير"
-                                rules="required"
-                                >
-                                <b-form-input
-                                    id="description"
-                                    v-model="product.description"
-                                    rows="3"
-                                    :state="errors.length > 0 ? false:null"
-                                    placeholder="وصف قصير"
-                                />
-                                <small class="text-danger">{{ errors[0] }}</small>
-                                </validation-provider>
-                            </b-form-group>
-                        </b-col>
-                        <b-col cols="12">
-                            <b-form-group
-                                label="رابط صورة المنتج"
-                                label-for="image"
-                            >
-                                <validation-provider
-                                #default="{ errors }"
-                                name="رابط صورة المنتج"
-                                rules="required|url"
-                                >
-                                <b-form-input
-                                    id="image"
-                                    v-model="product.image"
-                                    :state="errors.length > 0 ? false:null"
-                                    placeholder="رابط صورة المنتج"
-                                />
-                                <small class="text-danger">{{ errors[0] }}</small>
-                                </validation-provider>
-                            </b-form-group>
-                        </b-col>
-                        <b-col cols="12">
-                            <b-form-group
-                                label="السعر"
-                                label-for="price"
-                            >
-                                <validation-provider
-                                #default="{ errors }"
-                                name="السعر"
-                                rules="required|numbers"
-                                >
-                                <b-form-input
-                                    id="price"
-                                    v-model="product.price"
-                                    :state="errors.length > 0 ? false:null"
-                                    placeholder="السعر"
-                                />
-                                <small class="text-danger">{{ errors[0] }}</small>
-                                </validation-provider>
-                            </b-form-group>
-                        </b-col>
-                        <b-col cols="12">
-                            <b-form-group>
-                                <b-form-checkbox
-                                    checked="true"
-                                    name="check-button"
-                                    v-model="activateDiscount"
-                                    @change="resetDiscountPrice()"
-                                    switch
-                                    inline
-                                >
-                                تفعيل الخصم
-                                </b-form-checkbox>
-                            </b-form-group>
-                        </b-col>
-                        <b-col cols="12" v-if="activateDiscount">
-                            <b-form-group
-                                label="السعر بعد الخصم"
-                                label-for="price"
-                            >
-                                <validation-provider
-                                    #default="{ errors }"
-                                    name="السعر بعد الخصم"
-                                    :rules="activateDiscount ? 'required|numbers' : ''"
-                                >
-                                <b-form-input
-                                    id="price"
-                                    v-model="product.price_after_discount"
-                                    :state="errors.length > 0 ? false:null"
-                                    placeholder="السعر بعد الخصم"
-                                />
-                                <small class="text-danger">{{ errors[0] }}</small>
-                                </validation-provider>
-                            </b-form-group>
-                        </b-col>
-                        <b-col cols="12">
-                            <b-button
-                                variant="primary"
-                                type="submit"
-                                @click.prevent="submitForm"
-                            >
-                                أضف المنتج
-                            </b-button>
-                        </b-col>
-                    </b-row>
-                </b-form>
-            </validation-observer>
         </b-overlay>
-        <!-- basic modal -->
+        <!-- update modal -->
         <b-modal
             id="modal-1"
             ref="modal-edit"
@@ -241,6 +121,42 @@
             <validation-observer ref="simpleRules2">
                 <b-form @submit.stop.prevent="updateProduct()">
                     <b-row>
+                        <b-col cols="12">
+                            <!-- Media -->
+                            <b-media class="mb-2">
+                                <template #aside>
+                                    <b-avatar
+                                        :src="productEdit.image"
+                                        text="avatarText"
+                                        variant="light-primary"
+                                        size="90px"
+                                        rounded
+                                    />
+                                </template>
+                                <h5 class="mb-1">
+                                    صورة المنتج
+                                </h5>
+                                <div class="d-flex flex-wrap ">
+                                    <b-button
+                                        variant="success"
+                                        @click="$refs.refInputEl.click()"
+                                    >
+                                    <input
+                                        ref="refInputEl"
+                                        type="file"
+                                        class="d-none"
+                                        accept="image/*"
+                                        @input="updateImage()"
+                                    >
+                                    <span class="d-none d-sm-inline">تغيير</span>
+                                    <feather-icon
+                                        icon="EditIcon"
+                                        class="d-inline ml-1"
+                                    />
+                                    </b-button>
+                                </div>
+                            </b-media>
+                        </b-col>
                         <b-col cols="12">
                             <b-form-group
                                 label="عنوان المنتج"
@@ -277,26 +193,6 @@
                                     rows="3"
                                     :state="errors.length > 0 ? false:null"
                                     placeholder="وصف قصير"
-                                />
-                                <small class="text-danger">{{ errors[0] }}</small>
-                                </validation-provider>
-                            </b-form-group>
-                        </b-col>
-                        <b-col cols="12">
-                            <b-form-group
-                                label="رابط صورة المنتج"
-                                label-for="image"
-                            >
-                                <validation-provider
-                                #default="{ errors }"
-                                name="رابط صورة المنتج"
-                                rules="required|url"
-                                >
-                                <b-form-input
-                                    id="image"
-                                    v-model="productEdit.image"
-                                    :state="errors.length > 0 ? false:null"
-                                    placeholder="رابط صورة المنتج"
                                 />
                                 <small class="text-danger">{{ errors[0] }}</small>
                                 </validation-provider>
@@ -361,71 +257,207 @@
             </validation-observer>
 
         </b-modal>
+
+        <!-- add modal -->
+        <b-modal
+            id="modal-2"
+            ref="modal-add"
+            v-model="addModalShow"
+            title="أضف منتج"
+            ok-title="أضف المنتج"
+            cancel-title="إلغاء"
+            cancel-variant="outline-secondary"
+            @hidden="resetAddModal"
+            @ok="handleOkAddModal"
+        >
+            <validation-observer ref="simpleRules">
+                <b-form>
+                    <b-row>
+                        <b-col cols="12">
+                            <b-form-group
+                                label="عنوان المنتج"
+                                label-for="title"
+                            >
+                                <validation-provider
+                                #default="{ errors }"
+                                name="عنوان المنتج"
+                                rules="required"
+                                >
+                                <b-form-input
+                                    v-model="product.title"
+                                    :state="errors.length > 0 ? false:null"
+                                    placeholder="عنوان المنتج"
+                                    id="title"
+                                />
+                                <small class="text-danger">{{ errors[0] }}</small>
+                                </validation-provider>
+                            </b-form-group>
+                        </b-col>
+                        <b-col cols="12">
+                            <b-form-group
+                                label="وصف قصير"
+                                label-for="description"
+                            >
+                                <validation-provider
+                                #default="{ errors }"
+                                name="وصف قصير"
+                                rules="required"
+                                >
+                                <b-form-input
+                                    id="description"
+                                    v-model="product.description"
+                                    rows="3"
+                                    :state="errors.length > 0 ? false:null"
+                                    placeholder="وصف قصير"
+                                />
+                                <small class="text-danger">{{ errors[0] }}</small>
+                                </validation-provider>
+                            </b-form-group>
+                        </b-col>
+                        <b-col cols="12">
+                            <b-form-group
+                                label="صورة المنتج"
+                                label-for="image"
+                            >
+                                <validation-provider
+                                #default="{ errors }"
+                                name="صورة المنتج"
+                                rules="required"
+                                >
+                                <b-form-file
+                                    v-model="product.image"
+                                    :state="Boolean(product.image)"
+                                    placeholder="اختر صورة أو أسقطها هنا ..."
+                                    drop-placeholder="أسقط الصورة هنا ..."
+                                    browse-text="تصفح"
+                                >
+                                    <template
+                                        slot="file-name"
+                                        slot-scope="{ names }"
+                                    >
+                                        <b-badge variant="primary">
+                                            {{ names[0] }}
+                                        </b-badge>
+                                    </template>
+                                </b-form-file>
+                                <small class="text-danger">{{ errors[0] }}</small>
+                                </validation-provider>
+                            </b-form-group>
+                        </b-col>
+                        <b-col cols="12">
+                            <b-form-group
+                                label="السعر"
+                                label-for="price"
+                            >
+                                <validation-provider
+                                #default="{ errors }"
+                                name="السعر"
+                                rules="required|numbers"
+                                >
+                                <b-form-input
+                                    id="price"
+                                    v-model="product.price"
+                                    :state="errors.length > 0 ? false:null"
+                                    placeholder="السعر"
+                                />
+                                <small class="text-danger">{{ errors[0] }}</small>
+                                </validation-provider>
+                            </b-form-group>
+                        </b-col>
+                        <b-col cols="12">
+                            <b-form-group>
+                                <b-form-checkbox
+                                    checked="true"
+                                    name="check-button"
+                                    v-model="activateDiscount"
+                                    @change="resetDiscountPrice()"
+                                    switch
+                                    inline
+                                >
+                                تفعيل الخصم
+                                </b-form-checkbox>
+                            </b-form-group>
+                        </b-col>
+                        <b-col cols="12" v-if="activateDiscount">
+                            <b-form-group
+                                label="السعر بعد الخصم"
+                                label-for="price"
+                            >
+                                <validation-provider
+                                    #default="{ errors }"
+                                    name="السعر بعد الخصم"
+                                    :rules="activateDiscount ? 'required|numbers' : ''"
+                                >
+                                <b-form-input
+                                    id="price"
+                                    v-model="product.price_after_discount"
+                                    :state="errors.length > 0 ? false:null"
+                                    placeholder="السعر بعد الخصم"
+                                />
+                                <small class="text-danger">{{ errors[0] }}</small>
+                                </validation-provider>
+                            </b-form-group>
+                        </b-col>
+                    </b-row>
+                </b-form>
+            </validation-observer>
+        </b-modal>
     </div>
 </template>
 
 <script>
 import {
     BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BBadge, BTabs, BTab, BMedia, BImg, BFormInput, BFormGroup, BForm,
-    BOverlay, VBModal, BFormCheckbox, BModal
+    BOverlay, VBModal, BFormCheckbox, BModal, BFormFile
 } from 'bootstrap-vue'
 import { ValidationProvider, ValidationObserver, localize, extend } from 'vee-validate'
 import { required, url, numbers } from '@validations'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import vSelect from 'vue-select'
 import axios from 'axios'
+import { temp } from '@/@core/directives/animations'
 export default {
     components:{
         ToastificationContent, ValidationProvider, ValidationObserver, BCard, BCardText, BRow, BCol, BButton, 
         BLink, BAvatar, BBadge, BTabs, BTab, BMedia, BImg, BFormInput, BFormGroup, BForm, BOverlay, VBModal, 
-        BModal, BFormCheckbox, vSelect
+        BModal, BFormCheckbox, vSelect, BFormFile
+    },
+    props: {
+        template: {
+            type: Object,
+            default: () => {},
+        }
     },
     directives: {
         'b-modal': VBModal,
     },
     data(){
         return {
-      selected1: [
-      ],
-      books: [
-        {
-          title: 'Database',
-          icon: 'DatabaseIcon',
-        },
-        {
-          title: 'Codepen',
-          icon: 'CodepenIcon',
-        },
-        {
-          title: 'Aperture ',
-          icon: 'ApertureIcon',
-        },
-        {
-          title: 'Command',
-          icon: 'CommandIcon',
-        },
-      ],
+            file: null,
+            selectedProducts: [],
             showFormLoader: false,
+            allProducts:[],
             products: [],
             activateDiscount: false,
             activateDiscount2: false,
             product: {
-                template: this.$route.params.id,
+                app: this.template.app,
                 title: '',
                 description: '',
-                image: '',
+                image: null,
                 price: null,
-                price_after_discount: null
+                price_after_discount: 0
             },
             productEdit: {
                 id: null,
                 title: '',
                 description: '',
-                image: '',
+                image: null,
                 price: null,
-                price_after_discount: null
+                price_after_discount: 0
             },
             editModalShow: false,
+            addModalShow: false,
             required,
             url,
             numbers
@@ -436,7 +468,88 @@ export default {
         localize('ar')
     },
     methods: {
-        showEditModal(product){
+        async updateImage(){
+
+            let formData = new FormData()
+            formData.append('image', this.$refs['refInputEl'].files[0])
+
+            await axios.patch(`/products/${this.productEdit.id}/`, formData, {headers:{"Content-Type": "multipart/form-data"}})
+            .then((response) => {
+                this.productEdit.image = response.data.image
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: 'إشعار',
+                        icon: 'CheckIcon',
+                        text: 'تم تحديث الصورة بنجاح.',
+                        variant: 'success',
+                    },
+                })
+                this.getProducts()
+            })
+            .catch((error) => {
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: 'إنذار',
+                        icon: 'AlertCircleIcon',
+                        text: 'هناك خطأ أثناء تحديث الصورة.',
+                        variant: 'danger',
+                    },
+                })
+                JSON.stringify(error)
+            })
+        },
+        assignProduct(){
+            this.showFormLoader = true
+            this.selectedProducts.forEach(element => {
+                axios.post(`/templates/${this.$route.params.id}/assign_product/${element.id}`)
+                .then(response => {
+                    console.log(response.status)
+                    this.$emit('reloadComp')
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: 'إشعار',
+                            icon: 'CheckIcon',
+                            text: 'تم إضافة المنتج بنجاح.',
+                            variant: 'success',
+                        },
+                    })
+                    this.selectedProducts = []
+                    this.getProducts()
+                    this.showFormLoader = false
+                })
+                .catch(error => {
+                    console.log('eeror');
+                    this.showFormLoader = false
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                        title: 'إنذار',
+                        icon: 'AlertCircleIcon',
+                        text: 'حدث خطأ أثناء إضافة المنتج.',
+                        variant: 'danger',
+                        },
+                    })
+                    JSON.stringify(error);
+                })
+            });
+        },
+        resetAddModal(){
+            this.product.title = ''
+            this.product.description = ''
+            this.product.price = null
+            this.product.image = null
+            this.product.price_after_discount = 0
+        },
+        handleOkAddModal(bvModalEvt){
+            // Prevent modal from closing
+            bvModalEvt.preventDefault()
+            // Trigger submit handler
+            this.submitForm()
+        },
+        async showEditModal(product){
             this.productEdit.id = product.id
             this.productEdit.title = product.title
             this.productEdit.description = product.description
@@ -466,10 +579,10 @@ export default {
         updateProduct(){
             this.$refs.simpleRules2.validate().then(success => {
                 if(success){
+                    delete this.productEdit.image
                     axios.patch(`/products/${this.productEdit.id}/`, this.productEdit)
                     .then((response) => {
                         this.$emit('reloadComp')
-                        console.log(response);
                         this.$toast({
                             component: ToastificationContent,
                             props: {
@@ -521,7 +634,7 @@ export default {
                 buttonsStyling: false,
             }).then(result => {
                 if (result.value) {
-                    axios.delete(`/products/${id}`)
+                    axios.delete(`/templates/${this.$route.params.id}/assign_product/${id}`)
                     .then((response) =>{
                         this.$emit('reloadComp')
                         this.$swal({
@@ -545,25 +658,35 @@ export default {
             this.showFormLoader = true;
             this.$refs.simpleRules.validate().then(success => {
                 if (success) {
-                    axios.post('/products/', this.product)
+                let formData = new FormData()
+                formData.append('title', this.product.title)
+                formData.append('app', this.product.app)
+                formData.append('description', this.product.description)
+                formData.append('image', this.product.image)
+                formData.append('price', this.product.price)
+                formData.append('price_after_discount', this.product.price_after_discount)
+                    axios.post('/products/', formData, {headers:{"Content-Type": "multipart/form-data"}})
                     .then((response) => {
-                        this.$emit('reloadComp')
                         this.$toast({
                             component: ToastificationContent,
                             props: {
                                 title: 'إشعار',
                                 icon: 'CheckIcon',
-                                text: 'تم اضافة المنتج بنجاح.',
+                                text: 'تم إضافة المنتج بنجاح.',
                                 variant: 'success',
                             },
                         })
-                        this.getProducts()
+                        this.getAllProducts()
                         this.product.title = ''
                         this.product.description = ''
-                        this.product.image = ''
+                        this.product.image = null
                         this.product.price = null
-                        this.product.price_after_discount = null
+                        this.product.price_after_discount = 0
                         this.$refs.simpleRules.reset();
+                        // Hide the modal manually
+                        this.$nextTick(() => {
+                            this.$refs['modal-add'].toggle('#toggle-btn')
+                        })
                         this.showFormLoader = false
                     })
                     .catch((error) => {
@@ -587,13 +710,36 @@ export default {
         getProducts(){
             axios.get(`/products/?template_id=${this.$route.params.id}`)
             .then((response) => {
-                console.log(response);
                 this.products = response.data
+                this.getAllProducts()
             })
             .catch((error) => {
                 JSON.stringify(error);
             })
         },
+        getAllProducts(){
+            axios.get(`/products/`)
+            .then((response) => {
+                this.allProducts = []
+                response.data.forEach(element => {
+                    if (!this.checkProductById(element.id)){
+                        this.allProducts.push(element)
+                    }
+                })
+            })
+            .catch((error) => {
+                JSON.stringify(error);
+            })
+        },
+        checkProductById(id){
+            let result = false;
+            this.products.forEach(element => {
+                if (element.id == id){
+                    result = true;
+                }
+            })
+            return result;
+        }
     }
 }
 </script>

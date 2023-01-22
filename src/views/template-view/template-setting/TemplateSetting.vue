@@ -11,7 +11,7 @@
                             <template-setting-images @reloadComp="reloadComp" :template="template" />
                         </b-tab>
                         <b-tab lazy title="المنتجات">
-                            <template-setting-products @reloadComp="reloadComp"/>
+                            <template-setting-products @reloadComp="reloadComp" :template="template" />
                         </b-tab>
                         <b-tab lazy title="تقييمات العملاء">
                             <template-setting-reviews @reloadComp="reloadComp"/>

@@ -228,7 +228,6 @@ export default {
 
             await axios.patch(`/templates/${this.template.id}/`, formData, {headers:{"Content-Type": "multipart/form-data"}})
             .then((response) => {
-                console.log(response);
                 this.template.logo = response.data.logo
                 this.template.main_image = response.data.main_image
                 this.template.medals_image = response.data.medals_image
