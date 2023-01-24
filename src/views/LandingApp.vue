@@ -155,7 +155,7 @@
                         </h4>
                         <span class="card-text">
                           <feather-icon icon="LinkIcon" size="13" />
-                          <b-link :href="'http://'+app.customer_website" target="_blank">www.{{app.customer_website}}</b-link>
+                          <b-link :href="'http://'+app.domain.name" target="_blank">http://{{app.domain.name}}</b-link>
                           </span>
                       </div>
                     </div>
@@ -256,29 +256,33 @@
                   />
                 </b-link>
                 <b-card-text>
-                  <small class="text-muted">منذ 3 دقائق</small>
-                  <!-- <b-link @click="moreTemplate"><feather-icon class="float-right" icon="MoreVerticalIcon" /></b-link> -->
-                    <b-dropdown
-                      id="dropdown-1"
-                      no-caret
-                      v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                      text="Primary"
-                      variant="default"
-                    >
-                      <template #button-content>
-                        <feather-icon icon="MoreVerticalIcon" />
-                      </template>
-                      <b-dropdown-item>Option 1</b-dropdown-item>
-                      <b-dropdown-item>Option 2</b-dropdown-item>
-                      <b-dropdown-item>Option 3</b-dropdown-item>
-                    </b-dropdown>
+                  <b-row>
+                    <b-col cols="9">
+                      <small class="text-muted">منذ 3 دقائق</small>
+                    </b-col>
+                    <!-- <b-link @click="moreTemplate"><feather-icon class="float-right" icon="MoreVerticalIcon" /></b-link> -->
+                    <b-col cols="3">
+                      <b-dropdown
+                        no-caret
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        text="Primary"
+                        variant="default"
+                      >
+                        <template #button-content>
+                          <feather-icon icon="MoreVerticalIcon" />
+                        </template>
+                        <b-dropdown-item @click="deleteTemplate(template)">حذف</b-dropdown-item>
+                        <b-dropdown-item :href="'http://'+app.domain.name+'/'+template.template_name" target="_blank">معاينة</b-dropdown-item>
+                      </b-dropdown>
+                    </b-col>
+                  </b-row>
                 </b-card-text>
               </b-card>
           </b-col>
         </b-row>
       </template>
     </b-overlay>
-    <!-- basic modal -->
+    <!-- update domain modal -->
     <b-modal
         id="modal-1"
         ref="modal-edit"
@@ -290,7 +294,7 @@
         @hidden="resetModal"
         @ok="handleOk"
     >
-    <validation-observer ref="simpleRules">
+    <validation-observer ref="simpleRules2">
         <b-form @submit.stop.prevent="updateDomain()">
           <b-row>
             <b-col cols="12">
@@ -317,7 +321,7 @@
         </b-form>
     </validation-observer>
     </b-modal>
-    <!-- modal vertical center -->
+    <!-- create template modal -->
     <b-modal
       v-model="showTemplateModal"
       id="modal-center"
@@ -330,111 +334,127 @@
       @hidden="resetModalAddTemplate"
       @ok="handleOkAddTemplate"
     >
-      <validation-observer ref="simpleRules">
-        <b-form class="mt-3 mb-3">
+      <validation-observer ref="simpleRules3">
+        <b-form class="mt-1 mb-3">
           <b-row>
             <b-col cols="11">
               <b-form-group
                 label="اسم الصفحة"
                 label-for="largeInput"
               >
-              <b-input-group aria-label="aaa" size="lg" prepend="/https://example.com/users">
-                <b-form-input id="largeInput" v-model="templateForm.template_name" placeholder="template_name" />
-              </b-input-group>
+                <validation-provider
+                  #default="{ errors }"
+                  name="اسم الصفحة"
+                  rules="required"
+                >
+                  <b-input-group aria-label="aaa" size="lg" :prepend="'/https://'+app.domain.name">
+                    <b-form-input 
+                      :state="errors.length > 0 ? false:null"
+                      id="largeInput" v-model="templateForm.template_name" placeholder="template_name"
+                    />
+                  </b-input-group>
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </validation-provider>
               </b-form-group>
             </b-col>
           </b-row>
           <h1 class="mb-2">اختر الفئة</h1>
-          <b-link @click="seletcTemplate('template_one')">
-            <b-row class="d-flex flex-row">
-              <b-col cols="10">
-                <b-media>
-                  <template #aside>
-                    <b-avatar
-                      rounded
-                      variant="light-info"
-                      size="55"
-                    >
-                      <feather-icon size="25" icon="BriefcaseIcon" />
-                    </b-avatar>
-                  </template>
-                  <h6 class="media-heading ">
-                    العنوان هنا
-                  </h6>
-                  <small class="text-muted">
-                    وصف هنا أيضا.
-                  </small>
-                </b-media>
-              </b-col>
-              <b-col cols="2" class="align-self-center">
-                <b-form-radio
-                  v-model="templateForm.template_code"
-                  name="some-radios"
-                  value="template_one"
-                />
-              </b-col>
-            </b-row>
-          </b-link>
-          <b-link @click="seletcTemplate('template_two')">
-            <b-row @click="seletcTemplate('template_two')" class="d-flex flex-row mt-2">
-              <b-col cols="10">
-                <b-media>
-                  <template #aside>
-                    <b-avatar
-                      rounded
-                      variant="light-warning"
-                      size="55"
-                    >
-                      <feather-icon size="25" icon="ShoppingBagIcon" />
-                    </b-avatar>
-                  </template>
-                  <h6 class="media-heading">
-                    العنوان هنا
-                  </h6>
-                  <small class="text-muted">
-                    وصف هنا أيضا.
-                  </small>
-                </b-media>
-              </b-col>
-              <b-col cols="2" class="align-self-center">
-                <b-form-radio
-                  v-model="templateForm.template_code"
-                  name="some-radios"
-                  value="template_two"
-                />
-              </b-col>
-            </b-row>
-          </b-link>
-          <b-link @click="seletcTemplate('template_three')">
-            <b-row @click="seletcTemplate('template_three')" class="d-flex flex-row mt-2">
-              <b-col cols="10">
-                <b-media>
-                  <template #aside>
-                    <b-avatar
-                      rounded
-                      variant="light-success"
-                      size="55"
-                    >
-                      <feather-icon size="25" icon="ShoppingCartIcon" />
-                    </b-avatar>
-                  </template>
-                  <h6 class="media-heading">
-                    العنوان هنا
-                  </h6>
-                  <small class="text-muted">
-                    وصف هنا أيضا.
-                  </small>
-                </b-media>
-              </b-col>
-              <b-col cols="2" class="align-self-center">
-                <b-form-radio
-                  v-model="templateForm.template_code"
-                  name="some-radios"
-                  value="template_three"
-                />
-              </b-col>
-            </b-row>
-          </b-link>
+          <b-card no-body class="p-1" :class="templateForm.template_code == 'template_one' ? 'popular':''">
+            <b-link @click="seletcTemplate('template_one')">
+              <b-row class="d-flex flex-row">
+                <b-col cols="10">
+                  <b-media>
+                    <template #aside>
+                      <b-avatar
+                        rounded
+                        variant="light-info"
+                        size="55"
+                      >
+                        <feather-icon size="25" icon="BriefcaseIcon" />
+                      </b-avatar>
+                    </template>
+                    <h6 class="media-heading ">
+                      العنوان هنا
+                    </h6>
+                    <small class="text-muted">
+                      وصف هنا أيضا.
+                    </small>
+                  </b-media>
+                </b-col>
+                <b-col cols="2" class="align-self-center">
+                  <b-form-radio
+                    v-model="templateForm.template_code"
+                    name="some-radios"
+                    value="template_one"
+                  />
+                </b-col>
+              </b-row>
+            </b-link>
+          </b-card>
+          <b-card no-body class="p-1" :class="templateForm.template_code == 'template_two' ? 'popular':''">
+            <b-link @click="seletcTemplate('template_two')">
+              <b-row @click="seletcTemplate('template_two')" class="d-flex flex-row ">
+                <b-col cols="10">
+                  <b-media>
+                    <template #aside>
+                      <b-avatar
+                        rounded
+                        variant="light-warning"
+                        size="55"
+                      >
+                        <feather-icon size="25" icon="ShoppingBagIcon" />
+                      </b-avatar>
+                    </template>
+                    <h6 class="media-heading">
+                      العنوان هنا
+                    </h6>
+                    <small class="text-muted">
+                      وصف هنا أيضا.
+                    </small>
+                  </b-media>
+                </b-col>
+                <b-col cols="2" class="align-self-center">
+                  <b-form-radio
+                    v-model="templateForm.template_code"
+                    name="some-radios"
+                    value="template_two"
+                  />
+                </b-col>
+              </b-row>
+            </b-link>
+          </b-card>
+          <b-card no-body class="p-1" :class="templateForm.template_code == 'template_three' ? 'popular':''">
+            <b-link @click="seletcTemplate('template_three')">
+              <b-row @click="seletcTemplate('template_three')" class="d-flex flex-row">
+                <b-col cols="10">
+                  <b-media>
+                    <template #aside>
+                      <b-avatar
+                        rounded
+                        variant="light-success"
+                        size="55"
+                      >
+                        <feather-icon size="25" icon="ShoppingCartIcon" />
+                      </b-avatar>
+                    </template>
+                    <h6 class="media-heading">
+                      العنوان هنا
+                    </h6>
+                    <small class="text-muted">
+                      وصف هنا أيضا.
+                    </small>
+                  </b-media>
+                </b-col>
+                <b-col cols="2" class="align-self-center">
+                  <b-form-radio
+                    v-model="templateForm.template_code"
+                    name="some-radios"
+                    value="template_three"
+                  />
+                </b-col>
+              </b-row>
+            </b-link>
+          </b-card>
         </b-form>
       </validation-observer>
     </b-modal>
@@ -504,14 +524,49 @@ export default {
     localize('ar');
   },
   methods:{
-    moreTemplate(){
-      console.log('more');
+    deleteTemplate(template){
+      this.$swal({
+        title: 'هل أنت متأكد؟',
+        text: "لن تتمكن من التراجع عن هذا!",
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'إلغاء',
+        confirmButtonText: 'نعم ، احذفها!',
+        customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-outline-danger ml-1',
+        },
+        buttonsStyling: false,
+      }).then(result => {
+        if (result.value) {
+          axios.delete('/templates/'+template.id)
+          .then((response) =>{
+            this.$swal({
+              icon: 'success',
+              title: 'تم الحذف!',
+              text: 'تم حذف صفحة بنجاح.',
+              confirmButtonText: 'حسنا',
+              customClass: {
+                confirmButton: 'btn btn-success',
+              },
+            })
+            this.getApp();
+          })
+          .catch((error) => {
+            console.log(JSON.stringify(error));
+          })
+        }
+      })
     },
     handleOkAddTemplate(bvModalEvt) {
-        // Prevent modal from closing
-        bvModalEvt.preventDefault()
-        // Trigger submit handler
-        this.createTemplate()
+      // Prevent modal from closing
+      bvModalEvt.preventDefault()
+      // Trigger submit handler
+      this.$refs.simpleRules3.validate().then(success => {
+        if (success) {
+          this.createTemplate()
+        }
+      })
     },
     resetModalAddTemplate(){
       this.templateForm.template_name = ''
@@ -578,13 +633,18 @@ export default {
       })
     },
     resetModal(){
+      this.domainForm.name = this.app.domain.name
       this.editModalShow = false
     },
     handleOk(bvModalEvt) {
       // Prevent modal from closing
       bvModalEvt.preventDefault()
       // Trigger submit handler
-      this.updateDomain()
+      this.$refs.simpleRules2.validate().then(success => {
+        if (success) {
+          this.updateDomain()
+        }
+      })
     },
     submitForm(){
       this.showFormLoader = true;
@@ -640,7 +700,7 @@ export default {
         setTimeout(() => {
             this.show = false;
           }
-        , 1000);
+        , 500);
       })
       .catch((error) => {
         console.log(JSON.stringify(error));
@@ -686,5 +746,5 @@ export default {
 </script>
 
 <style>
-
+  .popular { border: 1px solid #7367f0; }
 </style>

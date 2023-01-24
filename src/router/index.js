@@ -43,6 +43,14 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/templates/:id/setup',
+      name: 'templates-setup',
+      component: () => import('@/views/template-view/template-setup/TemplateSetup.vue'),
+      meta: {
+        requireLogin: true,
+      },
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/views/Login.vue'),

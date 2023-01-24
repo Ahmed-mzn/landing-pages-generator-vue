@@ -137,6 +137,7 @@
                                 variant="primary"
                                 type="submit"
                                 @click.prevent="submitForm"
+                                v-show="!provider"
                             >
                                 احفظ التغييرات
                             </b-button>
@@ -182,6 +183,10 @@ export default {
         template: {
             type: Object,
             default: () => {},
+        },
+        provider: {
+            type: String,
+            default: () => '',
         }
     },
     data(){

@@ -93,7 +93,6 @@ export default {
         getTemplate(){
             axios.get(`/templates/${this.$route.params.id}`)
             .then((response) => {
-                console.log(response);
                 this.template = response.data
             })
             .catch((error) => {
