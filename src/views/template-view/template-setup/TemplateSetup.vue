@@ -9,10 +9,12 @@
             next-button-text="التالي"
             back-button-text="السابق"
             class="mb-3"
+            @on-complete="goToTemplate"
         >
             <tab-content
                 title="الصور"
                 icon="feather icon-image"
+                :before-change="validationImages"
             >
                 <b-row>
                     <b-col cols="8">
@@ -22,16 +24,17 @@
                         <small class="text-muted">
                             أدخل الصور
                         </small>
-                        <template-setting-images :template="template" />
+                        <template-setting-images ref="childImages" @reloadComp="reloadComp(1)" :template="template" />
                     </b-col>
                     <b-col cols="4">
-                        <template-setting-preview :key="1" :app_id="template.id"/>
+                        <template-setting-preview :key="reloadComponent" :app_id="template.id"/>
                     </b-col>
                 </b-row>
             </tab-content>
             <tab-content
                 title="البيانات الأساسية"
                 icon="feather icon-align-center"
+                :before-change="validationGeneral"
             >
                 <b-row>
                     <b-col cols="8">
@@ -41,16 +44,17 @@
                         <small class="text-muted">
                             أدخل البيانات الأساسية
                         </small>
-                        <template-setting-general :provider="'TemplateSetup'" :template="template" />
+                        <template-setting-general ref="childGeneral" :provider="'TemplateSetup'" @reloadComp="reloadComp(2)" :template="template" />
                     </b-col>
                     <b-col cols="4">
-                        <template-setting-preview :key="1" :app_id="template.id"/>
+                        <template-setting-preview :key="reloadComponent2" :app_id="template.id"/>
                     </b-col>
                 </b-row>
             </tab-content>
             <tab-content
                 title="المنتجات"
                 icon="feather icon-shopping-bag"
+                :before-change="validationProducts"
             >
                 <b-row>
                     <b-col cols="8">
@@ -60,16 +64,17 @@
                         <small class="text-muted">
                             أدخل المنتجات
                         </small>
-                        <template-setting-products :template="template" />
+                        <template-setting-products ref="childProducts" @reloadComp="reloadComp(3)" :template="template" />
                     </b-col>
                     <b-col cols="4">
-                        <template-setting-preview :key="1" :app_id="template.id"/>
+                        <template-setting-preview  :key="reloadComponent3" :app_id="template.id"/>
                     </b-col>
                 </b-row>
             </tab-content>
             <tab-content
                 title="الميزات"
                 icon="feather icon-star"
+                :before-change="validationFeatures"
             >
                 <b-row>
                     <b-col cols="8">
@@ -79,16 +84,17 @@
                         <small class="text-muted">
                             أدخل الميزات
                         </small>
-                        <template-setting-features/>
+                        <template-setting-features ref="childFeatures" @reloadComp="reloadComp(4)" />
                     </b-col>
                     <b-col cols="4">
-                        <template-setting-preview :key="1" :app_id="template.id"/>
+                        <template-setting-preview :key="reloadComponent4" :app_id="template.id"/>
                     </b-col>
                 </b-row>
             </tab-content>
             <tab-content
                 title="تقييمات العملاء"
                 icon="feather icon-users"
+                :before-change="validationReviews"
             >
                 <b-row>
                     <b-col cols="8">
@@ -98,10 +104,10 @@
                         <small class="text-muted">
                             أدخل تقييمات العملاء
                         </small>
-                        <template-setting-reviews />
+                        <template-setting-reviews ref="childReviews" @reloadComp="reloadComp(5)" />
                     </b-col>
                     <b-col cols="4">
-                        <template-setting-preview :key="1" :app_id="template.id"/>
+                        <template-setting-preview :key="reloadComponent5" :app_id="template.id"/>
                     </b-col>
                 </b-row>
             </tab-content>
@@ -133,13 +139,76 @@ export default {
     },
     data(){
         return {
-            template: {}
+            template: {},
+            reloadComponent: 0,
+            reloadComponent2: 0,
+            reloadComponent3: 0,
+            reloadComponent4: 0,
+            reloadComponent5: 0,
         }
     },
     created(){
         this.getTemplate();
     },
     methods:{
+        goToTemplate(){
+            this.$router.push(`/templates/${this.template.id}`)
+        },
+        validationReviews(){
+            let t = this.$refs.childReviews.validateSetup();
+            return new Promise((resolve, reject) => {
+                if(t){
+                    resolve(true);
+                }
+                else {
+                    reject();
+                }
+            })
+        },
+        validationProducts(){
+            let t = this.$refs.childProducts.validateSetup();
+            return new Promise((resolve, reject) => {
+                if(t){
+                    resolve(true);
+                }
+                else {
+                    reject();
+                }
+            })
+        },
+        validationFeatures(){
+            let t = this.$refs.childFeatures.validateSetup();
+            return new Promise((resolve, reject) => {
+                if(t){
+                    resolve(true);
+                }
+                else {
+                    reject();
+                }
+            })
+        },
+        validationGeneral(){
+            let t = this.$refs.childGeneral.validateSetup();
+            return new Promise((resolve, reject) => {
+                if(t){
+                    resolve(true);
+                }
+                else {
+                    reject();
+                }
+            })
+        },
+        validationImages(){
+            let t = this.$refs.childImages.validateSetup();
+            return new Promise((resolve, reject) => {
+                if(t){
+                    resolve(true);
+                }
+                else {
+                    reject();
+                }
+            })
+        },
         getTemplate(){
             axios.get(`/templates/${this.$route.params.id}`)
             .then((response) => {
@@ -148,6 +217,23 @@ export default {
             .catch((error) => {
                 console.log(JSON.stringify(error));
             })
+        },
+        reloadComp(compNum){
+            if(compNum == 1){
+                this.reloadComponent += 1
+            }
+            if(compNum == 2){
+                this.reloadComponent2 += 2
+            }
+            if(compNum == 3){
+                this.reloadComponent3 += 3
+            }
+            if(compNum == 4){
+                this.reloadComponent4 += 4
+            }
+            if(compNum == 5){
+                this.reloadComponent5 += 5
+            }
         }
     }
 }

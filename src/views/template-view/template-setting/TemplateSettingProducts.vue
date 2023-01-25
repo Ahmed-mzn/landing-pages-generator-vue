@@ -468,6 +468,22 @@ export default {
         localize('ar')
     },
     methods: {
+        validateSetup(){
+            if (this.products.length == 0){
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: 'إنذار',
+                        icon: 'AlertCircleIcon',
+                        text: 'هناك خطأ، الرجاء إدخال على الأقل منتج واحد.',
+                        variant: 'danger',
+                    },
+                })
+                return false;
+            } else {
+                return true;
+            }
+        },
         async updateImage(){
 
             let formData = new FormData()
@@ -660,7 +676,7 @@ export default {
                 if (success) {
                 let formData = new FormData()
                 formData.append('title', this.product.title)
-                formData.append('app', this.product.app)
+                formData.append('app', this.template.app)
                 formData.append('description', this.product.description)
                 formData.append('image', this.product.image)
                 formData.append('price', this.product.price)

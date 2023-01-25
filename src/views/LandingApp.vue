@@ -248,7 +248,7 @@
                 :header="template.template_name + 'صفحة الهبوط '"
                 header-tag="h6"
               >
-                <b-link :to="{name: 'templates', params: {id: template.id}}">
+                <b-link :to="getTemplateRoute(template)">
                   <b-img
                     fluid
                     class="mb-2"
@@ -524,6 +524,18 @@ export default {
     localize('ar');
   },
   methods:{
+    getTemplateRoute(template){
+      if(template.logo == null || template.main_image == null || template.medals_image == null || 
+        template.second_image == null || template.meta_title == '' || 
+        template.meta_keywords == '' || template.primary_color == '' ||
+        template.review_text == '' || template.description == '' || 
+        template.secondary_color == '' || template.features.length == 0 || template.products.length == 0
+        || template.reviews.length == 0)
+        
+        return {name: 'templates-setup', params: {id: template.id}}
+      else
+        return {name: 'templates', params: {id: template.id}}
+    },
     deleteTemplate(template){
       this.$swal({
         title: 'هل أنت متأكد؟',

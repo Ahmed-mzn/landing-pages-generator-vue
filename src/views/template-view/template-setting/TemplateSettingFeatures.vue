@@ -92,7 +92,7 @@
                                 type="submit"
                                 @click.prevent="submitForm"
                             >
-                                أضف التقييم
+                                أضف الميزة
                             </b-button>
                         </b-col>
                     </b-row>
@@ -225,6 +225,23 @@ export default {
         localize('ar')
     },
     methods: {
+        validateSetup(){
+            if (this.features.length == 0){
+                this.submitForm()
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: 'إنذار',
+                        icon: 'AlertCircleIcon',
+                        text: 'هناك خطأ، الرجاء إدخال على الأقل ميزة واحد.',
+                        variant: 'danger',
+                    },
+                })
+                return false;
+            } else {
+                return true;
+            }
+        },
         showEditModal(feature){
             this.featureEdit.id = feature.id
             this.featureEdit.title = feature.title

@@ -286,6 +286,23 @@ export default {
         localize('ar')
     },
     methods: {
+        validateSetup(){
+            if (this.reviews.length == 0){
+                this.submitForm()
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: 'إنذار',
+                        icon: 'AlertCircleIcon',
+                        text: 'هناك خطأ، الرجاء إدخال على الأقل تقييم واحد.',
+                        variant: 'danger',
+                    },
+                })
+                return false;
+            } else {
+                return true;
+            }
+        },
         showEditModal(review){
             this.reviewEdit.id = review.id
             this.reviewEdit.username = review.username

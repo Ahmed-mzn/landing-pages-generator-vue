@@ -14,7 +14,7 @@
                     </h4>
                     <span class="card-text">
                         <feather-icon icon="LinkIcon" size="13" />
-                        <b-link href="http://+app.customer_website" target="_blank">https://app.customer_website</b-link>
+                        <b-link :href="'http://domain.xx/'+template.template_name" target="_blank">domain.xx/{{template.template_name}}</b-link>
                         <b-badge
                             href="#"
                             variant="primary"

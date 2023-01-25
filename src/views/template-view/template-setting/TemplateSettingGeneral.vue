@@ -31,19 +31,19 @@
                         </b-col>
                         <b-col md="12">
                             <b-form-group
-                                label="كلمات دلالية"
-                                label-for="meta_keywords"
+                                label="رابط الموقع الرئيسي"
+                                label-for="customer_website"
                             >
                                 <validation-provider
                                 #default="{ errors }"
-                                name="كلمات دلالية"
-                                rules="required"
+                                name="رابط الموقع الرئيسي"
+                                rules="required|url"
                                 >
                                 <b-form-input
-                                    id="meta_keywords"
-                                    v-model="template.meta_keywords"
+                                    id="customer_website"
+                                    v-model="template.customer_website"
                                     :state="errors.length > 0 ? false:null"
-                                    placeholder="كلمات دلالية"
+                                    placeholder="رابط الموقع الرئيسي"
                                 />
                                 <small class="text-danger">{{ errors[0] }}</small>
                                 </validation-provider>
@@ -199,13 +199,31 @@ export default {
         localize('ar');
     },
     methods: {
+        validateSetup(){
+            this.submitForm();
+            if (this.template.meta_title == '' || this.template.customer_website == '' || this.template.primary_color == '' ||
+                this.template.review_text == '' || this.template.description == '' || this.template.secondary_color == ''){
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: 'إنذار',
+                            icon: 'AlertCircleIcon',
+                            text: 'هناك خطأ، الرجاء إدخال جميع البيانات الأساسية.',
+                            variant: 'danger',
+                        },
+                    })
+                return false;
+            } else {
+                return true;
+            }
+        },
         submitForm() {
             this.showFormLoader = true;
             this.$refs.simpleRules.validate().then(success => {
                 if (success) {
                     const data = {
                         meta_title: this.template.meta_title,
-                        meta_keywords: this.template.meta_keywords,
+                        customer_website: this.template.customer_website,
                         review_text: this.template.review_text,
                         description: this.template.description,
                         primary_color: this.template.primary_color,

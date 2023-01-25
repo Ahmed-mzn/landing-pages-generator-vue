@@ -220,6 +220,23 @@ export default {
         localize('ar');
     },
     methods: {
+        validateSetup(){
+            if (this.template.logo == null || this.template.main_image == null || 
+                this.template.medals_image == null || this.template.second_image == null){
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: 'إنذار',
+                        icon: 'AlertCircleIcon',
+                        text: 'هناك خطأ، الرجاء إدخال جميع الصور.',
+                        variant: 'danger',
+                    },
+                })
+                return false;
+            } else {
+                return true;
+            }
+        },
         async handleImage(imageName){
             this.showFormLoader = true;
 
