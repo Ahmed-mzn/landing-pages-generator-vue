@@ -33,29 +33,31 @@
         <b-tabs>
             <b-tab lazy active>
                 <template #title>
-                    <feather-icon icon="HomeIcon" />
+                    <feather-icon icon="ToolIcon" />
                     <span>التصميم</span>
                 </template>
                 <template-setting :template="template"/>
             </b-tab>
             <b-tab lazy>
                 <template #title>
-                    <feather-icon icon="ToolIcon" />
+                    <feather-icon icon="ActivityIcon" />
                     <span>التحليلات</span>
                 </template>
                 <template-analytics/>
             </b-tab>
             <b-tab lazy>
                 <template #title>
-                    <feather-icon icon="UserIcon" />
+                    <feather-icon icon="ShoppingCartIcon" />
                     <span>الطلبات</span>
                 </template>
-                <template-orders/>
+                <b-card>
+                    <template-orders :template="template"/>
+                </b-card>
             </b-tab>
             <b-tab lazy>
                 <template #title>
-                    <feather-icon icon="UserIcon" />
-                    <span>Visist</span>
+                    <feather-icon icon="TrendingUpIcon" />
+                    <span>الزيارات</span>
                 </template>
                 <b-card>
                     <template-visit :template="template"/>
@@ -67,7 +69,7 @@
 
 <script>
 import TemplateOrders from './TemplateOrders.vue'
-import TemplateAnalytics from './TemplateAnalytics.vue'
+import TemplateAnalytics from './template-analytic/TemplateAnalytics.vue'
 import TemplateSetting from './template-setting/TemplateSetting.vue'
 import TemplateVisit from './TemplateVisit.vue'
 

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <iframe style="border:none;" :src="'http://localhost:8000/templates/preview/'+app_id" width="100%" height="500" title="W3Schools Free Online Web Tutorials"></iframe>
+        <iframe style="border:none;" :src="'https://landing.socialbot.dev/templates/preview/'+app_id" width="100%" height="500" title="W3Schools Free Online Web Tutorials"></iframe>
     </div>
 </template>
 

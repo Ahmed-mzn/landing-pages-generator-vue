@@ -145,7 +145,6 @@ export default {
         getVisist(){
             axios.get(`/visits?template_id=${this.template.id}`)
             .then((response) => {
-                console.log(response);
                 this.visists = response.data
             })
             .catch((error) => {

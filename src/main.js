@@ -13,7 +13,7 @@ import axios from 'axios'
 // inti store
 store.commit('auth/initializeStore')
 
-axios.defaults.baseURL = 'http://localhost:8000/api/v1'
+axios.defaults.baseURL = 'https://landing.socialbot.dev/api/v1'
 
 axios.interceptors.response.use(
   (response) => {
