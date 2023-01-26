@@ -1,111 +1,147 @@
 <template>
     <div class="mt-2">
-        <b-overlay
-            :show="showFormLoader"
-            rounded="sm"
-            spinner-variant="primary"
-        >
-            <b-row class="mt-3">
-                <b-col cols="12">
-                    <label class="label">اختر المنتجات</label>
-                </b-col>
-                <b-col cols="10">
+        <div class="mb-2">
+
+            <!-- Table Top -->
+            <b-row>
+                <!-- Per Page -->
+                <b-col
+                    cols="12"
+                    md="6"
+                    class="d-flex align-items-center justify-content-start mb-1 mb-md-0"
+                >
+                    <label>عرض</label>
                     <v-select
-                        v-model="selectedProducts"
+                        v-model="perPage"
                         dir="rtl"
-                        multiple
-                        :options="allProducts"
-                        label="title"
-                        placeholder="حدد المنتجات"
-                    >
-                        <template #option="{ title, description, image, price }">
-                            <div
-                                class="d-flex justify-content-start align-items-center"
-                            >
-                                <b-img
-                                    rounded=""
-                                    :src="image"
-                                    blank-color="#ccc"
-                                    width="40"
-                                    alt="placeholder"
-                                    class="mr-2"
-                                />
-                                <div class="user-page-info">
-                                    <h6 class="mb-0">
-                                    {{title}}
-                                    </h6>
-                                    <small class="text-muted">{{description}}</small>
-                                </div>
-                                <div class="ml-auto">
-                                    <b-badge variant="light-primary">SAR {{price}}</b-badge>
-                                </div>
-                            </div>
-                        </template>
-                    </v-select>
+                        :options="pageOptions"
+                        :clearable="false"
+                        class="per-page-selector d-inline-block mx-50"
+                    />
+                    <label>إدخالات</label>
                 </b-col>
-                <b-col cols="2">
+
+                <!-- Search -->
+                <b-col
+                    cols="12"
+                    md="6"
+                >
+                    <div class="d-flex align-items-center justify-content-end">
+                    <b-form-input
+                        v-model="filter"
+                        class="d-inline-block mr-1"
+                        placeholder="بحث..."
+                    />
                     <b-button
                         variant="primary"
-                        class="btn-icon"
                         @click="addModalShow = true"
                     >
-                        <feather-icon icon="PlusIcon" />
+                        <span class="text-nowrap">أضف منتج</span>
                     </b-button>
+                    </div>
                 </b-col>
             </b-row>
-            <b-button
-                class="mt-2 mb-2"
-                variant="primary"
-                type="submit"
-                @click="assignProduct"
-            >
-                أضف المنتجات
-            </b-button>
-            <div class="media-list media-bordered">
-                <b-media v-for="product in products" :key="product.id">
-                    <template #aside>
-                        <b-img
-                        :src="product.image"
-                        blank-color="#ccc"
-                        width="64"
-                        alt="placeholder"
-                        />
+
+        </div>
+        <b-row>
+            <b-col cols="12">
+                <b-table
+                    hover
+                    responsive
+                    class="position-relative"
+                    :per-page="perPage"
+                    :current-page="currentPage"
+                    :items="products"
+                    :fields="fields"
+                    :sort-by.sync="sortBy"
+                    :sort-desc.sync="sortDesc"
+                    :sort-direction="sortDirection"
+                    :filter="filter"
+                    show-empty
+                    empty-text="No matching records found"
+                    :filter-included-fields="filterOn"
+                    @filtered="onFiltered"
+                >
+                    <template #cell(image)="data">
+                        <b-avatar :src="data.value" />
                     </template>
-                    <div class="float-right">
-                        <b-button
-                            variant="flat-success"
-                            class="btn-icon rounded-circle mr-1"
-                            size="sm"
-                            @click="showEditModal(product)"
-                            >
-                            <feather-icon icon="EditIcon" />
-                        </b-button>
-                        <b-button
-                            variant="flat-danger"
-                            class="btn-icon rounded-circle"
-                            size="sm"
-                            @click="deleteProduct(product.id)"
+
+                    <template #cell(price)="data">
+                        <b-badge 
+                            v-if="data.item.price_after_discount"
+                            variant="light-primary mr-1"
                         >
-                            <feather-icon icon="Trash2Icon" />
-                        </b-button>
-                    </div>
-                    <h4 class="media-heading">
-                        {{product.title}}
-                    </h4>
-                    <b-card-text class="mb-0">
-                        {{product.description}}
-                    </b-card-text>
-                    <!-- <h6 class="item-price mt-0 float-right">$200</h6> -->
-                    <div class="float-right" v-if="product.price_after_discount">
-                        <b-badge variant="light-primary mr-1"><del>SAR {{product.price}}</del></b-badge>
-                        <b-badge variant="light-primary">SAR {{product.price_after_discount}}</b-badge>
-                    </div>
-                    <div class="float-right" v-else>
-                        <b-badge variant="light-primary">SAR {{product.price}}</b-badge>
-                    </div>
-                </b-media>
-            </div>
-        </b-overlay>
+                            <del>SAR {{data.value}}</del>
+                        </b-badge>
+                            <b-badge 
+                                v-else
+                                variant="light-primary mr-1"
+                            >
+                                SAR {{data.value}}
+                            </b-badge>
+                    </template>
+
+                    <template #cell(price_after_discount)="data">
+                        <b-badge 
+                            v-if="data.value"
+                            variant="light-primary mr-1"
+                        >
+                            SAR {{data.value}}
+                        </b-badge>
+                        <b-badge 
+                            v-else
+                            variant="light-warning mr-1"
+                        >
+                            لايوجد خصم
+                        </b-badge>
+                    </template>
+
+                    <template #cell(actions)="data">
+                        <b-row>
+                            <b-col
+                                cols="12"
+                                class="d-flex align-items-center justify-content-start"
+                            >
+                                <b-button
+                                    variant="flat-success"
+                                    class="btn-icon rounded-circle mr-1"
+                                    size="sm"
+                                    @click="showEditModal(data.item)"
+                                    >
+                                    <feather-icon icon="EditIcon" />
+                                </b-button>
+                                <b-button
+                                    variant="flat-danger"
+                                    class="btn-icon rounded-circle"
+                                    size="sm"
+                                    @click="deleteProduct(data.item.id)"
+                                >
+                                    <feather-icon icon="Trash2Icon" />
+                                </b-button>
+                            </b-col>
+                        </b-row>
+                    </template>
+                </b-table>
+            </b-col>
+        </b-row>
+
+        <b-row>
+            <b-col
+                cols="12"
+            >
+                <b-pagination
+                    v-model="currentPage"
+                    :total-rows="totalRows"
+                    :per-page="perPage"
+                    class="mb-0 mt-1 mt-sm-0"
+                    pills
+                    first-number
+                    last-number
+                    prev-class="next-item"
+                    next-class="prev-item"
+                />
+            </b-col>
+        </b-row>
         <!-- update modal -->
         <b-modal
             id="modal-1"
@@ -408,40 +444,49 @@
 <script>
 import {
     BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BBadge, BTabs, BTab, BMedia, BImg, BFormInput, BFormGroup, BForm,
-    BOverlay, VBModal, BFormCheckbox, BModal, BFormFile
+    BOverlay, VBModal, BFormCheckbox, BModal, BFormFile, BTable, BFormSelect, BPagination, BInputGroup, 
+        BInputGroupAppend
 } from 'bootstrap-vue'
 import { ValidationProvider, ValidationObserver, localize, extend } from 'vee-validate'
 import { required, url, numbers } from '@validations'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import vSelect from 'vue-select'
 import axios from 'axios'
-import { temp } from '@/@core/directives/animations'
 export default {
     components:{
         ToastificationContent, ValidationProvider, ValidationObserver, BCard, BCardText, BRow, BCol, BButton, 
         BLink, BAvatar, BBadge, BTabs, BTab, BMedia, BImg, BFormInput, BFormGroup, BForm, BOverlay, VBModal, 
-        BModal, BFormCheckbox, vSelect, BFormFile
-    },
-    props: {
-        template: {
-            type: Object,
-            default: () => {},
-        }
+        BModal, BFormFile, BTable, BFormSelect, BPagination, BInputGroup, 
+        BInputGroupAppend, vSelect, BFormCheckbox
     },
     directives: {
         'b-modal': VBModal,
     },
     data(){
         return {
+            perPage: 5,
+            pageOptions: [3, 5, 10],
+            totalRows: 1,
+            currentPage: 1,
+            sortBy: '',
+            sortDesc: false,
+            sortDirection: 'asc',
+            filter: null,
+            filterOn: [],
             file: null,
-            selectedProducts: [],
-            showFormLoader: false,
-            allProducts:[],
             products: [],
             activateDiscount: false,
             activateDiscount2: false,
+            fields: [
+                {key: 'image', label: 'المنتج'},
+                {key: 'title', label: 'عنوان'},
+                {key: 'description', label: 'وصف قصير'},
+                {key: 'price', label: 'السعر'},
+                {key: 'price_after_discount', label: 'السعر بعد الخصم'},
+                {key: 'actions', label: 'إجراءات'},
+            ],
             product: {
-                app: this.template.app,
+                app: 0,
                 title: '',
                 description: '',
                 image: null,
@@ -465,24 +510,22 @@ export default {
     },
     created(){
         this.getProducts()
+        this.getApp()
         localize('ar')
     },
+    computed: {
+        sortOptions() {
+            // Create an options list from our fields
+            return this.fields
+                .filter(f => f.sortable)
+                .map(f => ({ text: f.label, value: f.key }))
+        },
+    },
     methods: {
-        validateSetup(){
-            if (this.products.length == 0){
-                this.$toast({
-                    component: ToastificationContent,
-                    props: {
-                        title: 'إنذار',
-                        icon: 'AlertCircleIcon',
-                        text: 'هناك خطأ، الرجاء إدخال على الأقل منتج واحد.',
-                        variant: 'danger',
-                    },
-                })
-                return false;
-            } else {
-                return true;
-            }
+        onFiltered(filteredItems) {
+            // Trigger pagination to update the number of buttons/pages due to filtering
+            this.totalRows = filteredItems.length
+            this.currentPage = 1
         },
         async updateImage(){
 
@@ -515,40 +558,6 @@ export default {
                 })
                 JSON.stringify(error)
             })
-        },
-        assignProduct(){
-            this.showFormLoader = true
-            this.selectedProducts.forEach(element => {
-                axios.post(`/templates/${this.$route.params.id}/assign_product/${element.id}`)
-                .then(response => {
-                    this.$emit('reloadComp')
-                    this.$toast({
-                        component: ToastificationContent,
-                        props: {
-                            title: 'إشعار',
-                            icon: 'CheckIcon',
-                            text: 'تم إضافة المنتج بنجاح.',
-                            variant: 'success',
-                        },
-                    })
-                    this.selectedProducts = []
-                    this.getProducts()
-                    this.showFormLoader = false
-                })
-                .catch(error => {
-                    this.showFormLoader = false
-                    this.$toast({
-                        component: ToastificationContent,
-                        props: {
-                        title: 'إنذار',
-                        icon: 'AlertCircleIcon',
-                        text: 'حدث خطأ أثناء إضافة المنتج.',
-                        variant: 'danger',
-                        },
-                    })
-                    JSON.stringify(error);
-                })
-            });
         },
         resetAddModal(){
             this.product.title = ''
@@ -596,7 +605,6 @@ export default {
                     delete this.productEdit.image
                     axios.patch(`/products/${this.productEdit.id}/`, this.productEdit)
                     .then((response) => {
-                        this.$emit('reloadComp')
                         this.$toast({
                             component: ToastificationContent,
                             props: {
@@ -648,9 +656,8 @@ export default {
                 buttonsStyling: false,
             }).then(result => {
                 if (result.value) {
-                    axios.delete(`/templates/${this.$route.params.id}/assign_product/${id}`)
+                    axios.delete(`/products/${id}`)
                     .then((response) =>{
-                        this.$emit('reloadComp')
                         this.$swal({
                             icon: 'success',
                             title: 'تم الحذف!',
@@ -669,18 +676,18 @@ export default {
             })
         },
         submitForm(){
-            this.showFormLoader = true;
             this.$refs.simpleRules.validate().then(success => {
                 if (success) {
                 let formData = new FormData()
                 formData.append('title', this.product.title)
-                formData.append('app', this.template.app)
+                formData.append('app', this.product.app)
                 formData.append('description', this.product.description)
                 formData.append('image', this.product.image)
                 formData.append('price', this.product.price)
                 formData.append('price_after_discount', this.product.price_after_discount)
                     axios.post('/products/', formData, {headers:{"Content-Type": "multipart/form-data"}})
                     .then((response) => {
+                        this.getProducts()
                         this.$toast({
                             component: ToastificationContent,
                             props: {
@@ -690,7 +697,6 @@ export default {
                                 variant: 'success',
                             },
                         })
-                        this.getAllProducts()
                         this.product.title = ''
                         this.product.description = ''
                         this.product.image = null
@@ -701,7 +707,6 @@ export default {
                         this.$nextTick(() => {
                             this.$refs['modal-add'].toggle('#toggle-btn')
                         })
-                        this.showFormLoader = false
                     })
                     .catch((error) => {
                         this.$toast({
@@ -713,50 +718,33 @@ export default {
                             variant: 'danger',
                             },
                         })
-                        this.showFormLoader = false;
                         JSON.stringify(error);
                     })
-                } else {
-                    this.showFormLoader = false;
                 }
             })
         },
         getProducts(){
-            axios.get(`/products/?template_id=${this.$route.params.id}`)
-            .then((response) => {
-                this.products = response.data
-                this.getAllProducts()
-            })
-            .catch((error) => {
-                JSON.stringify(error);
-            })
-        },
-        getAllProducts(){
             axios.get(`/products/`)
             .then((response) => {
-                this.allProducts = []
-                response.data.forEach(element => {
-                    if (!this.checkProductById(element.id)){
-                        this.allProducts.push(element)
-                    }
-                })
+                this.products = response.data
+                this.totalRows = response.data.length
             })
             .catch((error) => {
                 JSON.stringify(error);
             })
         },
-        checkProductById(id){
-            let result = false;
-            this.products.forEach(element => {
-                if (element.id == id){
-                    result = true;
-                }
+        getApp(){
+            axios.get('/get_app')
+            .then((response) => {
+                this.product.app = response.data.id
             })
-            return result;
-        }
+            .catch((error) => {
+                console.log(JSON.stringify(error));
+            })
+        },
     }
 }
 </script>
 <style lang="scss">
-    @import '~@core/scss/vue/libs/vue-select.scss';
+@import '@core/scss/vue/libs/vue-select.scss';
 </style>

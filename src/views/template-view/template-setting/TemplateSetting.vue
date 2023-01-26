@@ -71,13 +71,9 @@ export default {
             newTemplate: {}
         }
     },
-    mounted(){
-        console.log(this.template);
-    },
     methods:{
         reloadComp(){
             this.reloadComponent += 1
-            console.log('reloading');
         }
     }
 }

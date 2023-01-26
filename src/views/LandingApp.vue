@@ -60,38 +60,6 @@
                       </validation-provider>
                     </b-form-group>
                   </b-col>
-                  
-                  <b-col sm="6">
-                    <b-form-group>
-                      <div class="d-flex justify-content-between">
-                        <label for="customer-website">رابط الموقع الرئيسي</label>
-                      </div>
-                      <validation-provider
-                        #default="{ errors }"
-                        name="رابط الموقع الرئيسي"
-                        rules="required|url"
-                      >
-                        <b-input-group
-                          class="input-group-merge"
-                          :class="errors.length > 0 ? 'is-invalid':null"
-                        >
-                        <b-input-group-prepend is-text>
-                          <feather-icon icon="LinkIcon" />
-                        </b-input-group-prepend>
-                          <b-form-input
-                            id="customer-website"
-                            v-model="form.customer_website"
-                            :state="errors.length > 0 ? false:null"
-                            class="form-control-merge"
-                            name="customer-website"
-                            placeholder="رابط الموقع الرئيسي"
-                          />
-                        </b-input-group>
-                        <small class="text-danger">{{ errors[0] }}</small>
-                      </validation-provider>
-                    </b-form-group>
-                  </b-col>
-                  
                   <!-- alert -->
                   <b-col
                     cols="12"
@@ -106,7 +74,7 @@
                         يرجى الانتباه.
                       </h4>
                       <div class="alert-body">
-                        بعد تفعيل التطبيق ، يرجى الانتظار ما بين دقيقة إلى 10 دقائق حتى يشتغل.
+                        بعد تفعيل التطبيق ، يرجى الانتظار ما بين دقيقة إلى 5 دقائق حتى يشتغل.
                       </div>
                     </b-alert>
                   </b-col>
@@ -265,11 +233,14 @@
                       <b-dropdown
                         no-caret
                         v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                        text="Primary"
-                        variant="default"
+                        variant="link"
                       >
                         <template #button-content>
-                          <feather-icon icon="MoreVerticalIcon" />
+                          <feather-icon
+                            icon="MoreVerticalIcon"
+                            size="16"
+                            class="text-body align-middle mr-25"
+                          />
                         </template>
                         <b-dropdown-item @click="deleteTemplate(template)">حذف</b-dropdown-item>
                         <b-dropdown-item :href="'http://'+app.domain.name+'/'+template.template_name" target="_blank">معاينة</b-dropdown-item>
@@ -508,7 +479,6 @@ export default {
       appActivated: true,
       showFormLoader: false,
       form: {
-        customer_website: '',
         domain: {
           name: '',
           type: 'custom'
@@ -527,14 +497,15 @@ export default {
     getTemplateRoute(template){
       if(template.logo == null || template.main_image == null || template.medals_image == null || 
         template.second_image == null || template.meta_title == '' || 
-        template.meta_keywords == '' || template.primary_color == '' ||
+        template.customer_website == '' || template.primary_color == '' ||
         template.review_text == '' || template.description == '' || 
         template.secondary_color == '' || template.features.length == 0 || template.products.length == 0
-        || template.reviews.length == 0)
-        
+        || template.reviews.length == 0){
         return {name: 'templates-setup', params: {id: template.id}}
-      else
+      }
+      else{
         return {name: 'templates', params: {id: template.id}}
+      }
     },
     deleteTemplate(template){
       this.$swal({

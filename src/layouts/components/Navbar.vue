@@ -74,13 +74,13 @@
           <span>Task</span>
         </b-dropdown-item>
 
-        <b-dropdown-item link-class="d-flex align-items-center">
+        <b-dropdown-item :to="{name: 'account-setting'}" link-class="d-flex align-items-center">
           <feather-icon
             size="16"
-            icon="MessageSquareIcon"
+            icon="SettingsIcon"
             class="mr-50"
           />
-          <span>Chat</span>
+          <span>إعدادت الحساب</span>
         </b-dropdown-item>
 
         <b-dropdown-divider />

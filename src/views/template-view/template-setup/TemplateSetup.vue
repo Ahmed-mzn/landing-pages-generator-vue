@@ -24,7 +24,7 @@
                         <small class="text-muted">
                             أدخل الصور
                         </small>
-                        <template-setting-images ref="childImages" @reloadComp="reloadComp(1)" :template="template" />
+                        <template-setting-images ref="childImages" @reloadComp="reloadComp" :template="template" />
                     </b-col>
                     <b-col cols="4">
                         <template-setting-preview :key="reloadComponent" :app_id="template.id"/>
@@ -44,10 +44,10 @@
                         <small class="text-muted">
                             أدخل البيانات الأساسية
                         </small>
-                        <template-setting-general ref="childGeneral" :provider="'TemplateSetup'" @reloadComp="reloadComp(2)" :template="template" />
+                        <template-setting-general ref="childGeneral" :provider="'TemplateSetup'" @reloadComp="reloadComp" :template="template" />
                     </b-col>
                     <b-col cols="4">
-                        <template-setting-preview :key="reloadComponent2" :app_id="template.id"/>
+                        <template-setting-preview :key="reloadComponent" :app_id="template.id"/>
                     </b-col>
                 </b-row>
             </tab-content>
@@ -64,10 +64,10 @@
                         <small class="text-muted">
                             أدخل المنتجات
                         </small>
-                        <template-setting-products ref="childProducts" @reloadComp="reloadComp(3)" :template="template" />
+                        <template-setting-products ref="childProducts" @reloadComp="reloadComp" :template="template" />
                     </b-col>
                     <b-col cols="4">
-                        <template-setting-preview  :key="reloadComponent3" :app_id="template.id"/>
+                        <template-setting-preview  :key="reloadComponent" :app_id="template.id"/>
                     </b-col>
                 </b-row>
             </tab-content>
@@ -84,10 +84,10 @@
                         <small class="text-muted">
                             أدخل الميزات
                         </small>
-                        <template-setting-features ref="childFeatures" @reloadComp="reloadComp(4)" />
+                        <template-setting-features ref="childFeatures" @reloadComp="reloadComp" />
                     </b-col>
                     <b-col cols="4">
-                        <template-setting-preview :key="reloadComponent4" :app_id="template.id"/>
+                        <template-setting-preview :key="reloadComponent" :app_id="template.id"/>
                     </b-col>
                 </b-row>
             </tab-content>
@@ -104,10 +104,10 @@
                         <small class="text-muted">
                             أدخل تقييمات العملاء
                         </small>
-                        <template-setting-reviews ref="childReviews" @reloadComp="reloadComp(5)" />
+                        <template-setting-reviews ref="childReviews" @reloadComp="reloadComp" />
                     </b-col>
                     <b-col cols="4">
-                        <template-setting-preview :key="reloadComponent5" :app_id="template.id"/>
+                        <template-setting-preview :key="reloadComponent" :app_id="template.id"/>
                     </b-col>
                 </b-row>
             </tab-content>
@@ -141,10 +141,6 @@ export default {
         return {
             template: {},
             reloadComponent: 0,
-            reloadComponent2: 0,
-            reloadComponent3: 0,
-            reloadComponent4: 0,
-            reloadComponent5: 0,
         }
     },
     created(){
@@ -218,22 +214,8 @@ export default {
                 console.log(JSON.stringify(error));
             })
         },
-        reloadComp(compNum){
-            if(compNum == 1){
-                this.reloadComponent += 1
-            }
-            if(compNum == 2){
-                this.reloadComponent2 += 2
-            }
-            if(compNum == 3){
-                this.reloadComponent3 += 3
-            }
-            if(compNum == 4){
-                this.reloadComponent4 += 4
-            }
-            if(compNum == 5){
-                this.reloadComponent5 += 5
-            }
+        reloadComp(){
+            this.reloadComponent += 1;
         }
     }
 }

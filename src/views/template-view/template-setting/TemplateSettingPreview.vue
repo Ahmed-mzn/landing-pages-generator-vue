@@ -29,9 +29,6 @@ export default {
         return {
             template: null
         }
-    },
-    mounted(){
-        console.log("mounted prev");
     }
 }
 </script>

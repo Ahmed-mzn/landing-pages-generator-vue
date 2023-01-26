@@ -9,4 +9,9 @@ export default [
     route: 'landing-app',
     icon: 'FileIcon',
   },
+  {
+    title: 'إعدادت الحساب',
+    route: 'account-setting',
+    icon: 'SettingsIcon',
+  },
 ]

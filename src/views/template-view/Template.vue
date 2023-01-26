@@ -52,6 +52,15 @@
                 </template>
                 <template-orders/>
             </b-tab>
+            <b-tab lazy>
+                <template #title>
+                    <feather-icon icon="UserIcon" />
+                    <span>Visist</span>
+                </template>
+                <b-card>
+                    <template-visit :template="template"/>
+                </b-card>
+            </b-tab>
         </b-tabs>
     </div>
 </template>
@@ -60,6 +69,7 @@
 import TemplateOrders from './TemplateOrders.vue'
 import TemplateAnalytics from './TemplateAnalytics.vue'
 import TemplateSetting from './template-setting/TemplateSetting.vue'
+import TemplateVisit from './TemplateVisit.vue'
 
 import { BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BBadge, BTabs, BTab } from 'bootstrap-vue'
 
@@ -69,6 +79,7 @@ export default {
         TemplateSetting,
         TemplateOrders,
         TemplateAnalytics,
+        TemplateVisit,
         BCard,
         BCardText,
         BRow,

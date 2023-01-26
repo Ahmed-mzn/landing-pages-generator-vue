@@ -40,6 +40,7 @@ const router = new VueRouter({
       component: () => import('@/views/template-view/Template.vue'),
       meta: {
         requireLogin: true,
+        navActiveLink: 'landing-app'
       },
     },
     {
@@ -48,6 +49,22 @@ const router = new VueRouter({
       component: () => import('@/views/template-view/template-setup/TemplateSetup.vue'),
       meta: {
         requireLogin: true,
+        navActiveLink: 'landing-app'
+      },
+    },
+    {
+      path: '/account-setting',
+      name: 'account-setting',
+      component: () => import('@/views/account-setting/AccountSetting.vue'),
+      meta: {
+        requireLogin: true,
+        pageTitle: 'إعدادت الحساب',
+        breadcrumb: [
+          {
+            text: 'إعدادت',
+            active: true,
+          },
+        ],
       },
     },
     {

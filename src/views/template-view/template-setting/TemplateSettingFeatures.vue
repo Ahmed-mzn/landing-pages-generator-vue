@@ -264,7 +264,6 @@ export default {
                     axios.patch(`/features/${this.featureEdit.id}/`, this.featureEdit)
                     .then((response) => {
                         this.$emit('reloadComp')
-                        console.log(response);
                         this.$toast({
                             component: ToastificationContent,
                             props: {
@@ -373,7 +372,6 @@ export default {
         getFeatures(){
             axios.get(`/features/?template_id=${this.$route.params.id}`)
             .then((response) => {
-                console.log(response);
                 this.features = response.data
             })
             .catch((error) => {

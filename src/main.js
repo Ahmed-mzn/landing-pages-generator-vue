@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import { ToastPlugin, ModalPlugin } from 'bootstrap-vue'
 import VueCompositionAPI from '@vue/composition-api'
+import moment from 'moment'
+
+Vue.prototype.moment = moment
 
 import router from './router'
 import store from './store'
@@ -48,6 +51,7 @@ import './global-components'
 import '@/libs/portal-vue'
 import '@/libs/toastification'
 import '@/libs/sweet-alerts'
+import '@/libs/vue-select'
 
 // BSV Plugin Registration
 Vue.use(ToastPlugin)

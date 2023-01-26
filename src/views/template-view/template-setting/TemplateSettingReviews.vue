@@ -327,7 +327,6 @@ export default {
                     axios.patch(`/reviews/${this.reviewEdit.id}/`, this.reviewEdit)
                     .then((response) => {
                         this.$emit('reloadComp')
-                        console.log(response);
                         this.$toast({
                             component: ToastificationContent,
                             props: {
@@ -353,7 +352,7 @@ export default {
                             variant: 'danger',
                             },
                         })
-                        JSON.stringify(error);
+                        console.log(JSON.stringify(error));
                     })
                 }
             });
@@ -437,7 +436,6 @@ export default {
         getReviews(){
             axios.get(`/reviews/?template_id=${this.$route.params.id}`)
             .then((response) => {
-                console.log(response);
                 this.reviews = response.data
             })
             .catch((error) => {
