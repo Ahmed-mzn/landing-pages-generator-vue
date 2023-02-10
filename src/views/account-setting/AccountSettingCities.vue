@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-3">
+    <div>
         <b-overlay
             :show="showFormLoader"
             rounded="sm"
@@ -7,37 +7,28 @@
         >
             <div
                 class="d-flex justify-content-start align-items-center mt-2"
-                v-for="review in reviews"
-                :key="review.id"
+                v-for="city in cities"
+                :key="city.id"
             >
                 <b-avatar
-                    src="require('@/assets/images/portrait/small/avatar-s-2.jpg')"
+                    variant="light-primary"
                     class="mr-50"
                     size="40"
-                />
+                >
+                    <feather-icon icon="MapIcon" />
+                </b-avatar>
                 <div class="user-page-info">
                     <h6 class="mb-0">
-                    {{review.username}}
+                    {{city.name}}
                     </h6>
-                    <small class="text-muted">{{review.comment}}</small>
+                    <small class="text-muted">city.description</small>
                 </div>
                 <div class="ml-auto">
-                    <b-form-rating
-                        id="rating"
-                        style="direction: rtl;"
-                        :value="review.rating"
-                        variant="warning"
-                        class="mr-3"
-                        size="sm"
-                        inline
-                        no-border
-                        readonly
-                    />
                     <b-button
                         variant="flat-success"
                         class="btn-icon rounded-circle mr-1"
                         size="sm"
-                        @click="showEditModal(review)"
+                        @click="showEditModal(city)"
                         >
                         <feather-icon icon="EditIcon" />
                     </b-button>
@@ -45,7 +36,7 @@
                         variant="flat-danger"
                         class="btn-icon rounded-circle"
                         size="sm"
-                        @click="deleteReview(review.id)"
+                        @click="deleteCity(city.id)"
                     >
                         <feather-icon icon="Trash2Icon" />
                     </b-button>
@@ -56,67 +47,21 @@
                     <b-row>
                         <b-col cols="12">
                             <b-form-group
-                                label="اسم الشخص"
-                                label-for="username"
+                                label="اسم المدينة"
+                                label-for="name"
                             >
                                 <validation-provider
                                 #default="{ errors }"
-                                name="اسم الشخص"
+                                name="اسم المدينة"
                                 rules="required"
                                 >
                                 <b-form-input
-                                    v-model="review.username"
+                                    v-model="city.name"
                                     :state="errors.length > 0 ? false:null"
-                                    placeholder="اسم الشخص"
-                                    id="username"
+                                    placeholder="اسم المدينة"
+                                    id="name"
                                 />
                                 <small class="text-danger">{{ errors[0] }}</small>
-                                </validation-provider>
-                            </b-form-group>
-                        </b-col>
-                        <b-col cols="12">
-                            <b-form-group
-                                label="التعليق"
-                                label-for="comment"
-                            >
-                                <validation-provider
-                                #default="{ errors }"
-                                name="التعليق"
-                                rules="required"
-                                >
-                                <b-form-input
-                                    id="comment"
-                                    v-model="review.comment"
-                                    rows="3"
-                                    :state="errors.length > 0 ? false:null"
-                                    placeholder="التعليق"
-                                />
-                                <small class="text-danger">{{ errors[0] }}</small>
-                                </validation-provider>
-                            </b-form-group>
-                        </b-col>
-                        <b-col cols="12">
-                            <b-form-group>
-                                <validation-provider
-                                    #default="{ errors }"
-                                    name="تقييم"
-                                    rules="required"
-                                >
-                                    <label
-                                        for="rating"
-                                        class="mr-1"
-                                    >تقييم</label>
-                                    <!-- Rating -->
-                                    <b-form-rating
-                                        id="rating"
-                                        style="direction: rtl;"
-                                        :state="errors.length > 0 ? false:null"
-                                        v-model="review.rating"
-                                        variant="warning"
-                                        inline
-                                        no-border
-                                        class="mt-1"
-                                    />
                                 </validation-provider>
                             </b-form-group>
                         </b-col>
@@ -126,7 +71,7 @@
                                 type="submit"
                                 @click.prevent="submitForm"
                             >
-                                أضف التقييم
+                                أضف المدينة
                             </b-button>
                         </b-col>
                     </b-row>
@@ -138,7 +83,7 @@
             id="modal-1"
             ref="modal-edit"
             v-model="editModalShow"
-            title="تحديث التقييم"
+            title="تحديث المدينة"
             ok-title="احفظ التغييرات"
             cancel-title="إلغاء"
             cancel-variant="outline-secondary"
@@ -146,71 +91,25 @@
             @ok="handleOk"
         >
             <validation-observer ref="simpleRules2">
-                <b-form class="mt-3" @submit.stop.prevent="updateReview()">
+                <b-form class="mt-3" @submit.stop.prevent="updateCity()">
                     <b-row>
                         <b-col cols="12">
                             <b-form-group
-                                label="اسم الشخص"
-                                label-for="username"
+                                label="اسم المدينة"
+                                label-for="name"
                             >
                                 <validation-provider
                                 #default="{ errors }"
-                                name="اسم الشخص"
+                                name="اسم المدينة"
                                 rules="required"
                                 >
                                 <b-form-input
-                                    v-model="reviewEdit.username"
+                                    v-model="cityEdit.name"
                                     :state="errors.length > 0 ? false:null"
-                                    placeholder="اسم الشخص"
-                                    id="username"
+                                    placeholder="اسم المدينة"
+                                    id="name"
                                 />
                                 <small class="text-danger">{{ errors[0] }}</small>
-                                </validation-provider>
-                            </b-form-group>
-                        </b-col>
-                        <b-col cols="12">
-                            <b-form-group
-                                label="التعليق"
-                                label-for="comment"
-                            >
-                                <validation-provider
-                                #default="{ errors }"
-                                name="التعليق"
-                                rules="required"
-                                >
-                                <b-form-input
-                                    id="comment"
-                                    v-model="reviewEdit.comment"
-                                    rows="3"
-                                    :state="errors.length > 0 ? false:null"
-                                    placeholder="التعليق"
-                                />
-                                <small class="text-danger">{{ errors[0] }}</small>
-                                </validation-provider>
-                            </b-form-group>
-                        </b-col>
-                        <b-col cols="12">
-                            <b-form-group>
-                                <validation-provider
-                                    #default="{ errors }"
-                                    name="تقييم"
-                                    rules="required"
-                                >
-                                    <label
-                                        for="rating"
-                                        class="mr-1"
-                                    >تقييم</label>
-                                    <!-- Rating -->
-                                    <b-form-rating
-                                        id="rating"
-                                        style="direction: rtl;"
-                                        :state="errors.length > 0 ? false:null"
-                                        v-model="reviewEdit.rating"
-                                        variant="warning"
-                                        inline
-                                        no-border
-                                        class="mt-1"
-                                    />
                                 </validation-provider>
                             </b-form-group>
                         </b-col>
@@ -262,18 +161,15 @@ export default {
     data(){
         return {
             showFormLoader: false,
-            reviews: [],
-            review: {
-                template: this.$route.params.id,
-                username: '',
-                comment: '',
-                rating: 1
+            cities: [],
+            city: {
+                name: '',
+                app: null
             },
-            reviewEdit: {
+            app: null,
+            cityEdit: {
                 id: null,
-                username: '',
-                comment: '',
-                rating: 1
+                name: '',
             },
             editModalShow: false,
             required,
@@ -282,61 +178,40 @@ export default {
         }
     },
     created(){
-        this.getReviews()
+        this.getCities()
+        this.getApp()
         localize('ar')
     },
     methods: {
-        validateSetup(){
-            if (this.reviews.length == 0){
-                this.submitForm()
-                this.$toast({
-                    component: ToastificationContent,
-                    props: {
-                        title: 'إنذار',
-                        icon: 'AlertCircleIcon',
-                        text: 'هناك خطأ، الرجاء إدخال على الأقل تقييم واحد.',
-                        variant: 'danger',
-                    },
-                })
-                return false;
-            } else {
-                return true;
-            }
-        },
-        showEditModal(review){
-            this.reviewEdit.id = review.id
-            this.reviewEdit.username = review.username
-            this.reviewEdit.comment = review.comment
-            this.reviewEdit.rating = review.rating
+        showEditModal(city){
+            this.cityEdit.id = city.id
+            this.cityEdit.name = city.name
             this.editModalShow = true
         },
         resetModal(){
-            this.review.username = ''
-            this.review.comment = ''
-            this.review.rating = 1
+            this.city.name = ''
         },
         handleOk(bvModalEvt) {
             // Prevent modal from closing
             bvModalEvt.preventDefault()
             // Trigger submit handler
-            this.updateReview()
+            this.updateCity()
         },
-        updateReview(){
+        updateCity(){
             this.$refs.simpleRules2.validate().then(success => {
                 if(success){
-                    axios.patch(`/reviews/${this.reviewEdit.id}/`, this.reviewEdit)
+                    axios.patch(`/cities/${this.cityEdit.id}/`, this.cityEdit)
                     .then((response) => {
-                        this.$emit('reloadComp')
                         this.$toast({
                             component: ToastificationContent,
                             props: {
                                 title: 'إشعار',
                                 icon: 'CheckIcon',
-                                text: 'تم تحديث التقييم بنجاح.',
+                                text: 'تم تحديث المدينة بنجاح.',
                                 variant: 'success',
                             },
                         })
-                        this.getReviews()
+                        this.getCities()
                         // Hide the modal manually
                         this.$nextTick(() => {
                             this.$refs['modal-edit'].toggle('#toggle-btn')
@@ -348,7 +223,7 @@ export default {
                             props: {
                             title: 'إنذار',
                             icon: 'AlertCircleIcon',
-                            text: 'حدث خطأ أثناء تحديث التقييم.',
+                            text: 'حدث خطأ أثناء تحديث المدينة.',
                             variant: 'danger',
                             },
                         })
@@ -357,7 +232,7 @@ export default {
                 }
             });
         },
-        deleteReview(id){
+        deleteCity(id){
             this.$swal({
                 title: 'هل أنت متأكد؟',
                 text: "لن تتمكن من التراجع عن هذا!",
@@ -372,19 +247,18 @@ export default {
                 buttonsStyling: false,
             }).then(result => {
                 if (result.value) {
-                    axios.delete(`/reviews/${id}`)
+                    axios.delete(`/cities/${id}`)
                     .then((response) =>{
-                        this.$emit('reloadComp')
                         this.$swal({
                             icon: 'success',
                             title: 'تم الحذف!',
-                            text: 'تم حذف التقييم بنجاح.',
+                            text: 'تم حذف المدينة بنجاح.',
                             confirmButtonText: 'حسنا',
                             customClass: {
                                 confirmButton: 'btn btn-success',
                             },
                         })
-                        this.getReviews();
+                        this.getCities();
                     })
                     .catch((error) => {
                         console.log(JSON.stringify(error));
@@ -396,22 +270,19 @@ export default {
             this.showFormLoader = true;
             this.$refs.simpleRules.validate().then(success => {
                 if (success) {
-                    axios.post('/reviews/', this.review)
+                    axios.post('/cities/', this.city)
                     .then((response) => {
-                        this.$emit('reloadComp')
                         this.$toast({
                             component: ToastificationContent,
                             props: {
                                 title: 'إشعار',
                                 icon: 'CheckIcon',
-                                text: 'تم اضافة التقييم بنجاح.',
+                                text: 'تم اضافة المدينة بنجاح.',
                                 variant: 'success',
                             },
                         })
-                        this.getReviews()
-                        this.review.username = ''
-                        this.review.comment = ''
-                        this.review.rating = 1
+                        this.getCities()
+                        this.city.name = ''
                         this.$refs.simpleRules.reset();
                         this.showFormLoader = false
                     })
@@ -421,7 +292,7 @@ export default {
                             props: {
                             title: 'إنذار',
                             icon: 'AlertCircleIcon',
-                            text: 'حدث خطأ أثناء إضافة التقييم.',
+                            text: 'حدث خطأ أثناء إضافة المدينة.',
                             variant: 'danger',
                             },
                         })
@@ -433,13 +304,23 @@ export default {
                 }
             })
         },
-        getReviews(){
-            axios.get(`/reviews/?template_id=${this.$route.params.id}`)
+        getCities(){
+            axios.get(`/cities/`)
             .then((response) => {
-                this.reviews = response.data
+                this.cities = response.data
             })
             .catch((error) => {
                 JSON.stringify(error);
+            })
+        },
+        getApp(){
+            axios.get('/get_app')
+            .then((response) => {
+                this.city.app = response.data.id
+                this.app = response.data
+            })
+            .catch((error) => {
+                console.log(JSON.stringify(error));
             })
         },
     }

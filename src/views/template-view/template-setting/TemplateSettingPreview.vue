@@ -1,11 +1,12 @@
 <template>
     <div>
-        <iframe style="border:none;" :src="'https://landing.socialbot.dev/templates/preview/'+app_id" width="100%" height="500" title="W3Schools Free Online Web Tutorials"></iframe>
+        <test />
     </div>
 </template>
 
 <script>
 import { BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BBadge, BTabs, BTab } from 'bootstrap-vue'
+import Test from '@/views/error/Test.vue'
 export default {
     props: {
         app_id: {
@@ -23,7 +24,8 @@ export default {
         BAvatar,
         BBadge,
         BTabs,
-        BTab
+        BTab,
+        Test
     },
     data(){
         return {

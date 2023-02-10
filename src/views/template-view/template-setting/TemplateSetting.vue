@@ -23,9 +23,7 @@
                 </b-card>
             </b-col>
             <b-col cols="12" xl="4" lg="4" sm="4">
-                <b-card no-body>
-                    <template-setting-preview :key="reloadComponent" :app_id="template.id"/>
-                </b-card>
+                <template-setting-preview :key="reloadComponent" :app_id="template.id"/>
             </b-col>
         </b-row>
     </div>

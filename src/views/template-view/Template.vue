@@ -33,6 +33,13 @@
         <b-tabs>
             <b-tab lazy active>
                 <template #title>
+                    <feather-icon icon="HomeIcon" />
+                    <span>MAin</span>
+                </template>
+                <template-main :template="template"/>
+            </b-tab>
+            <b-tab lazy>
+                <template #title>
                     <feather-icon icon="ToolIcon" />
                     <span>التصميم</span>
                 </template>
@@ -72,6 +79,7 @@ import TemplateOrders from './TemplateOrders.vue'
 import TemplateAnalytics from './template-analytic/TemplateAnalytics.vue'
 import TemplateSetting from './template-setting/TemplateSetting.vue'
 import TemplateVisit from './TemplateVisit.vue'
+import TemplateMain from './TemplateMain.vue'
 
 import { BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BBadge, BTabs, BTab } from 'bootstrap-vue'
 
@@ -82,6 +90,7 @@ export default {
         TemplateOrders,
         TemplateAnalytics,
         TemplateVisit,
+        TemplateMain,
         BCard,
         BCardText,
         BRow,

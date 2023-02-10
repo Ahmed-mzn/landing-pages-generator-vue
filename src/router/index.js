@@ -87,9 +87,6 @@ const router = new VueRouter({
       path: '/test/:id',
       name: 'test',
       component: () => import('@/views/error/Test.vue'),
-      meta: {
-        layout: 'full',
-      },
     },
     {
       path: '*',

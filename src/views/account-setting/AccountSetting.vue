@@ -55,6 +55,22 @@
                 <account-setting-products />
             </b-card>
         </b-tab>
+
+        <!-- cities -->
+        <b-tab>
+            <!-- title -->
+            <template #title>
+                <feather-icon
+                icon="MapIcon"
+                size="18"
+                class="mr-50"
+                />
+                <span class="font-weight-bold">Cities</span>
+            </template>
+            <b-card>
+                <account-setting-cities />
+            </b-card>
+        </b-tab>
     </b-tabs>
 </template>
 
@@ -63,6 +79,7 @@ import { BTabs, BTab, BCard } from 'bootstrap-vue'
 import AccountSettingGeneral from './AccountSettingGeneral.vue'
 import AccountSettingProducts from './AccountSettingProducts.vue'
 import AccountSettingPassword from './AccountSettingPassword.vue'
+import AccountSettingCities from './AccountSettingCities.vue'
 
 export default {
     components: {
@@ -71,7 +88,8 @@ export default {
         BCard,
         AccountSettingGeneral,
         AccountSettingProducts,
-        AccountSettingPassword
+        AccountSettingPassword,
+        AccountSettingCities
     },
     data() {
         return {

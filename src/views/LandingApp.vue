@@ -119,11 +119,11 @@
                     <div class="d-flex flex-column ml-1">
                       <div class="mb-1">
                         <h4 class="mb-0">
-                          {{app.domain.name}}
+                          app.domain.name
                         </h4>
                         <span class="card-text">
                           <feather-icon icon="LinkIcon" size="13" />
-                          <b-link :href="'http://'+app.domain.name" target="_blank">http://{{app.domain.name}}</b-link>
+                          <b-link :href="'http://'" target="_blank">http://app.domain.name</b-link>
                           </span>
                       </div>
                     </div>
@@ -212,43 +212,43 @@
 
         <b-row align-v="stretch">
           <b-col cols="6" xl="3" lg="4" md="4" v-for="template in app.templates" :key="template.id">
-              <b-card
-                :header="template.template_name + 'صفحة الهبوط '"
-                header-tag="h6"
-              >
-                <b-link :to="getTemplateRoute(template)">
-                  <b-img
-                    fluid
-                    class="mb-2"
-                    :src="require('@/assets/images/pages/skeleton400_still.gif')"
-                  />
-                </b-link>
-                <b-card-text>
-                  <b-row>
-                    <b-col cols="9">
-                      <small class="text-muted">منذ 3 دقائق</small>
-                    </b-col>
-                    <!-- <b-link @click="moreTemplate"><feather-icon class="float-right" icon="MoreVerticalIcon" /></b-link> -->
-                    <b-col cols="3">
-                      <b-dropdown
-                        no-caret
-                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                        variant="link"
-                      >
-                        <template #button-content>
-                          <feather-icon
-                            icon="MoreVerticalIcon"
-                            size="16"
-                            class="text-body align-middle mr-25"
-                          />
-                        </template>
-                        <b-dropdown-item @click="deleteTemplate(template)">حذف</b-dropdown-item>
-                        <b-dropdown-item :href="'http://'+app.domain.name+'/'+template.template_name" target="_blank">معاينة</b-dropdown-item>
-                      </b-dropdown>
-                    </b-col>
-                  </b-row>
-                </b-card-text>
-              </b-card>
+            <b-card
+              :header="template.template_name + ' صفحة الهبوط '"
+              header-tag="h6"
+            >
+              <b-link :to="getTemplateRoute(template)">
+                <b-img
+                  fluid
+                  class="mb-2"
+                  :src="require('@/assets/images/pages/skeleton400_still.gif')"
+                />
+              </b-link>
+              <b-card-text>
+                <b-row>
+                  <b-col cols="9">
+                    <small class="text-muted">منذ 3 دقائق</small>
+                  </b-col>
+                  <!-- <b-link @click="moreTemplate"><feather-icon class="float-right" icon="MoreVerticalIcon" /></b-link> -->
+                  <b-col cols="3">
+                    <b-dropdown
+                      no-caret
+                      v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                      variant="link"
+                    >
+                      <template #button-content>
+                        <feather-icon
+                          icon="MoreVerticalIcon"
+                          size="16"
+                          class="text-body align-middle mr-25"
+                        />
+                      </template>
+                      <b-dropdown-item @click="deleteTemplate(template)">حذف</b-dropdown-item>
+                      <b-dropdown-item :href="'http://'+template.domain.name+'/'+template.template_name" target="_blank">معاينة</b-dropdown-item>
+                    </b-dropdown>
+                  </b-col>
+                </b-row>
+              </b-card-text>
+            </b-card>
           </b-col>
         </b-row>
       </template>
@@ -270,19 +270,19 @@
           <b-row>
             <b-col cols="12">
               <b-form-group
-                label="رابط صورة النطاق"
+                label="رابط النطاق"
                 label-for="name"
               >
                 <validation-provider
                   #default="{ errors }"
-                  name="رابط صورة النطاق"
+                  name="رابط النطاق"
                   rules="required|url"
                 >
                   <b-form-input
                     id="name"
                     v-model="domainForm.name"
                     :state="errors.length > 0 ? false:null"
-                    placeholder="رابط صورة النطاق"
+                    placeholder="رابط النطاق"
                   />
                   <small class="text-danger">{{ errors[0] }}</small>
                 </validation-provider>
@@ -308,7 +308,58 @@
       <validation-observer ref="simpleRules3">
         <b-form class="mt-1 mb-3">
           <b-row>
-            <b-col cols="11">
+            <b-col cols="12">
+              <b-form-group label="تريد إضافة نطاق خاص بك؟">
+                <b-form-radio-group
+                  v-model="templateForm.domain.type"
+                  :options="DomainOptions"
+                  @change="domainTypeChange"
+                  class="demo-inline-"
+                  name="radio-inline"
+                />
+              </b-form-group>
+            </b-col>
+            <b-col cols="12" v-if="templateForm.domain.type == 'custom'">
+              <b-form-group
+                label="اسم النطاق"
+                label-for="largeInput"
+              >
+                <validation-provider
+                  #default="{ errors }"
+                  name="اسم النطاق"
+                  rules="required"
+                >
+                  <b-input-group aria-label="aaa" size="lg" >
+                    <b-form-input
+                      :state="errors.length > 0 ? false:null"
+                      id="largeInput" v-model="templateForm.domain.name" placeholder="مثال: store.com"
+                    />
+                  </b-input-group>
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </validation-provider>
+              </b-form-group>
+            </b-col>
+            <b-col cols="12" v-else>
+              <b-form-group
+                label="اسم النطاق"
+                label-for="largeInput"
+              >
+                <validation-provider
+                  #default="{ errors }"
+                  name="اسم النطاق"
+                  rules="required"
+                >
+                  <b-input-group aria-label="aaa" append="//:https" prepend="sfhat.io" size="lg" >
+                    <b-form-input
+                      :state="errors.length > 0 ? false:null"
+                      id="largeInput" v-model="templateForm.domain.name" placeholder="اسم النطاق"
+                    />
+                  </b-input-group>
+                  <small class="text-danger">{{ errors[0] }}</small>
+                </validation-provider>
+              </b-form-group>
+            </b-col>
+            <b-col cols="12">
               <b-form-group
                 label="اسم الصفحة"
                 label-for="largeInput"
@@ -318,10 +369,10 @@
                   name="اسم الصفحة"
                   rules="required"
                 >
-                  <b-input-group aria-label="aaa" size="lg" :prepend="'/https://'+app.domain.name">
-                    <b-form-input 
+                  <b-input-group aria-label="aaa" size="lg" :append="'/https://'+templateForm.domain.name">
+                    <b-form-input
                       :state="errors.length > 0 ? false:null"
-                      id="largeInput" v-model="templateForm.template_name" placeholder="template_name"
+                      id="largeInput" v-model="templateForm.template_name" placeholder="اسم الصفحة"
                     />
                   </b-input-group>
                   <small class="text-danger">{{ errors[0] }}</small>
@@ -441,13 +492,14 @@ import Ripple from 'vue-ripple-directive'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
 import { BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BFormRadio,
-BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup, BInputGroupPrepend, BOverlay, BModal, VBModal, BDropdown, BDropdownItem
+BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup, BInputGroupPrepend, BOverlay, BModal, VBModal, BDropdown, BDropdownItem,
+BFormRadioGroup
 } from 'bootstrap-vue'
 import axios from 'axios'
 export default {
   components: { ToastificationContent, ValidationProvider,  ValidationObserver, BCard, BCardText, BRow, BCol, BButton, BAvatar,
     BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup,
-    BInputGroupPrepend, BOverlay, BModal, VBModal, BFormRadio, BDropdown, BDropdownItem
+    BInputGroupPrepend, BOverlay, BModal, VBModal, BFormRadio, BDropdown, BDropdownItem, BFormRadioGroup
   },
   directives: {
     'b-modal': VBModal,
@@ -455,8 +507,16 @@ export default {
   },
   data(){
     return {
+      DomainOptions: [
+        { text: 'نعم', value: 'custom' },
+        { text: 'لا', value: 'normal' }
+      ],
       templateForm:{
         app: null,
+        domain: {
+          name: '',
+          type: 'normal'
+        },
         template_code: 'template_one',
         template_name: '',
       },
@@ -554,6 +614,8 @@ export default {
     resetModalAddTemplate(){
       this.templateForm.template_name = ''
       this.templateForm.template_code = 'template_one'
+      this.templateForm.domain.name = ''
+      this.templateForm.domain.type = 'normal'
     },
     seletcTemplate(template){
       this.templateForm.template_code = template
@@ -562,17 +624,29 @@ export default {
       this.templateForm.app = this.app.id
       axios.post('templates/create_blank_template', this.templateForm)
       .then(response => {
-        this.$toast({
-            component: ToastificationContent,
-            props: {
-                title: 'إشعار',
-                icon: 'CheckIcon',
-                text: 'تم إضافة صفحة الهبوط بنجاح.',
-                variant: 'success',
-            },
-        })
-        this.showTemplateModal = false
-        this.getApp();
+        if(response.status == 400 || response.status == 500){
+          this.$toast({
+              component: ToastificationContent,
+              props: {
+              title: 'إنذار',
+              icon: 'AlertCircleIcon',
+              text: 'حدث خطأ أثناء إضافة صفحة الهبوط.',
+              variant: 'danger',
+              },
+          })
+        } else{
+          this.$toast({
+              component: ToastificationContent,
+              props: {
+                  title: 'إشعار',
+                  icon: 'CheckIcon',
+                  text: 'تم إضافة صفحة الهبوط بنجاح.',
+                  variant: 'success',
+              },
+          })
+          this.showTemplateModal = false
+          this.getApp();
+        }
       })
       .catch(error => {
         this.$toast({
@@ -677,9 +751,9 @@ export default {
           this.appActivated = true
           this.app = response.data
         }
-        this.domainForm.name = this.app.domain.name
-        this.domainForm.id = this.app.domain.id
-        this.domainForm.type = this.app.domain.type
+        // this.domainForm.name = this.app.domain.name
+        // this.domainForm.id = this.app.domain.id
+        // this.domainForm.type = this.app.domain.type
         setTimeout(() => {
             this.show = false;
           }
@@ -689,6 +763,10 @@ export default {
         console.log(JSON.stringify(error));
       })
     },
+    domainTypeChange(){
+      this.templateForm.domain.name = ''
+      this.$refs.simpleRules3.reset();
+    }
     // deleteApp(){
     //   this.$swal({
     //     title: 'هل أنت متأكد؟',
