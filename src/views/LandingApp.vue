@@ -539,7 +539,7 @@ export default {
       }
       localStorage.setItem('first_login', '0')
     }
-    , 500);
+    , 900);
   },
   methods:{
     handleTemplateName(name){
