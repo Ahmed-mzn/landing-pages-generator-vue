@@ -556,6 +556,7 @@ export default {
                     JSON.stringify(error);
                 })
             });
+            this.showFormLoader = false
         },
         resetAddModal(){
             this.product.title = ''

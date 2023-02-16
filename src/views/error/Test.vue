@@ -216,7 +216,7 @@
                                         </div>
                                     </div>
                                     <h3 style="font-size: 16px">{{product.title}}</h3>
-                                    <h4 style="font-size: 12px">3 {{product.description}}</h4>
+                                    <h4 style="font-size: 12px">{{product.description}}</h4>
                                     <template v-if="product.price_after_discount">
                                         <p style="color: #999a9a; text-decoration: line-through">
                                         {{product.price}} ر.س
