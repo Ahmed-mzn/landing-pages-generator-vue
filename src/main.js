@@ -13,7 +13,7 @@ import axios from 'axios'
 // inti store
 store.commit('auth/initializeStore')
 
-axios.defaults.baseURL = 'http://localhost:8000/api/v1'
+axios.defaults.baseURL = 'https://landing.socialbot.dev/api/v1'
 
 axios.interceptors.response.use(
   (response) => {
@@ -40,6 +40,7 @@ axios.interceptors.response.use(
       store.commit('auth/removeToken')
       router.push("/login");
     }
+    return Promise.reject(error);
   }
 )
 
@@ -52,6 +53,7 @@ import '@/libs/portal-vue'
 import '@/libs/toastification'
 import '@/libs/sweet-alerts'
 import '@/libs/vue-select'
+import '@/libs/tour'
 
 // BSV Plugin Registration
 Vue.use(ToastPlugin)

@@ -40,7 +40,7 @@
               class="btn-tour-skip mr-1"
               @click="tour.stop"
             >
-              <span class="mr-25 align-middle">Skip</span>
+              <span class="mr-25 align-middle">تخطي الجولة</span>
               <feather-icon
                 icon="XIcon"
                 size="12"
@@ -58,7 +58,7 @@
                 icon="ChevronLeftIcon"
                 size="12"
               />
-              <span class="ml-25 align-middle">Previous</span>
+              <span class="ml-25 align-middle">السابق</span>
             </b-button>
 
             <!-- Next Button -->
@@ -69,7 +69,7 @@
               class="btn-tour-next"
               @click="tour.nextStep"
             >
-              <span class="mr-25 align-middle">Next</span>
+              <span class="mr-25 align-middle">التالي</span>
               <feather-icon
                 icon="ChevronRightIcon"
                 size="12"
@@ -84,7 +84,7 @@
               class="btn-tour-finish"
               @click="tour.stop"
             >
-              <span class="mr-25 align-middle">Finish</span>
+              <span class="mr-25 align-middle">النهاية</span>
               <feather-icon
                 icon="CheckCircleIcon"
                 size="12"

@@ -246,9 +246,6 @@
                                         </div>
                                     </template>
                                     <template v-else>
-                                        <p style="color: #999a9a; text-decoration: line-through">
-                                        {{product.price}} ر.س
-                                        </p>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <p
                                                 style="
@@ -350,6 +347,7 @@
                             >&nbsp;</a
                         >
                         <div
+                            id="order_now"
                             style="
                             border-bottom: 1px solid #f2f2f2;
                             margin-top: 25px;
@@ -359,7 +357,7 @@
                         ></div>
                     </div>
                 </section>
-                <section v-if="!success" id="order_now">
+                <section v-if="!success" >
                     <div class="container">
                         <div
                             style="
@@ -697,7 +695,6 @@ export default {
         };
     },
     mounted() {
-        console.log('moun');
         this.getTemplate();
         
         setTimeout(()=> {

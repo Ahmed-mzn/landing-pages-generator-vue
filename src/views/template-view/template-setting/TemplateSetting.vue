@@ -7,7 +7,7 @@
                         <b-tab lazy title="البيانات الأساسية" active>
                             <template-setting-general @reloadComp="reloadComp" :template="template" />
                         </b-tab>
-                        <b-tab title="الصور">
+                        <b-tab lazy title="الصور">
                             <template-setting-images @reloadComp="reloadComp" :template="template" />
                         </b-tab>
                         <b-tab lazy title="المنتجات">

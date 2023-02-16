@@ -5,6 +5,17 @@
             rounded="sm"
             spinner-variant="primary"
         >
+            <b-alert
+                variant="primary"
+                show
+            >
+                <h4 class="alert-heading">
+                    إشعار
+                </h4>
+                <div class="alert-body">
+                    <span>المدن أدناه ، هي  المدن التي يتوفر فيها الشحن، لذا يرجى التأكد من إضافة أو إزالة المدن التي توفر أو لا توفر فيها الشحن </span>
+                </div>
+            </b-alert>
             <div
                 class="d-flex justify-content-start align-items-center mt-2"
                 v-for="city in cities"
@@ -21,7 +32,7 @@
                     <h6 class="mb-0">
                     {{city.name}}
                     </h6>
-                    <small class="text-muted">city.description</small>
+                    <small class="text-muted">السعودية</small>
                 </div>
                 <div class="ml-auto">
                     <b-button
@@ -123,7 +134,7 @@
 <script>
 import {
     BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BBadge, BTabs, BTab, BMedia, BImg, BFormInput, BFormGroup, BForm,
-    BOverlay, VBModal, BFormRating, BModal
+    BOverlay, VBModal, BFormRating, BModal, BAlert
 } from 'bootstrap-vue'
 import { ValidationProvider, ValidationObserver, localize, extend } from 'vee-validate'
 import { required, url, numbers } from '@validations'
@@ -153,7 +164,7 @@ export default {
         BOverlay,
         VBModal,
         BModal,
-        BFormRating
+        BFormRating, BAlert
     },
     directives: {
         'b-modal': VBModal,

@@ -279,12 +279,13 @@
                                 label-for="title"
                             >
                                 <validation-provider
-                                #default="{ errors }"
-                                name="عنوان المنتج"
-                                rules="required"
+                                    #default="{ errors }"
+                                    name="عنوان المنتج"
+                                    rules="required"
                                 >
                                 <b-form-input
                                     v-model="product.title"
+                                    @change="titleChange"
                                     :state="errors.length > 0 ? false:null"
                                     placeholder="عنوان المنتج"
                                     id="title"
@@ -483,6 +484,12 @@ export default {
             } else {
                 return true;
             }
+        },
+        titleChange(){
+            axios.post("/products/get_product_description", {title: this.product.title})
+            .then(response => {
+                this.product.description = response.data.result
+            })
         },
         async updateImage(){
 

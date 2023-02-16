@@ -9,8 +9,7 @@
             <validation-observer ref="simpleRules">
                 <b-form>
                     <b-row>
-                        <b-col md="12">
-                            <!-- Media -->
+                        <!-- <b-col md="12">
                             <b-media class="mb-2">
                                 <template #aside>
                                     <b-avatar
@@ -44,7 +43,7 @@
                                     </b-button>
                                 </div>
                             </b-media>
-                        </b-col>
+                        </b-col> -->
                         <b-col md="12">
                             <!-- Media -->
                             <b-media class="mb-2">
@@ -178,7 +177,7 @@ import { ValidationProvider, ValidationObserver, localize } from 'vee-validate'
 import { required, url } from '@validations'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import axios from 'axios'
-
+import { extractColors } from 'extract-colors'
 export default {
     components:{
         ValidationProvider,
@@ -221,7 +220,7 @@ export default {
     },
     methods: {
         validateSetup(){
-            if (this.template.logo == null || this.template.main_image == null || 
+            if (this.template.main_image == null || 
                 this.template.medals_image == null || this.template.second_image == null){
                 this.$toast({
                     component: ToastificationContent,
@@ -249,7 +248,24 @@ export default {
                 this.template.main_image = response.data.main_image
                 this.template.medals_image = response.data.medals_image
                 this.template.second_image = response.data.second_image
-                this.$emit('reloadComp')
+                if (imageName == "main_image"){
+                    const options = {
+                        pixels: 10000,
+                        distance: 0.2,
+                        splitPower: 10,
+                        colorValidator: (red, green, blue, alpha = 255) => alpha > 250,
+                        saturationDistance: 0.2,
+                        lightnessDistance: 0.2,
+                        hueDistance: 0.083333333,
+                        crossOrigin: "anonymous"
+                    }
+                    extractColors(this.template.main_image,  options)
+                        .then(colors => {
+                            axios.patch(`/templates/${this.template.id}/`, {primary_color: colors[0].hex})
+                            .then((res) => {this.$emit('reloadComp')})
+                        })
+                        .catch(console.error)
+                }
                 this.$toast({
                     component: ToastificationContent,
                     props: {

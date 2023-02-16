@@ -111,7 +111,7 @@
                                 </validation-provider>
                             </b-form-group>
                         </b-col>
-                        <b-col md="2">
+                        <!-- <b-col md="2">
                             <b-form-group
                                 label="لوان ثانوية"
                                 label-for="secondary_color"
@@ -131,7 +131,7 @@
                                 <small class="text-danger">{{ errors[0] }}</small>
                                 </validation-provider>
                             </b-form-group>
-                        </b-col>
+                        </b-col> -->
                         <b-col cols="12">
                             <b-button
                                 variant="primary"
@@ -202,7 +202,7 @@ export default {
         validateSetup(){
             this.submitForm();
             if (this.template.meta_title == '' || this.template.customer_website == '' || this.template.primary_color == '' ||
-                this.template.review_text == '' || this.template.description == '' || this.template.secondary_color == ''){
+                this.template.review_text == '' || this.template.description == ''){
                     this.$toast({
                         component: ToastificationContent,
                         props: {
@@ -227,7 +227,6 @@ export default {
                         review_text: this.template.review_text,
                         description: this.template.description,
                         primary_color: this.template.primary_color,
-                        secondary_color: this.template.secondary_color
                     }
                     
                     axios.patch(`/templates/${this.template.id}/`, data)

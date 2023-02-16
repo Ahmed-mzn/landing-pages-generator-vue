@@ -78,6 +78,7 @@
                   rules="required|email"
                 >
                   <b-form-input
+                    dir="ltr"
                     id="login-email"
                     v-model="userEmail"
                     :state="errors.length > 0 ? false:null"
@@ -263,6 +264,7 @@ export default {
             })
           })
           .catch(error => {
+            this.hasError = true;
             if (error.response) {
               this.hasError = true;
             } else if (error.message) {

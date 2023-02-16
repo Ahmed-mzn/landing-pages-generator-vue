@@ -7,7 +7,7 @@
         nav-class="nav-left"
     >
         <!-- general tab -->
-        <b-tab active>
+        <b-tab lazy active>
             <!-- title -->
             <template #title>
                 <feather-icon
@@ -24,7 +24,7 @@
         <!--/ general tab -->
 
         <!-- change password tab -->
-        <b-tab>
+        <b-tab lazy>
             <!-- title -->
             <template #title>
                 <feather-icon
@@ -41,7 +41,7 @@
         <!--/ change password tab -->
 
         <!-- products -->
-        <b-tab>
+        <b-tab lazy>
             <!-- title -->
             <template #title>
                 <feather-icon
@@ -51,13 +51,13 @@
                 />
                 <span class="font-weight-bold">المنتجات</span>
             </template>
-            <b-card>
+            <b-card title="المنتجات">
                 <account-setting-products />
             </b-card>
         </b-tab>
 
         <!-- cities -->
-        <b-tab>
+        <b-tab lazy>
             <!-- title -->
             <template #title>
                 <feather-icon
@@ -65,11 +65,26 @@
                 size="18"
                 class="mr-50"
                 />
-                <span class="font-weight-bold">Cities</span>
+                <span class="font-weight-bold">مدن الشحن</span>
             </template>
-            <b-card>
+            <b-card title="مدن الشحن">
                 <account-setting-cities />
             </b-card>
+        </b-tab>
+
+        <!-- archive -->
+        <b-tab lazy>
+            <!-- title -->
+            <template #title>
+                <feather-icon
+                icon="EyeOffIcon"
+                size="18"
+                class="mr-50"
+                />
+                <span class="font-weight-bold">أرشيف</span>
+            </template>
+
+            <account-setting-archive />
         </b-tab>
     </b-tabs>
 </template>
@@ -80,6 +95,7 @@ import AccountSettingGeneral from './AccountSettingGeneral.vue'
 import AccountSettingProducts from './AccountSettingProducts.vue'
 import AccountSettingPassword from './AccountSettingPassword.vue'
 import AccountSettingCities from './AccountSettingCities.vue'
+import AccountSettingArchive from './account-setting-archive/AccountSettingArchive.vue'
 
 export default {
     components: {
@@ -89,7 +105,8 @@ export default {
         AccountSettingGeneral,
         AccountSettingProducts,
         AccountSettingPassword,
-        AccountSettingCities
+        AccountSettingCities,
+        AccountSettingArchive
     },
     data() {
         return {

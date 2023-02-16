@@ -101,29 +101,31 @@
             cols="12"
             xl="8"
             lg="7"
-            md="6"
+            md="7"
           >
             <b-card>
               <b-row>
                 <!-- User Info: Left col -->
                 <b-col
-                  cols="21"
-                  xl="6"
+                  cols="12"
+                  xl="7"
+                  lg="7"
+                  md="7"
                   class="d-flex justify-content-between flex-column"
                 >
                   <!-- User Avatar & Action Buttons -->
                   <div class="d-flex justify-content-start">
-                    <b-avatar size="lg" variant="light-primary">
+                    <b-avatar size="lg" variant="light-primary" id="tour-card">
                       <feather-icon size="30" icon="HomeIcon" />
                     </b-avatar>
                     <div class="d-flex flex-column ml-1">
                       <div class="mb-1">
-                        <h4 class="mb-0">
-                          app.domain.name
-                        </h4>
+                        <h3 class="mb-0">
+                          تطبيق صفحات الهبوط
+                        </h3>
                         <span class="card-text">
                           <feather-icon icon="LinkIcon" size="13" />
-                          <b-link :href="'http://'" target="_blank">http://app.domain.name</b-link>
+                          لتحليل الصفحات وأداءها وزياراتها بشكل أفضل
                           </span>
                       </div>
                     </div>
@@ -132,22 +134,14 @@
 
                 <!-- Right Col: Table -->
                 <b-col
-                  cols="21"
-                  xl="6"
+                  cols="12"
+                  xl="5"
+                  lg="5"
+                  md="5"
                 >
                   <b-button
-                    variant="outline-warning"
-                    @click="editModalShow = true"
-                  >
-                    <feather-icon
-                      icon="EditIcon"
-                      class="mr-20"
-                    />
-                    تعديل النطاق
-                  </b-button>
-                  <b-button
                     variant="primary"
-                    class="ml-1"
+                    class="ml-1 float-right"
                     @click="showTemplateModal = true"
                   >
                     <feather-icon
@@ -165,11 +159,11 @@
             cols="12"
             xl="4"
             lg="5"
-            md="6"
+            md="5"
           >
             <b-card>
               <!-- User Stats -->
-              <div class="d-flex align-items-center mt-1">
+              <div class="d-flex align-items-center justify-content-around">
                 <div class="d-flex align-items-center mr-2">
                   <b-avatar
                     variant="light-primary"
@@ -211,87 +205,63 @@
         </b-row>
 
         <b-row align-v="stretch">
-          <b-col cols="6" xl="3" lg="4" md="4" v-for="template in app.templates" :key="template.id">
+          <b-col cols="6" xl="3" lg="3" md="4" v-for="template in app.templates" :key="template.id">
             <b-card
-              :header="template.template_name + ' صفحة الهبوط '"
-              header-tag="h6"
+              no-body
             >
-              <b-link :to="getTemplateRoute(template)">
-                <b-img
-                  fluid
-                  class="mb-2"
-                  :src="require('@/assets/images/pages/skeleton400_still.gif')"
-                />
-              </b-link>
-              <b-card-text>
-                <b-row>
-                  <b-col cols="9">
-                    <small class="text-muted">منذ 3 دقائق</small>
-                  </b-col>
-                  <!-- <b-link @click="moreTemplate"><feather-icon class="float-right" icon="MoreVerticalIcon" /></b-link> -->
-                  <b-col cols="3">
-                    <b-dropdown
-                      no-caret
-                      v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-                      variant="link"
-                    >
-                      <template #button-content>
-                        <feather-icon
-                          icon="MoreVerticalIcon"
-                          size="16"
-                          class="text-body align-middle mr-25"
-                        />
-                      </template>
-                      <b-dropdown-item @click="deleteTemplate(template)">حذف</b-dropdown-item>
-                      <b-dropdown-item :href="'http://'+template.domain.name+'/'+template.template_name" target="_blank">معاينة</b-dropdown-item>
-                    </b-dropdown>
-                  </b-col>
-                </b-row>
-              </b-card-text>
+              <b-card-header>
+                <h6>{{handleTemplateName(template.template_name) + ' صفحة '}}</h6>
+                  <b-badge :id="'step-template-'+template.id" :href="'https://' + template.domain.name" target="_blank" variant="light-primary">
+                    <feather-icon
+                      icon="EyeIcon"
+                    />
+                  </b-badge>
+              </b-card-header>
+              <b-card-body>
+                <b-link :to="getTemplateRoute(template)">
+                  <b-img
+                    fluid
+                    class="mb-2"
+                    :src="require('@/assets/images/pages/skeleton400_still.gif')"
+                  />
+                </b-link>
+                <b-card-text>
+                  <b-row>
+                    <b-col cols="9">
+                      <small class="text-muted">{{moment(template.updated_at).locale('ar').startOf('second').fromNow()}}</small>
+                    </b-col>
+                    <!-- <b-link @click="moreTemplate"><feather-icon class="float-right" icon="MoreVerticalIcon" /></b-link> -->
+                    <b-col cols="3">
+                      <b-dropdown
+                        no-caret
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        variant="link"
+                      >
+                        <template #button-content>
+                          <feather-icon
+                            icon="MoreVerticalIcon"
+                            size="16"
+                            class="text-body align-middle mr-25"
+                          />
+                        </template>
+                        <b-dropdown-item @click="deleteTemplate(template)">
+                          <feather-icon icon="TrashIcon" />
+                          <span class="align-middle ml-50">حذف</span>
+                        </b-dropdown-item>
+                        <b-dropdown-item :href="'http://'+template.domain.name+'/'+template.template_name" target="_blank">
+                          <feather-icon icon="EyeIcon" />
+                          <span class="align-middle ml-50">معاينة</span>
+                        </b-dropdown-item>
+                      </b-dropdown>
+                    </b-col>
+                  </b-row>
+                </b-card-text>
+              </b-card-body>
             </b-card>
           </b-col>
         </b-row>
       </template>
     </b-overlay>
-    <!-- update domain modal -->
-    <b-modal
-        id="modal-1"
-        ref="modal-edit"
-        v-model="editModalShow"
-        title="تحديث النطاق"
-        ok-title="احفظ التغيير"
-        cancel-title="إلغاء"
-        cancel-variant="outline-secondary"
-        @hidden="resetModal"
-        @ok="handleOk"
-    >
-    <validation-observer ref="simpleRules2">
-        <b-form @submit.stop.prevent="updateDomain()">
-          <b-row>
-            <b-col cols="12">
-              <b-form-group
-                label="رابط النطاق"
-                label-for="name"
-              >
-                <validation-provider
-                  #default="{ errors }"
-                  name="رابط النطاق"
-                  rules="required|url"
-                >
-                  <b-form-input
-                    id="name"
-                    v-model="domainForm.name"
-                    :state="errors.length > 0 ? false:null"
-                    placeholder="رابط النطاق"
-                  />
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
-              </b-form-group>
-            </b-col>
-          </b-row>
-        </b-form>
-    </validation-observer>
-    </b-modal>
     <!-- create template modal -->
     <b-modal
       v-model="showTemplateModal"
@@ -306,7 +276,7 @@
       @ok="handleOkAddTemplate"
     >
       <validation-observer ref="simpleRules3">
-        <b-form class="mt-1 mb-3">
+        <b-form @submit.stop.prevent="createTemplate()" class="mt-1 mb-3">
           <b-row>
             <b-col cols="12">
               <b-form-group label="تريد إضافة نطاق خاص بك؟">
@@ -327,7 +297,7 @@
                 <validation-provider
                   #default="{ errors }"
                   name="اسم النطاق"
-                  rules="required"
+                  rules="required|domain|domainExist"
                 >
                   <b-input-group aria-label="aaa" size="lg" >
                     <b-form-input
@@ -347,7 +317,7 @@
                 <validation-provider
                   #default="{ errors }"
                   name="اسم النطاق"
-                  rules="required"
+                  rules="required|alphaNumDash|domainExist2"
                 >
                   <b-input-group aria-label="aaa" append="//:https" prepend="sfhat.io" size="lg" >
                     <b-form-input
@@ -367,7 +337,7 @@
                 <validation-provider
                   #default="{ errors }"
                   name="اسم الصفحة"
-                  rules="required"
+                  rules="required|alphaNumDash"
                 >
                   <b-input-group aria-label="aaa" size="lg" :append="'/https://'+templateForm.domain.name">
                     <b-form-input
@@ -477,29 +447,33 @@
               </b-row>
             </b-link>
           </b-card>
+          <button class="d-none" type="submit">s</button>
         </b-form>
       </validation-observer>
     </b-modal>
+
+    <app-tour :steps="steps" />
   </div>
 </template>
 
 <script>
 
 import { ValidationProvider, ValidationObserver, localize } from 'vee-validate'
-
-import { required, url } from '@validations'
+import AppTour from '@core/components/app-tour/AppTour.vue'
+import { required, url, domain, alphaNumDash, domainExist, domainExist2 } from '@validations'
 import Ripple from 'vue-ripple-directive'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
 import { BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BFormRadio,
 BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup, BInputGroupPrepend, BOverlay, BModal, VBModal, BDropdown, BDropdownItem,
-BFormRadioGroup
+BFormRadioGroup, BCardHeader, BCardTitle, BCardBody, BBadge
 } from 'bootstrap-vue'
 import axios from 'axios'
 export default {
   components: { ToastificationContent, ValidationProvider,  ValidationObserver, BCard, BCardText, BRow, BCol, BButton, BAvatar,
     BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup,
-    BInputGroupPrepend, BOverlay, BModal, VBModal, BFormRadio, BDropdown, BDropdownItem, BFormRadioGroup
+    BInputGroupPrepend, BOverlay, BModal, VBModal, BFormRadio, BDropdown, BDropdownItem, BFormRadioGroup,
+    BCardHeader, BCardTitle, BCardBody, BBadge, AppTour
   },
   directives: {
     'b-modal': VBModal,
@@ -507,6 +481,7 @@ export default {
   },
   data(){
     return {
+      steps: [],
       DomainOptions: [
         { text: 'نعم', value: 'custom' },
         { text: 'لا', value: 'normal' }
@@ -546,20 +521,42 @@ export default {
       },
       editModalShow: false,
       required,
-      url
+      url,
+      domain,
+      alphaNumDash,
+      domainExist,
+      domainExist2
     }
   },
   created(){
     this.getApp();
     localize('ar');
   },
+  mounted(){
+    setTimeout(() => {
+      if (!localStorage.getItem('first_login')){
+        this.$tours.vuexyTour.start()
+      }
+      localStorage.setItem('first_login', '0')
+    }
+    , 500);
+  },
   methods:{
+    handleTemplateName(name){
+      if(name){
+        if (name.length > 15) {
+          return '...' + name.substring(0,11);
+        } else {
+          return name
+        }
+      }
+    },
     getTemplateRoute(template){
-      if(template.logo == null || template.main_image == null || template.medals_image == null || 
+      if(template.main_image == null || template.medals_image == null || 
         template.second_image == null || template.meta_title == '' || 
         template.customer_website == '' || template.primary_color == '' ||
-        template.review_text == '' || template.description == '' || 
-        template.secondary_color == '' || template.features.length == 0 || template.products.length == 0
+        template.review_text == '' || template.description == ''
+        || template.features.length == 0 || template.products.length == 0
         || template.reviews.length == 0){
         return {name: 'templates-setup', params: {id: template.id}}
       }
@@ -661,48 +658,6 @@ export default {
         console.log(JSON.stringify(error));
       })
     },
-    updateDomain(){
-      axios.put(`/domains/${this.app.domain.id}`, this.domainForm)
-      .then(() => {
-        this.$toast({
-          component: ToastificationContent,
-          props: {
-            title: 'إشعار',
-            icon: 'CheckIcon',
-            text: 'تم تحديث النطاق بنجاح.',
-            variant: 'success',
-          },
-        })
-        this.getApp()
-        this.editModalShow = false
-      })
-      .catch((error) => {
-        this.$toast({
-            component: ToastificationContent,
-            props: {
-            title: 'إنذار',
-            icon: 'AlertCircleIcon',
-            text: 'حدث خطأ أثناء تحديث النطاق.',
-            variant: 'danger',
-            },
-        })
-        console.log(JSON.stringify(error));
-      })
-    },
-    resetModal(){
-      this.domainForm.name = this.app.domain.name
-      this.editModalShow = false
-    },
-    handleOk(bvModalEvt) {
-      // Prevent modal from closing
-      bvModalEvt.preventDefault()
-      // Trigger submit handler
-      this.$refs.simpleRules2.validate().then(success => {
-        if (success) {
-          this.updateDomain()
-        }
-      })
-    },
     submitForm(){
       this.showFormLoader = true;
       this.$refs.formValidation.validate().then(success => {
@@ -751,6 +706,15 @@ export default {
           this.appActivated = true
           this.app = response.data
         }
+        this.steps.push(
+          {
+            target: '#step-template-'+this.app.templates[0].id,
+            header: {
+              title: 'مرحبًا',
+            },
+            content: 'انقر هنا للاستمتاع بأول صفحة هبوط.',
+          },
+        )
         // this.domainForm.name = this.app.domain.name
         // this.domainForm.id = this.app.domain.id
         // this.domainForm.type = this.app.domain.type
@@ -808,4 +772,7 @@ export default {
 
 <style>
   .popular { border: 1px solid #7367f0; }
+</style>
+<style lang="scss">
+@import '@core/scss/vue/libs/tour.scss';
 </style>

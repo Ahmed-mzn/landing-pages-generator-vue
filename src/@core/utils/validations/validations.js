@@ -18,7 +18,9 @@ import ar from 'vee-validate/dist/locale/ar.json'
 import en from 'vee-validate/dist/locale/en.json'
 
 // eslint-disable-next-line object-curly-newline
-import { validatorPositive, validatorUrlValidator, validatorPassword, validatorCreditCard, validatorNumbers } from './validators'
+import { validatorPositive, validatorUrlValidator, validatorPassword, validatorCreditCard, validatorNumbers,
+  validatorDomain, validatorAlphaNumDash, validatorDomainExist, validatorDomainExist2
+} from './validators'
 
 // ////////////////////////////////////////////////////////
 // General
@@ -55,6 +57,26 @@ export const numbers = extend('numbers', {
   message: '{_field_} يجب ان يحتوي فقط على ارقام',
 })
 
+export const domain = extend('domain', {
+  validate: validatorDomain,
+  message: '{_field_} يجب ان يحتوي على نطاق صحيح',
+})
+
+export const domainExist = extend('domainExist', {
+  validate: validatorDomainExist,
+  message: '{_field_} تم أخذه الرجاء اختيار واحد آخر',
+})
+
+export const domainExist2 = extend('domainExist2', {
+  validate: validatorDomainExist2,
+  message: '{_field_} تم أخذه الرجاء اختيار واحد آخر',
+})
+
+export const alphaNumDash = extend('alphaNumDash', {
+  validate: validatorAlphaNumDash,
+  message: '{_field_} يجب ان يحتوي يجب أن تحتوي فقط على أرقام، أحرف أو شرطة',
+})
+
 
 
 export const positive = extend('positive', {
@@ -69,7 +91,7 @@ export const credit = extend('credit-card', {
 
 export const password = extend('password', {
   validate: validatorPassword,
-  message: 'Your {_field_} must contain at least one uppercase, one lowercase, one special character and one digit',
+  message: 'يجب أن يحتوي {_field_} الخاص بك على الأقل على حرف كبير واحد ، وحرف صغير واحد ، وحرف خاص واحد ورقم واحد',
 })
 
 export const url = extend('url', {
