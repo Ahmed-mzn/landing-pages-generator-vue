@@ -11,7 +11,7 @@
                 <b-col cols="8">
                     <h3>الصفحات المرتبطة (
                         <span class="text-primary">
-                            <a :href="'http//' + handleDomainName(template.domain)" target="_blank">
+                            <a :href="'http://' + handleDomainName(template.domain)" target="_blank">
                                 {{ 'http://' + handleDomainName(template.domain) }}
                             </a>
                         </span>)
