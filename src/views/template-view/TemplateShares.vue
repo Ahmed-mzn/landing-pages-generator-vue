@@ -43,7 +43,7 @@
                     class="position-relative"
                     :per-page="perPage"
                     :current-page="currentPage"
-                    :items="visists"
+                    :items="shares"
                     :fields="fields"
                     :sort-by.sync="sortBy"
                     :sort-desc.sync="sortDesc"
@@ -56,6 +56,9 @@
                 >
                     <template #cell(created_at)="data">
                         {{moment(data.value).locale('ar').startOf('second').fromNow()}}
+                    </template>
+                    <template #cell(phone_number)="data">
+                        <span dir="ltr" class="text-primary">{{ '+9665'+data.value }}</span>
                     </template>
                 </b-table>
             </b-col>
@@ -111,7 +114,7 @@ export default {
         },
     },
     mounted(){
-        this.getVisist()
+        this.getShares()
     },
     data(){
         return{
@@ -125,15 +128,11 @@ export default {
             filter: null,
             filterOn: [],
             fields: [
-                {key: 'country', label: 'الدولة', sortable: true},
-                {key: 'region', label: 'المنطقة', sortable: true},
+                {key: 'phone_number', label: 'الدولة', sortable: true},
                 {key: 'city', label: 'المدينة', sortable: true},
-                {key: 'duration', label: 'المدة الزمنية'},
-                {key: 'ip_address', label: 'عنوان IP'},
-                {key: 'location', label: 'الموقع'},
                 {key: 'created_at', label: 'التاريخ'},
             ],
-            visists: []
+            shares: []
         }
     },
     methods:{
@@ -142,10 +141,10 @@ export default {
             this.totalRows = filteredItems.length
             this.currentPage = 1
         },
-        getVisist(){
-            axios.get(`/visits?template_id=${this.template.id}`)
+        getShares(){
+            axios.get(`/shares?template_id=${this.template.id}`)
             .then((response) => {
-                this.visists = response.data
+                this.shares = response.data
             })
             .catch((error) => {
                 console.log(JSON.stringify(error));

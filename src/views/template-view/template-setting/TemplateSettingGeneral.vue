@@ -71,6 +71,26 @@
                         </b-col>
                         <b-col md="12">
                             <b-form-group
+                                label="عنوان الميزات"
+                                label-for="review_text"
+                            >
+                                <validation-provider
+                                #default="{ errors }"
+                                name="عنوان الميزات"
+                                rules="required"
+                                >
+                                <b-form-input
+                                    id="review_text"
+                                    v-model="template.feature_text"
+                                    :state="errors.length > 0 ? false:null"
+                                    placeholder="عنوان الميزات"
+                                />
+                                <small class="text-danger">{{ errors[0] }}</small>
+                                </validation-provider>
+                            </b-form-group>
+                        </b-col>
+                        <b-col md="12">
+                            <b-form-group
                                 label="وصف قصير"
                                 label-for="description"
                             >
@@ -202,7 +222,7 @@ export default {
         validateSetup(){
             this.submitForm();
             if (this.template.meta_title == '' || this.template.customer_website == '' || this.template.primary_color == '' ||
-                this.template.review_text == '' || this.template.description == ''){
+                this.template.review_text == '' || this.template.description == '' || this.feature_text == ''){
                     this.$toast({
                         component: ToastificationContent,
                         props: {
@@ -227,6 +247,7 @@ export default {
                         review_text: this.template.review_text,
                         description: this.template.description,
                         primary_color: this.template.primary_color,
+                        feature_text: this.template.feature_text,
                     }
                     
                     axios.patch(`/templates/${this.template.id}/`, data)

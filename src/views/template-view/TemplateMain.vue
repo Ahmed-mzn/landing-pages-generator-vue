@@ -20,8 +20,19 @@
                 <b-col cols="4">
                     <div class="float-right">
                         <b-button
+                            variant="outline-primary"
+                            @click="showVariantModal = true"
+                            class="btn-icon mr-1"
+                        >
+                        <feather-icon
+                            icon="SettingsIcon"
+                        />
+                            
+                        </b-button>
+                        <b-button
                             variant="primary"
                             @click="showTemplateModal = true"
+                            class="btn-icon"
                             v-if="template.domain"
                         >
                         <feather-icon
@@ -196,7 +207,7 @@
                         <validation-provider
                         #default="{ errors }"
                         name="اسم الصفحة"
-                        rules="required"
+                        rules="required|alphaNumDash"
                         >
                         <b-input-group aria-label="aaa" size="lg" :append="'/https://'+handleDomainName(template.domain)">
                             <b-form-input
@@ -274,38 +285,58 @@
                         </b-row>
                     </b-link>
                 </b-card>
-                <b-card no-body class="p-1" :class="templateForm.template_code == 'template_three' ? 'popular':''">
-                    <b-link @click="seletcTemplate('template_three')">
-                        <b-row @click="seletcTemplate('template_three')" class="d-flex flex-row">
-                            <b-col cols="10">
-                                <b-media>
-                                    <template #aside>
-                                    <b-avatar
-                                        rounded
-                                        variant="light-success"
-                                        size="55"
-                                    >
-                                        <feather-icon size="25" icon="ShoppingCartIcon" />
-                                    </b-avatar>
-                                    </template>
-                                    <h6 class="media-heading">
-                                    العنوان هنا
-                                    </h6>
-                                    <small class="text-muted">
-                                    وصف هنا أيضا.
-                                    </small>
-                                </b-media>
-                            </b-col>
-                            <b-col cols="2" class="align-self-center">
-                                <b-form-radio
-                                    v-model="templateForm.template_code"
-                                    name="some-radios"
-                                    value="template_three"
-                                />
-                            </b-col>
-                        </b-row>
-                    </b-link>
-                </b-card>
+            </b-form>
+        </validation-observer>
+        </b-modal>
+        <!-- variant modal -->
+        <b-modal
+            v-model="showVariantModal"
+            id="modal-center"
+            centered
+            cancel-variant="outline-secondary"
+            title="التحكم بعدد التوجهات"
+            cancel-title="إلغاء"
+            ok-title="احفظ التغييرات"
+            @hidden="resetVariantModal"
+            @ok="handleOkVariant"
+        >
+        <validation-observer ref="simpleRules4">
+            <b-form @submit.stop.prevent="createTemplate()">
+                <b-row>
+                    <b-col md="12">
+                        <b-form-group
+                            label="عدد التوجهات"
+                            label-for="review_text"
+                        >
+                            <validation-provider
+                            #default="{ errors }"
+                            name="عدد التوجهات"
+                            rules="required|integer"
+                            >
+                            <b-form-input
+                                id="review_text"
+                                v-model="variant.total"
+                                :state="errors.length > 0 ? false:null"
+                                @keyup="resetVariant"
+                                type="number"
+                                placeholder="عدد التوجهات"
+                            />
+                            <small class="text-danger">{{ errors[0] }}</small>
+                            </validation-provider>
+                        </b-form-group>
+                    </b-col>
+                    <b-col cols="12" v-for="t in variant.templates" :key="t.id">
+                        <h6>{{' صفحة هبوط ' + t.name}}</h6>
+                        <vue-slider
+                            v-model="t.redirect_numbers"
+                            :tooltip-formatter="formatterTooltip(t)"
+                            direction="rtl"
+                            :max="parseInt(variant.total)"
+                            :min="0"
+                            @change="variantChange(t)"
+                        />
+                    </b-col>
+                </b-row>
             </b-form>
         </validation-observer>
         </b-modal>
@@ -313,8 +344,8 @@
 </template>
 <script>
 import { ValidationProvider, ValidationObserver, localize } from 'vee-validate'
-
-import { required, url } from '@validations'
+import VueSlider from 'vue-slider-component'
+import { required, url, integer, alphaNumDash } from '@validations'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import Ripple from 'vue-ripple-directive'
 import { BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BFormRadio,
@@ -327,7 +358,7 @@ export default {
         ToastificationContent, ValidationProvider,  ValidationObserver, BCard, BCardText, BRow, BCol, BButton, BAvatar,
         BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup,
         BInputGroupPrepend, BOverlay, BModal, VBModal, BFormRadio, BDropdown, BDropdownItem, BFormRadioGroup,
-        BCardHeader, BCardTitle, BCardBody, BBadge, BCardGroup
+        BCardHeader, BCardTitle, BCardBody, BBadge, BCardGroup, VueSlider
     },
     directives: {
         'b-modal': VBModal,
@@ -337,6 +368,7 @@ export default {
         return  {
             show: true,
             showTemplateModal: false,
+            showVariantModal: false,
             templateForm:{
                 template: null,
                 template_code: 'template_one',
@@ -351,16 +383,144 @@ export default {
                     type: ''
                 }
             },
+            variant:{
+                templates: [],
+                total: 0
+            },
             required,
-            url
+            url,
+            integer,
+            alphaNumDash
         }
     },
     mounted(){
         localize('ar')
-        this.getTemplates()
         this.getTemplate()
+        this.getTemplates()
     },
     methods:{
+        variantChange(template){
+            let newVariants = this.variant.templates.filter(t => t.id != template.id)
+            var sum;
+
+            sum = this.variant.templates.reduce((accumulator, object) => {
+                return accumulator + object.redirect_numbers;
+            }, 0);
+
+            while(sum > this.variant.total) {
+                sum = this.variant.templates.reduce((accumulator, object) => {
+                    return accumulator + object.redirect_numbers;
+                }, 0);
+                if(sum > this.variant.total){
+                    this.variant.templates.map((t) => {
+                        if(t != template.id && t.redirect_numbers != 0){
+                            t.redirect_numbers = t.redirect_numbers-1;
+                        }
+                        return t
+                    })
+                }
+            }
+        },  
+        resetVariant(){
+            this.variant.templates = []
+            const obj = {
+                id: this.template.id,
+                name: this.template.template_name,
+                is_main_template: true,
+                redirect_numbers: this.template.template_redirect_numbers,
+                redirect_percentage: this.template.template_redirect_percentage
+            }
+            this.variant.templates.push(obj)
+            for(let i=0; i<this.templates.length; i++){
+                const obj = {
+                    id: this.templates[i].id,
+                    name: this.templates[i].template_name,
+                    is_main_template: false,
+                    redirect_numbers: this.templates[i].template_redirect_numbers,
+                    redirect_percentage: this.templates[i].template_redirect_percentage
+                }
+                this.variant.templates.push(obj)
+            }
+        },
+        resetVariantModal(){
+            this.variant.templates = []
+            this.variant.total = this.template.total_redirect_numbers
+            const obj = {
+                id: this.template.id,
+                name: this.template.template_name,
+                is_main_template: true,
+                redirect_numbers: this.template.template_redirect_numbers,
+                redirect_percentage: this.template.template_redirect_percentage
+            }
+            this.variant.templates.push(obj)
+            for(let i=0; i<this.templates.length; i++){
+                const obj = {
+                    id: this.templates[i].id,
+                    name: this.templates[i].template_name,
+                    is_main_template: false,
+                    redirect_numbers: this.templates[i].template_redirect_numbers,
+                    redirect_percentage: this.templates[i].template_redirect_percentage
+                }
+                this.variant.templates.push(obj)
+            }
+        },
+        handleOkVariant(bvModalEvt){
+            // Prevent modal from closing
+            bvModalEvt.preventDefault()
+            // Trigger submit handler
+            this.$refs.simpleRules4.validate().then(success => {
+                if (success) {
+                    this.submitVariant()
+                }
+            })
+        },
+        submitVariant(){
+            axios.post("/templates/variant", this.variant)
+            .then(response => {
+                if(response.status == 400 || response.status == 500){
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                        title: 'إنذار',
+                        icon: 'AlertCircleIcon',
+                        text: 'حدث خطأ أثناء تحديث توجيه صفحات الهبوط.',
+                        variant: 'danger',
+                        },
+                    })
+                } else{
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: 'إشعار',
+                            icon: 'CheckIcon',
+                            text: 'تم تحديث توجيه صفحات الهبوط بنجاح.',
+                            variant: 'success',
+                        },
+                    })
+                    this.showTemplateModal = false
+                    this.variant.templates = []
+                    this.getTemplate();
+                    this.getTemplates();
+                }
+                this.showVariantModal = false
+            })
+            .catch(error => {
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                    title: 'إنذار',
+                    icon: 'AlertCircleIcon',
+                    text: 'حدث خطأ أثناء تحديث توجيه صفحات الهبوط.',
+                    variant: 'danger',
+                    },
+                })
+                console.log(error);
+            })
+        },
+        formatterTooltip(t){
+            // return `{value} توجيه (${t.redirect_percentage}%)`
+            return "{value} توجيه "
+        },
         handleDomainName(domain){
             if(domain){
                 return domain.name
@@ -498,6 +658,16 @@ export default {
             axios.get(`/templates/children?template_id=${this.$route.params.id}`)
             .then(response => {
                 this.templates = response.data
+                for(let i=0; i<response.data.length; i++){
+                    const obj = {
+                        id: response.data[i].id,
+                        name: response.data[i].template_name,
+                        is_main_template: false,
+                        redirect_numbers: response.data[i].template_redirect_numbers,
+                        redirect_percentage: response.data[i].template_redirect_percentage
+                    }
+                    this.variant.templates.push(obj)
+                }
                 setTimeout(() => {
                     this.show = false;
                 }
@@ -511,6 +681,15 @@ export default {
             axios.get(`/templates/${this.$route.params.id}/`)
             .then(response => {
                 this.template = response.data
+                const obj = {
+                    id: response.data.id,
+                    name: response.data.template_name,
+                    is_main_template: true,
+                    redirect_numbers: response.data.template_redirect_numbers,
+                    redirect_percentage: response.data.template_redirect_percentage
+                }
+                this.variant.templates.push(obj)
+                this.variant.total = response.data.total_redirect_numbers
             })
             .catch(error => {
                 console.log(JSON.stringify(error));
@@ -519,3 +698,6 @@ export default {
     }
 }
 </script>
+<style lang="scss" >
+@import '@core/scss/vue/libs/vue-slider.scss';
+</style>

@@ -111,7 +111,10 @@ router.afterEach(() => {
   // Remove initial loading
   const appLoading = document.getElementById('loading-bg')
   if (appLoading) {
-    appLoading.style.display = 'none'
+    setTimeout(() => {
+      appLoading.style.display = 'none'
+    }
+    , 900);
   }
 
 })

@@ -51,7 +51,7 @@ export const validatorDomainExist2 = async value => {
 
 export const validatorAlphaNumDash = value => {
   /* eslint-disable no-useless-escape */
-  const regExp = /^[a-zA-Z0-9-]+$/
+  const regExp = /^[a-zA-Zء-ي0-9-)(]+$/
   /* eslint-enable no-useless-escape */
   const validValue = regExp.test(value)
   return validValue

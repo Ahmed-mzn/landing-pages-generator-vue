@@ -387,7 +387,7 @@
                                     v-model="form.phone_number"
                                     id="formPhone"
                                     class="form-control py-1"
-                                    type="text"
+                                    type="number" pattern="[0-9]*" inputmode="numeric"
                                     placeholder="xx xxx xxx"
                                     style="
                                         background: #f2f2f2;
@@ -534,9 +534,7 @@
                     style="background: #fbf4ea; margin-top: -194px; padding-top: 196px"
                 >
                     <div class="container" style="padding-bottom: 38px">
-                        <h2 style="font-size: 40px; color: #343434" class="mb-1 mt-3">
-                            لماذا صفوة الجوف؟
-                        </h2>
+                        <h2 style="font-size: 40px; color: #343434" class="mb-1 mt-3">{{template.feature_text}}</h2>
                         <!-- <p style="font-size: 16px; color: #343434">
                             لأننا نقدم منتج فاخر وعضوي ١٠٠٪ يعتني بجودة غذائكم وصحتكم.
                         </p> -->
@@ -683,6 +681,7 @@ export default {
                 medals_image: "",
                 second_image: "",
                 review_text: "",
+                feature_text: '',
                 primary_color: "",
                 secondary_color: "",
                 products: [],

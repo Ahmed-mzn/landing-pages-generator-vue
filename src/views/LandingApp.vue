@@ -415,38 +415,6 @@
               </b-row>
             </b-link>
           </b-card>
-          <b-card no-body class="p-1" :class="templateForm.template_code == 'template_three' ? 'popular':''">
-            <b-link @click="seletcTemplate('template_three')">
-              <b-row @click="seletcTemplate('template_three')" class="d-flex flex-row">
-                <b-col cols="10">
-                  <b-media>
-                    <template #aside>
-                      <b-avatar
-                        rounded
-                        variant="light-success"
-                        size="55"
-                      >
-                        <feather-icon size="25" icon="ShoppingCartIcon" />
-                      </b-avatar>
-                    </template>
-                    <h6 class="media-heading">
-                      العنوان هنا
-                    </h6>
-                    <small class="text-muted">
-                      وصف هنا أيضا.
-                    </small>
-                  </b-media>
-                </b-col>
-                <b-col cols="2" class="align-self-center">
-                  <b-form-radio
-                    v-model="templateForm.template_code"
-                    name="some-radios"
-                    value="template_three"
-                  />
-                </b-col>
-              </b-row>
-            </b-link>
-          </b-card>
           <button class="d-none" type="submit">s</button>
         </b-form>
       </validation-observer>

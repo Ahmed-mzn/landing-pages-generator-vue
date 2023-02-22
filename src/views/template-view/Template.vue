@@ -95,6 +95,15 @@
                     <template-visit :template="template"/>
                 </b-card>
             </b-tab>
+            <b-tab lazy>
+                <template #title>
+                    <feather-icon icon="ExternalLinkIcon" />
+                    <span>المشاركات</span>
+                </template>
+                <b-card>
+                    <template-shares :template="template"/>
+                </b-card>
+            </b-tab>
         </b-tabs>
 
     <!-- create template modal -->
@@ -200,6 +209,7 @@ import TemplateAnalytics from './template-analytic/TemplateAnalytics.vue'
 import TemplateSetting from './template-setting/TemplateSetting.vue'
 import TemplateVisit from './TemplateVisit.vue'
 import TemplateMain from './TemplateMain.vue'
+import TemplateShares from './TemplateShares.vue'
 
 import { ValidationProvider, ValidationObserver, localize } from 'vee-validate'
 
@@ -213,7 +223,7 @@ BFormRadioGroup, BCardHeader, BCardTitle, BCardBody, BBadge } from 'bootstrap-vu
 import axios from 'axios'
 export default {
     components:{
-        TemplateSetting, TemplateOrders, TemplateAnalytics, TemplateVisit, TemplateMain, TemplateSetting,
+        TemplateSetting, TemplateOrders, TemplateAnalytics, TemplateVisit, TemplateMain, TemplateSetting, TemplateShares,
         ToastificationContent, ValidationProvider,  ValidationObserver, BTabs, BTab,
         BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BFormRadio,
         BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup, BInputGroupPrepend, BOverlay, BModal, VBModal, BDropdown, BDropdownItem,
