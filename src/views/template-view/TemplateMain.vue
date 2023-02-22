@@ -31,7 +31,7 @@
                         </b-button>
                         <b-button
                             variant="primary"
-                            @click="showTemplateModal = true"
+                            @click="showTemplateModal = true; resetVariantModal()"
                             class="btn-icon"
                             v-if="template.domain"
                         >
