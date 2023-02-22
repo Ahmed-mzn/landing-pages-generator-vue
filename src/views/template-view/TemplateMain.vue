@@ -498,9 +498,9 @@ export default {
                         },
                     })
                     this.showTemplateModal = false
-                    this.variant.templates = []
                     this.getTemplate();
                     this.getTemplates();
+                    this.resetVariantModal()
                 }
                 this.showVariantModal = false
             })
