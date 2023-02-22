@@ -236,7 +236,7 @@
                                     </b-avatar>
                                     </template>
                                     <h6 class="media-heading ">
-                                    العنوان هنا
+                                        صفحة هبوط عروض أفقيًا
                                     </h6>
                                     <small class="text-muted">
                                     وصف هنا أيضا.
@@ -268,7 +268,7 @@
                                     </b-avatar>
                                     </template>
                                     <h6 class="media-heading">
-                                    العنوان هنا
+                                        صفحة هبوط عروض عموديا
                                     </h6>
                                     <small class="text-muted">
                                     وصف هنا أيضا.
