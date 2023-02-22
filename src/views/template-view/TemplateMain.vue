@@ -443,7 +443,7 @@ export default {
             }
         },
         resetVariantModal(){
-            this.variant.templates = []
+            this.variant.templates.splice(0)
             this.variant.total = this.template.total_redirect_numbers
             const obj = {
                 id: this.template.id,
@@ -498,9 +498,9 @@ export default {
                         },
                     })
                     this.showTemplateModal = false
+                    this.variant.templates.splice(0)
                     this.getTemplate();
                     this.getTemplates();
-                    this.resetVariantModal()
                 }
                 this.showVariantModal = false
             })
