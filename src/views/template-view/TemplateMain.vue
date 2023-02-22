@@ -21,7 +21,7 @@
                     <div class="float-right">
                         <b-button
                             variant="outline-primary"
-                            @click="showVariantModal = true"
+                            @click="showVariantModal = true; resetVariantModal()"
                             class="btn-icon mr-1"
                         >
                         <feather-icon
@@ -31,7 +31,7 @@
                         </b-button>
                         <b-button
                             variant="primary"
-                            @click="showTemplateModal = true; resetVariantModal()"
+                            @click="showTemplateModal = true"
                             class="btn-icon"
                             v-if="template.domain"
                         >
@@ -443,6 +443,7 @@ export default {
             }
         },
         resetVariantModal(){
+            console.log("reset call");
             this.variant.templates.splice(0)
             this.variant.total = this.template.total_redirect_numbers
             const obj = {
@@ -497,12 +498,11 @@ export default {
                             variant: 'success',
                         },
                     })
-                    this.showTemplateModal = false
+                    this.showVariantModal = false
                     this.variant.templates.splice(0)
                     this.getTemplate();
                     this.getTemplates();
                 }
-                this.showVariantModal = false
             })
             .catch(error => {
                 this.$toast({
@@ -658,16 +658,7 @@ export default {
             axios.get(`/templates/children?template_id=${this.$route.params.id}`)
             .then(response => {
                 this.templates = response.data
-                for(let i=0; i<response.data.length; i++){
-                    const obj = {
-                        id: response.data[i].id,
-                        name: response.data[i].template_name,
-                        is_main_template: false,
-                        redirect_numbers: response.data[i].template_redirect_numbers,
-                        redirect_percentage: response.data[i].template_redirect_percentage
-                    }
-                    this.variant.templates.push(obj)
-                }
+
                 setTimeout(() => {
                     this.show = false;
                 }
@@ -681,15 +672,6 @@ export default {
             axios.get(`/templates/${this.$route.params.id}/`)
             .then(response => {
                 this.template = response.data
-                const obj = {
-                    id: response.data.id,
-                    name: response.data.template_name,
-                    is_main_template: true,
-                    redirect_numbers: response.data.template_redirect_numbers,
-                    redirect_percentage: response.data.template_redirect_percentage
-                }
-                this.variant.templates.push(obj)
-                this.variant.total = response.data.total_redirect_numbers
             })
             .catch(error => {
                 console.log(JSON.stringify(error));
