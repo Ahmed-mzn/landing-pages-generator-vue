@@ -75,7 +75,7 @@
                         {{moment(data.value).locale('ar').startOf('second').fromNow()}}
                     </template>
                     <template #cell(phone_number)="data">
-                        <span dir="ltr" class="text-primary">{{ '+9665'+data.value }}</span>
+                        <span dir="ltr" class="text-primary">{{ '+966'+data.value }}</span>
                     </template>
                 </b-table>
             </b-col>

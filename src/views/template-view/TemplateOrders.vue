@@ -77,7 +77,7 @@
                         {{data.item.lead.name}}
                     </template>
                     <template #cell(phone_number)="data">
-                        {{data.item.lead.phone_number}}
+                        <span dir="ltr" class="text-primary">{{ '+966'+data.item.lead.phone_number }}</span>
                     </template>
                     <template #cell(city)="data">
                         {{data.item.lead.city}}
