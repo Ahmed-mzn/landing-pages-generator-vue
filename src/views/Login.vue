@@ -222,7 +222,7 @@ export default {
   },
   methods: {
     validationForm() {
-      
+      this.hasError = false;
       this.$refs.loginValidation.validate().then(success => {
         if (success) {
           axios.defaults.headers.common['Authorization'] = ''
@@ -241,7 +241,6 @@ export default {
 
             axios.get('/authentication/me')
             .then(response => {
-              console.log(response);
                 this.$store.commit('auth/setUser', 
                   {
                     'id': response.data.id,

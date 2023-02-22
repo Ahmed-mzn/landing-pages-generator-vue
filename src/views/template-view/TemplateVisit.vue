@@ -146,6 +146,7 @@ export default {
             axios.get(`/visits?template_id=${this.template.id}`)
             .then((response) => {
                 this.visists = response.data
+                this.totalRows = response.data.length
             })
             .catch((error) => {
                 console.log(JSON.stringify(error));

@@ -54,6 +54,23 @@
                     :filter-included-fields="filterOn"
                     @filtered="onFiltered"
                 >
+                    <template #cell(product)="data">
+                        <b-media vertical-align="center">
+                            <template #aside>
+                                <b-avatar
+                                    size="32"
+                                    :src="data.item.product.image"
+                                />
+                            </template>
+                            <b-link
+                                class="font-weight-bold d-block text-nowrap"
+                            >
+                                {{ data.item.product.title }}
+                            </b-link>
+                            <small class="text-muted">{{ data.item.product.description.substring(0,15) }}</small>
+                        </b-media>
+                    </template>
+
                     <template #cell(created_at)="data">
                         {{moment(data.value).locale('ar').startOf('second').fromNow()}}
                     </template>
@@ -128,6 +145,7 @@ export default {
             filter: null,
             filterOn: [],
             fields: [
+                {key: 'product', label: 'المنتج', sortable: true},
                 {key: 'phone_number', label: 'الدولة', sortable: true},
                 {key: 'city', label: 'المدينة', sortable: true},
                 {key: 'created_at', label: 'التاريخ'},
@@ -145,6 +163,7 @@ export default {
             axios.get(`/shares?template_id=${this.template.id}`)
             .then((response) => {
                 this.shares = response.data
+                this.totalRows = response.data.length
             })
             .catch((error) => {
                 console.log(JSON.stringify(error));

@@ -175,6 +175,7 @@ export default {
             .then((response) => {
                 console.log(response);
                 this.forms = response.data
+                this.totalRows = response.data.length
             })
             .catch((error) => {
                 console.log(JSON.stringify(error));
