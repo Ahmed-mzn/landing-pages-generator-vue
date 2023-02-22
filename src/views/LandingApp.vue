@@ -211,7 +211,7 @@
             >
               <b-card-header>
                 <h6>{{handleTemplateName(template.template_name) + ' صفحة '}}</h6>
-                  <b-badge :id="'step-template-'+template.id" :href="'https://' + template.domain.name" target="_blank" variant="light-primary">
+                  <b-badge :id="'step-template-'+template.id" :href="'//' + template.domain.name" target="_blank" variant="light-primary">
                     <feather-icon
                       icon="EyeIcon"
                     />
