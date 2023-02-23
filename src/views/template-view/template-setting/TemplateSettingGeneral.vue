@@ -130,6 +130,27 @@
                                 </validation-provider>
                             </b-form-group>
                         </b-col>
+                        <b-col md="12">
+                            <b-form-group
+                                label="كود جافا سكريبت إضافي"
+                                label-for="extra_js"
+                            >
+                                <validation-provider
+                                    #default="{ errors }"
+                                    name="كود جافا سكريبت إضافي"
+                                >
+                                <b-form-textarea
+                                    id="extra_js"
+                                    v-model="template.extra_js"
+                                    rows="3"
+                                    dir="ltr"
+                                    :state="errors.length > 0 ? false:null"
+                                    placeholder="كود جافا سكريبت إضافي"
+                                />
+                                <small class="text-danger">{{ errors[0] }}</small>
+                                </validation-provider>
+                            </b-form-group>
+                        </b-col>
                         <b-col md="2">
                             <b-form-group
                                 label="لوان الأساسية"
@@ -271,6 +292,7 @@ export default {
                         secondary_color: this.template.secondary_color,
                         feature_text: this.template.feature_text,
                         main_rating_title: this.template.main_rating_title,
+                        extra_js: this.template.extra_js,
                     }
                     
                     axios.patch(`/templates/${this.template.id}/`, data)
