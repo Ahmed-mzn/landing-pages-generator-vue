@@ -97,10 +97,24 @@
                     </b-card-text>
                     <!-- <h6 class="item-price mt-0 float-right">$200</h6> -->
                     <div class="float-right" v-if="product.price_after_discount">
+                        <b-badge v-if="product.label" variant="light-danger mr-1">
+                            <feather-icon
+                                icon="StarIcon"
+                                class="mr-25"
+                            />
+                            <span>{{product.label}}</span>
+                        </b-badge>
                         <b-badge variant="light-primary mr-1"><del>SAR {{product.price}}</del></b-badge>
                         <b-badge variant="light-primary">SAR {{product.price_after_discount}}</b-badge>
                     </div>
                     <div class="float-right" v-else>
+                        <b-badge v-if="product.label" variant="light-danger mr-1">
+                            <feather-icon
+                                icon="StarIcon"
+                                class="mr-25"
+                            />
+                            <span>{{product.label}}</span>
+                        </b-badge>
                         <b-badge variant="light-primary">SAR {{product.price}}</b-badge>
                     </div>
                 </b-media>
@@ -193,6 +207,26 @@
                                     rows="3"
                                     :state="errors.length > 0 ? false:null"
                                     placeholder="وصف قصير"
+                                />
+                                <small class="text-danger">{{ errors[0] }}</small>
+                                </validation-provider>
+                            </b-form-group>
+                        </b-col>
+                        <b-col cols="12">
+                            <b-form-group
+                                label="نص ترويجي قصير "
+                                label-for="label"
+                                label-class="text-muted"
+                            >
+                                <validation-provider
+                                    #default="{ errors }"
+                                    name="نص ترويجي قصير "
+                                >
+                                <b-form-input
+                                    v-model="productEdit.label"
+                                    :state="errors.length > 0 ? false:null"
+                                    placeholder="مثال : الاكثر توفيراً، الاكثر مبيعاً"
+                                    id="label"
                                 />
                                 <small class="text-danger">{{ errors[0] }}</small>
                                 </validation-provider>
@@ -310,6 +344,26 @@
                                     rows="3"
                                     :state="errors.length > 0 ? false:null"
                                     placeholder="وصف قصير"
+                                />
+                                <small class="text-danger">{{ errors[0] }}</small>
+                                </validation-provider>
+                            </b-form-group>
+                        </b-col>
+                        <b-col cols="12">
+                            <b-form-group
+                                label="نص ترويجي قصير "
+                                label-for="label"
+                                label-class="text-muted"
+                            >
+                                <validation-provider
+                                    #default="{ errors }"
+                                    name="نص ترويجي قصير "
+                                >
+                                <b-form-input
+                                    v-model="product.label"
+                                    :state="errors.length > 0 ? false:null"
+                                    placeholder="مثال : الاكثر توفيراً، الاكثر مبيعاً"
+                                    id="label"
                                 />
                                 <small class="text-danger">{{ errors[0] }}</small>
                                 </validation-provider>
@@ -445,6 +499,7 @@ export default {
                 app: this.template.app,
                 title: '',
                 description: '',
+                label: '',
                 image: null,
                 price: null,
                 price_after_discount: 0
@@ -453,6 +508,7 @@ export default {
                 id: null,
                 title: '',
                 description: '',
+                label: '',
                 image: null,
                 price: null,
                 price_after_discount: 0
@@ -575,6 +631,7 @@ export default {
             this.productEdit.id = product.id
             this.productEdit.title = product.title
             this.productEdit.description = product.description
+            this.productEdit.label = product.label
             this.productEdit.image = product.image
             this.productEdit.price = product.price
             this.productEdit.price_after_discount = product.price_after_discount
@@ -587,6 +644,7 @@ export default {
             this.productEdit.id = null
             this.productEdit.title = ''
             this.productEdit.description = ''
+            this.productEdit.label = ''
             this.productEdit.image = ''
             this.productEdit.price = null
             this.activateDiscount2 = false
@@ -684,6 +742,7 @@ export default {
                 formData.append('title', this.product.title)
                 formData.append('app', this.template.app)
                 formData.append('description', this.product.description)
+                formData.append('label', this.product.label)
                 formData.append('image', this.product.image)
                 formData.append('price', this.product.price)
                 formData.append('price_after_discount', this.product.price_after_discount)
@@ -701,6 +760,7 @@ export default {
                         this.getAllProducts()
                         this.product.title = ''
                         this.product.description = ''
+                        this.product.label = ''
                         this.product.image = null
                         this.product.price = null
                         this.product.price_after_discount = 0

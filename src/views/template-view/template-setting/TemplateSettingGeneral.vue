@@ -31,6 +31,26 @@
                         </b-col>
                         <b-col md="12">
                             <b-form-group
+                                label="عنوان نص التقييم"
+                                label-for="main_rating_title"
+                            >
+                                <validation-provider
+                                #default="{ errors }"
+                                name="عنوان نص التقييم"
+                                rules="required"
+                                >
+                                <b-form-input
+                                    v-model="template.main_rating_title"
+                                    :state="errors.length > 0 ? false:null"
+                                    placeholder="مثال :4,5 ، 42,800 "
+                                    id="main_rating_title"
+                                />
+                                <small class="text-danger">{{ errors[0] }}</small>
+                                </validation-provider>
+                            </b-form-group>
+                        </b-col>
+                        <b-col md="12">
+                            <b-form-group
                                 label="رابط الموقع الرئيسي"
                                 label-for="customer_website"
                             >
@@ -222,7 +242,8 @@ export default {
         validateSetup(){
             this.submitForm();
             if (this.template.meta_title == '' || this.template.customer_website == '' || this.template.primary_color == '' ||
-                this.template.review_text == '' || this.template.description == '' || this.feature_text == ''){
+                this.template.review_text == '' || this.template.description == '' || this.template.feature_text == ''|| 
+                this.template.main_rating_title == ''){
                     this.$toast({
                         component: ToastificationContent,
                         props: {
@@ -249,6 +270,7 @@ export default {
                         primary_color: this.template.primary_color,
                         secondary_color: this.template.secondary_color,
                         feature_text: this.template.feature_text,
+                        main_rating_title: this.template.main_rating_title,
                     }
                     
                     axios.patch(`/templates/${this.template.id}/`, data)
