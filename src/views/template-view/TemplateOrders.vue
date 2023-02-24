@@ -6,7 +6,7 @@
             <b-row>
                 <!-- Per Page -->
                 <b-col
-                    cols="7"
+                    cols="5"
                     class="d-flex align-items-center justify-content-start mb-1 mb-md-0"
                 >
                     <label>عرض</label>
@@ -19,17 +19,32 @@
                     />
                     <label>إدخالات</label>
                 </b-col>
-
-                <!-- Search -->
                 <b-col
-                    cols="5"
+                    cols="3"
                 >
                     <div class="d-flex align-items-center justify-content-end">
-                    <b-form-input
-                        v-model="filter"
-                        class="d-inline-block mr-1"
-                        placeholder="بحث..."
-                    />
+                        <b-button
+                            variant="primary"
+                            @click="download"
+                        >
+                            <feather-icon
+                                icon="DownloadIcon"
+                                class="mr-50"
+                            />
+                            <span class="align-middle">تنزيل</span>
+                        </b-button>
+                    </div>
+                </b-col>
+                <!-- Search -->
+                <b-col
+                    cols="4"
+                >
+                    <div class="d-flex align-items-center justify-content-end">
+                        <b-form-input
+                            v-model="filter"
+                            class="d-inline-block mr-1 ml-1"
+                            placeholder="بحث..."
+                        />
                     </div>
                 </b-col>
             </b-row>
@@ -110,6 +125,8 @@
 </template>
 
 <script>
+require('js-file-download');
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import {
     BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BBadge, BTabs, BTab, BMedia, BImg, BFormInput, BFormGroup, BForm,
     BOverlay, BFormCheckbox, BModal, BFormFile, BTable, BFormSelect, BPagination, BInputGroup, 
@@ -117,9 +134,10 @@ import {
 } from 'bootstrap-vue'
 import vSelect from 'vue-select'
 import axios from 'axios'
+import fileDownload from 'js-file-download';
 export default {
     components:{
-        BCard, BCardText, BRow, BCol, BButton, 
+        BCard, BCardText, BRow, BCol, BButton, ToastificationContent,
         BLink, BAvatar, BBadge, BTabs, BTab, BMedia, BImg, BFormInput, BFormGroup, BForm, BOverlay, 
         BModal, BFormFile, BTable, BFormSelect, BPagination, BInputGroup, 
         BInputGroupAppend, BFormCheckbox, vSelect
@@ -154,7 +172,7 @@ export default {
             filterOn: [],
             fields: [
                 {key: 'product', label: 'المنتج', sortable: true},
-                {key: 'name', label: 'الاسم', sortable: true},
+                {key: 'name', label: 'اسم الزبون', sortable: true},
                 {key: 'phone_number', label: 'رقم الهاتف', sortable: true},
                 {key: 'city', label: 'المدينة', sortable: true},
                 {key: 'address', label: 'العنوان'},
@@ -165,6 +183,36 @@ export default {
         }
     },
     methods:{
+        download(){
+            axios.get("/templates/35/download_excel/", {responseType: 'blob'})
+            .then(response => {
+                if(response.status == 400 || response.status == 500){
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                        title: 'إنذار',
+                        icon: 'AlertCircleIcon',
+                        text: 'حدث خطأ أثناء تنزيل.',
+                        variant: 'danger',
+                        },
+                    })
+                } else{
+                    fileDownload(response.data, 'orders.xls')
+                }
+            })
+            .catch(error => {
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                    title: 'إنذار',
+                    icon: 'AlertCircleIcon',
+                    text: 'حدث خطأ أثناء تنزيل.',
+                    variant: 'danger',
+                    },
+                })
+                console.log(error);
+            })
+        },
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length

@@ -29,6 +29,7 @@
     "core-js": "3.8.1",
     "echarts": "4.8.0",
     "extract-colors": "^2.0.5",
+    "js-file-download": "^0.4.12",
     "jsonwebtoken": "8.5.1",
     "leaflet": "1.6.0",
     "moment": "^2.29.4",
