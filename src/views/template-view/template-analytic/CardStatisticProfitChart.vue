@@ -5,7 +5,7 @@
   >
     <h6>الربح</h6>
     <h2 class="font-weight-bolder mb-1">
-      6,24k
+      {{data.income ? data.income + ' SAR' : 0}}
     </h2>
     <!-- chart -->
     <vue-apex-charts
@@ -27,6 +27,12 @@ export default {
   components: {
     BCard,
     VueApexCharts,
+  },
+  props: {
+    data: {
+      type: Object,
+      default: () => {},
+    }
   },
   data() {
     return {

@@ -68,39 +68,49 @@ export default {
     BMediaAside,
     BMediaBody,
   },
+  props: {
+    data: {
+      type: Object,
+      default: () => {},
+    }
+  },
   data() {
     return {
-      statisticsItems: [
-        {
+      statisticsItems: [],
+    }
+  },
+  mounted(){
+    console.log(this.data);
+    this.statisticsItems = [
+    {
           icon: 'TrendingUpIcon',
           color: 'light-primary',
-          title: '230k',
+          title: this.data.orders_paid ,
           subtitle: 'مبيعات',
           customClass: 'mb-2 mb-xl-0',
         },
         {
           icon: 'UserIcon',
           color: 'light-info',
-          title: '8.549k',
+          title: this.data.customers ,
           subtitle: 'العملاء',
           customClass: 'mb-2 mb-xl-0',
         },
         {
           icon: 'BoxIcon',
           color: 'light-danger',
-          title: '1.423k',
+          title: this.data.products ,
           subtitle: 'المنتجات',
           customClass: 'mb-2 mb-sm-0',
         },
         {
           icon: 'DollarSignIcon',
           color: 'light-success',
-          title: '$9745',
+          title: this.data.income ,
           subtitle: 'إيرادات',
           customClass: '',
         },
-      ],
-    }
-  },
+    ]
+  }
 }
 </script>

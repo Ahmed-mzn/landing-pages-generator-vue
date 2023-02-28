@@ -6,19 +6,19 @@
                 lg="2"
                 cols="6"
             >
-                <card-statistic-order-chart />
+                <card-statistic-order-chart :data="data" />
             </b-col>
             <b-col
                 lg="2"
                 cols="6"
             >
-                <card-statistic-profit-chart />
+                <card-statistic-profit-chart :data="data" />
             </b-col>
             <b-col
                 lg="8"
                 cols="12"
             >
-                <card-statistics-group />
+                <card-statistics-group v-if="data.visits" :data="data" />
             </b-col>
         </b-row>
         <!--/ Miscellaneous Charts -->
@@ -31,7 +31,7 @@
             >
                 <statistic-card-vertical
                 icon="EyeIcon"
-                statistic="36.9k"
+                :statistic="data.visits"
                 statistic-title="الزيارات"
                 color="info"
                 />
@@ -56,7 +56,7 @@
                 <statistic-card-vertical
                 color="danger"
                 icon="ShoppingBagIcon"
-                statistic="97.8k"
+                :statistic="data.orders"
                 statistic-title="الطلبات"
                 />
             </b-col>
@@ -66,10 +66,10 @@
                 sm="6"
             >
                 <statistic-card-vertical
-                color="primary"
-                icon="ShareIcon"
-                statistic="26.8"
-                statistic-title="المشاركات"
+                    color="primary"
+                    icon="ShareIcon"
+                    :statistic="data.shares"
+                    statistic-title="المشاركات"
                 />
             </b-col>
             <b-col
@@ -78,10 +78,10 @@
                 sm="6"
             >
                 <statistic-card-vertical
-                color="success"
-                icon="AwardIcon"
-                statistic="689"
-                statistic-title="المراجعات"
+                    color="success"
+                    icon="AwardIcon"
+                    statistic="689"
+                    statistic-title="المراجعات"
                 />
             </b-col>
             <b-col
@@ -90,11 +90,11 @@
                 sm="6"
             >
                 <statistic-card-vertical
-                hide-chart
-                color="danger"
-                icon="TruckIcon"
-                statistic="2.1k"
-                statistic-title="عائدات"
+                    hide-chart
+                    color="danger"
+                    icon="TruckIcon"
+                    statistic="2.1k"
+                    statistic-title="عائدات"
                 />
             </b-col>
         </b-row>
@@ -108,6 +108,7 @@ import StatisticCardVertical from '@core/components/statistics-cards/StatisticCa
 import CardStatisticOrderChart from './CardStatisticOrderChart.vue'
 import CardStatisticProfitChart from './CardStatisticProfitChart.vue'
 import CardStatisticsGroup from './CardStatisticsGroup.vue'
+import axios from 'axios'
 
 export default {
     components:{
@@ -126,7 +127,29 @@ export default {
     },
     data(){
         return {
-            template: null
+            data: {
+                visits: '',
+                orders: '',
+                orders_paid: '',
+                customers: '',
+                income: '',
+                products: '',
+                shares: '',
+            }
+        }
+    },
+    mounted(){
+        this.getStatistics()
+    },
+    methods: {
+        getStatistics(){
+            axios.get(`/templates/${this.$route.params.id}/statistics`)
+            .then(res => {
+                this.data = res.data
+            })
+            .catch(error => {
+                console.log(error);
+            })
         }
     }
 }

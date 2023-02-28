@@ -4,7 +4,7 @@
   >
     <h6>الطلبات</h6>
     <h2 class="font-weight-bolder mb-1">
-      2,76k
+      {{data.orders ? data.orders : 0}}
     </h2>
     <!-- chart -->
     <vue-apex-charts
@@ -26,6 +26,12 @@ export default {
   components: {
     BCard,
     VueApexCharts,
+  },
+  props: {
+    data: {
+      type: Object,
+      default: () => {},
+    }
   },
   data() {
     return {
