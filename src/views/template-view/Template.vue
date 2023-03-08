@@ -264,7 +264,7 @@ export default {
             }
         },
         getTemplate(){
-            axios.get(`/public/apps/templates/${this.$route.params.id}`)
+            axios.get(`/templates/${this.$route.params.id}`)
             .then((response) => {
                 this.template = response.data
                 if(response.data.domain){

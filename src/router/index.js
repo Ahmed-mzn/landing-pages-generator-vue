@@ -53,6 +53,15 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/templates/:id/editor',
+      name: 'editor',
+      component: () => import('@/views/editor/Editor.vue'),
+      meta: {
+        requireLogin: true,
+        layout: 'full',
+      },
+    },
+    {
       path: '/account-setting',
       name: 'account-setting',
       component: () => import('@/views/account-setting/AccountSetting.vue'),
@@ -79,6 +88,14 @@ const router = new VueRouter({
       path: '/error-404',
       name: 'error-404',
       component: () => import('@/views/error/Error404.vue'),
+      meta: {
+        layout: 'full',
+      },
+    },
+    {
+      path: '/best',
+      name: 'best',
+      component: () => import('@/views/error/best.vue'),
       meta: {
         layout: 'full',
       },
