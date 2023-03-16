@@ -25,9 +25,9 @@ const script = function(props) {
 }
 export default (editor, template_id) => {
     editor.Components.addType('stars',{
+        isComponent: el => el.tagName === 'stars',
         model: {
             defaults: {
-                components:`<div class="mt-1 mb-1 nowrap"></div>`,
                 script: function(props) {
                     // const div = document.getElementById("stars-test");
                     this.innerHTML = ''
@@ -36,9 +36,6 @@ export default (editor, template_id) => {
                     }
                 },
                 // Add some style, just to make the component visible
-                style: {
-                    fontSize: "12px",
-                },
                 // Define default values for your custom properties
                 number: '2',
                 // Define traits, in order to change your properties
@@ -61,9 +58,13 @@ export default (editor, template_id) => {
         }
     });
     editor.Components.addType('productsForm',{
+        isComponent: el => el.tagName === 'productsForm',
         model: {
             defaults: {
-                components:``,
+                copyable: false,
+                resizable: false,
+                editable: false,
+                hoverable: true,
                 script: script,
                 template: template_id,
                 template_code: 'template_one',
@@ -90,9 +91,13 @@ export default (editor, template_id) => {
         } 
     });
     editor.Components.addType('productsForm2',{
+        isComponent: el => el.tagName === 'productsForm2',
         model: {
             defaults: {
-                components:``,
+                copyable: false,
+                resizable: false,
+                editable: false,
+                hoverable: true,
                 script: script,
                 template: template_id,
                 template_code: 'template_two',

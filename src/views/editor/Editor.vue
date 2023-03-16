@@ -1,296 +1,412 @@
 <template>
     <div>
-      <b-overlay
-            :show="loading"
-            rounded="sm"
-            spinner-variant="primary"
-            variant="transparent"
+        <b-row>
+            <b-col cols="10" md="8" lg="10" xl="10" style="width: 100%;margin 0;padding: 0;padding-left: 10px;">
+                <div id="gjs2">
+                </div>
+            </b-col>
+            <b-col cols="2" md="4" lg="2" xl="2" style="width: 100%;margin 0;padding: 0;padding-right: 10px;">
+                <b-tabs v-model="tabIndex" fill style="width: 100%;">
+                    <b-tab>
+                        <template #title>
+                            <feather-icon icon="ToolIcon" />
+                        </template>
+                        <div id="style-manager" style="width: 100%;height: 90vh; overflow: auto;">
+                            <div class="container">
+                                <b-form-group
+                                    label-cols="9"
+                                    label-cols-lg="9"
+                                    label-size="md"
+                                    label="Primary Color"
+                                    label-for="input-sm"
+                                >
+                                    <b-form-input
+                                        id="input-sm"
+                                        size="sm"
+                                        type="color"
+                                        v-model="primary_color"
+                                        @input="primaryColorChange"
+                                    />
+                                </b-form-group>
+                                <b-form-group
+                                    label-cols="9"
+                                    label-cols-lg="9"
+                                    label-size="md"
+                                    label="Secondary Color"
+                                    label-for="input-sm"
+                                >
+                                    <b-form-input
+                                        id="input-sm"
+                                        size="sm"
+                                        type="color"
+                                        v-model="secondary_color"
+                                        @input="secondaryColorChange"
+                                    />
+                                </b-form-group>
+                            </div>
+                            <div id="selectors-container"></div>
+                            <div id="traits-container"></div>
+                            <div id="style-manager-container"></div>
+                        </div>
+                    </b-tab>
+                    <b-tab>
+                        <template #title>
+                            <feather-icon icon="GridIcon" />
+                        </template>
+                        <div class="pr-2" style="height: 90vh;overflow: auto;">
+                            <p style="font-size: 0.95rem;" class="text-center">Drag and Drop a block to add it</p>
+                            <b-input-group class="input-group-merge">
+                                <b-input-group-prepend is-text>
+                                    <feather-icon icon="SearchIcon" />
+                                </b-input-group-prepend>
+                                <b-form-input size="sm" v-model="block_query" @keyup="searchBlock" placeholder="Search" />
+                            </b-input-group>
+                            <div id="blocks"></div>
+                        </div>
+                    </b-tab>
+                    <b-tab>
+                        <template #title>
+                            <feather-icon icon="LayersIcon" />
+                        </template>
+                        <div class="pr-2">
+                            <p style="font-size: 0.95rem;" class="text-center">Drag and Drop to rearrange bl</p>
+                            <div id="layers" style="width: 100%;">
+                                <div id="layers-container"></div>
+                                <b-button @click="showSectionModal = true" class="mt-2" variant="primary" size="sm" block>add section</b-button>
+                            </div>
+                        </div>
+                    </b-tab>
+                </b-tabs>
+            </b-col>
+        </b-row>
+  
+        <!-- modal Scrolling Content inside Modal-->
+        <b-modal
+            id="modal-scrollable"
+            scrollable
+            size="xl"
+            title="إضافة قسم"
+            cancel-title="إلغاء"
+            ok-title="ضف"
+            cancel-variant="outline-secondary"
+            v-model="showSectionModal"
+            @ok="handleOkAddSection"
+            @hidden="resetAddSection"
         >
-          <div id="gjs">
-          </div>
-        </b-overlay>
+            <b-row>
+                <b-col cols="2">
+                    <b-form-group label="Category">
+                        <b-form-checkbox
+                            v-for="option in options"
+                            :key="option.value"
+                            v-model="selected"
+                            :value="option.value"
+                            name="flavour-3a"
+                            class="mt-1"
+                        >
+                            {{ option.text }}
+                        </b-form-checkbox>
+                    </b-form-group>
+                </b-col>
+                <b-col cols="10">
+                    <b-row align-v="start" align-h="start">
+                        <b-col class="mt-2" cols="4" v-for="section in sections" :key="section.id">
+                            <b-link @click="selectSection(section)">
+                                <b-overlay :show="section.id == selected_section.id" variant="primary" >
+                                    <b-img src="/test.png" fluid alt="Responsive image" />
+                                    <template #overlay>
+                                        <div class="text-center">
+                                            <feather-icon size="50" class="text-white" icon="CheckIcon" />
+                                        </div>
+                                    </template>
+                                </b-overlay>
+                            </b-link>
+                        </b-col>
+  
+                        <b-col class="mt-2" cols="4"><b-img src="https://assets.swipepages.com/templates/section/intro-7/image.jpg" fluid alt="Responsive image" /></b-col>
+                        <b-col class="mt-2" cols="4"><b-img src="https://assets.swipepages.com/templates/section/intro-1/image.jpg" fluid alt="Responsive image" /></b-col>
+                        <b-col class="mt-2" cols="4"><b-img src="https://assets.swipepages.com/templates/section/intro-5/image.jpg" fluid alt="Responsive image" /></b-col>
+                        <b-col class="mt-2" cols="4"><b-img src="https://assets.swipepages.com/templates/section/content-18/image.jpg" fluid alt="Responsive image" /></b-col>
+                        <b-col class="mt-2" cols="4"><b-img src="https://assets.swipepages.com/templates/section/content-3/image.jpg" fluid alt="Responsive image" /></b-col>
+                        <b-col class="mt-2" cols="4"><b-img src="https://assets.swipepages.com/templates/section/content-2/image.jpg" fluid alt="Responsive image" /></b-col>
+                        <b-col class="mt-2" cols="4"><b-img src="https://assets.swipepages.com/templates/section/content-15/image.jpg" fluid alt="Responsive image" /></b-col>
+                    </b-row>
+                </b-col>
+            </b-row>
+        </b-modal>
     </div>
-</template>
-
-<script>
-import 'grapesjs/dist/css/grapes.min.css';
-import grapesjs from 'grapesjs';
-import grapesjsPresetWebpage from 'grapesjs-preset-webpage';
-import exportPlugin from 'grapesjs-plugin-export';
-import gjsForms from 'grapesjs-plugin-forms';
-import gjsBasics from 'grapesjs-blocks-basic';
-
-import blocks from './grapesjs/blocks';
-import components from './grapesjs/components';
-import panels from './grapesjs/panels';
-
-import {
-    BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BBadge, BTabs, BTab,
-    BFormInput, BFormGroup, BForm, BFormTextarea, BOverlay
-} from 'bootstrap-vue'
-
-import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
-import axios from 'axios';
-export default {
-    components: {
-        ToastificationContent,
-        BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BBadge, BTabs, BTab,
-        BFormInput, BFormGroup, BForm, BFormTextarea, BOverlay
+  </template>
+  
+  <script>
+  import 'grapesjs/dist/css/grapes.min.css';
+  import grapesjs from 'grapesjs';
+  import grapesjsPresetWebpage from 'grapesjs-preset-webpage';
+  import exportPlugin from 'grapesjs-plugin-export';
+  import gjsForms from 'grapesjs-plugin-forms';
+  import gjsBasics from 'grapesjs-blocks-basic';
+  import customCodePlugin from 'grapesjs-custom-code';
+  
+  
+  import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
+  
+  import blocks from './grapesjs/blocks';
+  import components from './grapesjs/components';
+  import panels from './grapesjs/panels';
+  import commands from './grapesjs/commands';
+  import config from './grapesjs/config'
+  
+  import Ripple from 'vue-ripple-directive'
+  
+  import { BTabs, BTab, BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BFormRadio,
+  BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup, BInputGroupPrepend, BOverlay, BModal, VBModal, BDropdown, BDropdownItem,
+  BFormRadioGroup, BCardHeader, BCardTitle, BCardBody, BBadge, BFormCheckboxGroup, BFormCheckbox, } from 'bootstrap-vue'
+  import axios from 'axios';
+  export default {
+    components:{
+        ToastificationContent, BTabs, BTab,
+        BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BFormRadio,
+        BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup, BInputGroupPrepend, BOverlay, BModal, VBModal, BDropdown, BDropdownItem,
+        BFormRadioGroup, BCardHeader, BCardTitle, BCardBody, BBadge, BFormCheckboxGroup, BFormCheckbox,
+    },
+    directives: {
+        'b-modal': VBModal,
+        Ripple,
     },
     data(){
         return {
+            template: null,
             editor: null,
-            loading: false,
-            htmlData: `
-              <h1 style="color: var(--bs-secondary)">Hello World Component!</h1><button class="btn btn-primary">test</button>
-              <div data-gjs-type="stars" data-gjs-number="3"></div>
-            `
+            tabIndex: 0,
+            block_query: '',
+            primary_color: '#B7C226',
+            secondary_color: '#FBF4EA',
+            selected: ['all'],
+            options: [
+                { text: 'كل', value: 'all' },
+                { text: 'Intro', value: 'intro' },
+                { text: 'Content', value: 'content' },
+                { text: 'Features', value: 'features' },
+            ],
+            sections: [],
+            sections_categories: [],
+            selected_section: {
+                id: 0,
+                content: ''
+            },
+            showSectionModal: false,
         }
     },
+    beforeDestroy(){
+        this.$store.commit('appConfig/UPDATE_SKIN', 'light')
+        document.documentElement.setAttribute('dir', 'rtl')
+    },
     mounted(){
+        this.$store.commit('appConfig/UPDATE_SKIN', 'dark')
         document.documentElement.setAttribute('dir', 'ltr')
-        this.editor = grapesjs.init({
-            container : '#gjs',
-            fromElement: true,
-            storageManager: false,
-            selectorManager:{
-              componentFirst: true,
-            },
-            plugins: [grapesjsPresetWebpage, exportPlugin, gjsForms, gjsBasics],
-            pluginsOpts: {
-              [grapesjsPresetWebpage]: {
-                blocks: [],
-                modalImportTitle: 'Import Template',
-                modalImportLabel: '<div style="margin-bottom: 10px; font-size: 13px;">Paste here your HTML/CSS and click Import</div>',
-                modalImportContent: function(editor) {
-                  return editor.getHtml() + '<style>'+editor.getCss()+'</style>'
-                },
-              },
-              [gjsForms]: {
-                blocks: []
-              },
-              [gjsBasics]: {
-                blocks: ['column1', 'column2', 'column3', 'column3-7', 'text', 'image', 'video', 'map']
-              },
-            },
-            canvas: {
-              styles: [
-                'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css',
-                'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css',
-                'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css'
-              ],
-              scripts: [
-                'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js',
-                'https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js',
-                'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js',
-                "https://cdn.jsdelivr.net/npm/vue/dist/vue.js",
-                "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-                "https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js",
-                "http://localhost:8080/ProductsForm.js",
-                "http://localhost:8080/ProductsForm2.js",
-              ],
-            }
-        });
-
-
-        // panels
+        
+        this.editor = grapesjs.init(config);
+  
         this.editor.Panels.removePanel('devices-c')
         this.editor.Panels.removePanel('views')
         this.editor.Panels.removePanel('options')
+        this.editor.Panels.addPanel({
+            id: "commands",
+        })
+  
         panels(this.editor)
-
-        components(this.editor, this.$route.params.id);
-
-        this.editor.Commands.add('save-in-db', {
-            run: editor => {
-                editor.store();
-                console.log(this.editor.getCss());
-                // this.editor.setStyle(':root{--bs-secondary: #c725c2;--bs-primary: #31dbc6} html {direction: rtl;}');
-                // this.editor.Css.setRule(':root','--bs-secondary: #c725c2;--bs-primary: #31dbc6');
-                console.log(this.editor.getCss());
-                const data = {
-                    html: this.editor.getHtml(),
-                    css: this.editor.getCss(),
-                    js: this.editor.getJs()
-                }
-                axios.post(`/templates/${this.$route.params.id}/save_html/`, data)
-                .then(res => {
-                    console.log(res);
-                })
-                .catch(error => {
-                    console.log(error);
-                })
-                this.loading = true
-                setTimeout(()=> {this.loading=false}, 1000)
-            }
+        commands(this, axios)
+        components(this.editor, 30);
+  
+        for(let i=0; i<blocks.length; i++){
+          this.editor.BlockManager.add(blocks[i].label, blocks[i])
+        }
+  
+        // this.editor.Css.addRules('html {direction: rtl;} :root{--bs-secondary2: #F5D260;--bs-primary: #B7C226}');
+        this.editor.on('component:selected', () => {
+            this.tabIndex = 0;
         });
-
-        // this.editor.Components.addType('stars', components.stars);
-        this.editor.Blocks.add('stars', {
-          label: 'Stars',
-          category: 'Basic',
-          attributes: { class: 'fa fa-star' },
-          content: { type: 'stars' },
-        });
-
-        // this.editor.Components.addType('productsForm', components.products);
-        this.editor.Blocks.add('productsForm', {
-          label: 'productsForm',
-          category: 'Forms',
-          attributes: { class: 'fa fa-user' },
-          content: { type: 'productsForm' },
-        });
-
-        this.editor.Blocks.add('productsForm2', {
-          label: 'productsForm2',
-          category: 'Forms',
-          attributes: { class: 'fa fa-home' },
-          content: { type: 'productsForm2' },
-        });
-
-        this.editor.BlockManager.add('Form', blocks.form)
-        this.editor.BlockManager.add('Input', blocks.input)
-        this.editor.BlockManager.add('Textarea', blocks.textarea)
-        this.editor.BlockManager.add('Select', blocks.select)
-        this.editor.BlockManager.add('Link', blocks.link)
-        this.editor.BlockManager.add('Button', blocks.button)
-
-        // this.editor.setStyle('html {direction: rtl;}')
-        // this.editor.addStyle(':root{--bs-secondary: #F5D260;--bs-primary: #B7C226}');
-        this.editor.Css.addRules('html {direction: rtl;} :root{--bs-secondary: #F5D260;--bs-primary: #B7C226}');
-
-        // init editor
-        this.editor.addComponents(`
-        <section>
-        <div class="container-fluid" style="padding-left: 0px;padding-right: 0px;"><img src="assets/img/hero.png" style="width: 100%;"></div>
-    </section>
-    <section>
-        <div class="container">
-            <div class="d-flex justify-content-start align-items-end pt-0 mt-2">
-                <div data-gjs-type="stars" data-gjs-number="5"></div><span class="d-flex text-muted me-1" style="font-size: 12px;">48,120</span>
-            </div>
-            <h2 style="font-size: 30px;" class="mb-3">زيت زيتون صفوة الجوف</h2>
-            <h3 style="font-size: 16px;color: #333;" class="mb-2">بكر ممتاز عصرة اولى</h3>
-            <p style="font-size: 16px;color: #333;" class="mb-2">زيت زيتون صفوة الجوف، بمثابة الذهب الخالص، انتقيناه من أفضل محاصيلنا مزارعنا بالجوف، حيث يتم إنتاج زيت زيتون بكرة عضوي ١٠٠٪؜ عصرة أولى على البارد.</p><img src="assets/img/Rectangle%201249.png" style="width: 100%;margin-top: 22px;">
-        </div>
-    </section>
-        <div data-gjs-type="productsForm"></div>`)
+        
+        this.getTemplate()
+        this.getSections()
     },
     methods: {
+        getTemplate(){
+            axios.get(`/templates/${this.$route.params.id}`)
+            .then(response => {
+                this.template = response.data
+                if (response.data.project_data == '' || response.data.project_data == null){
+                    this.editor.setStyle(response.data.css)
+                    this.editor.addComponents(response.data.html)
+                } else {
+                    try{
+                    this.editor.loadProjectData(JSON.parse(response.data.project_data))
+                    } catch(error){
+                        console.log('canot convert project data to json');
+                    }
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
+        handleOkAddSection(bvModalEvt){
+            bvModalEvt.preventDefault()
+            if (this.selected_section.id){
+                this.editor.addComponents(this.selected_section.content)
+                this.showSectionModal = false
+                this.resetAddSection()
+            }
+        },
+        resetAddSection(){
+            this.selected_section.id = 0
+            this.selected_section.content = ''
+        },
+        selectSection(section){
+            this.selected_section.id = section.id
+            this.selected_section.content = section.content
+        },
+        getSections(){
+            axios.get("/sections/")
+            .then(response => {
+                this.sections = response.data
+                response.data.forEach(item => {
+                    this.sections_categories.push(item.category)
+                })
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
+        searchBlock(){
+            console.log(this.editor.BlockManager.getAll());
+            for(let i=0; i<blocks.length; i++){
+                this.editor.BlockManager.add(blocks[i].label, blocks[i])
+            }
+  
+            if(this.block_query != ''){
+                const blocks = this.editor.BlockManager.getAll();
+                const blocks_id = []
+                for(let i = 0; i< blocks.length; i++){
+                    if(!blocks.models[i].attributes.label.toLowerCase().includes(this.block_query.toString().toLowerCase())){
+                        blocks_id.push(blocks.models[i].cid)
+                    }
+                }
+                blocks_id.forEach(id => {
+                    this.editor.BlockManager.remove(id)
+                })
+            }
+        },
+        primaryColorChange(){
+            this.editor.Css.setRule(':root',`--bs-secondary: #F5D260;--bs-secondary2: ${this.secondary_color};--bs-primary: ${this.primary_color}`);
+        },
+        secondaryColorChange(){
+            this.editor.Css.setRule(':root',`--bs-secondary: #F5D260;--bs-secondary2: ${this.secondary_color};--bs-primary: ${this.primary_color}`);
+        }
     }
-}
-</script>
-
-<style lang="scss">
-// $primaryColor: #444;
-// $secondaryColor: #ddd;
-// $tertiaryColor: #804f7b;
-// $quaternaryColor: #4469ee;
-
-// @import "grapesjs/src/styles/scss/main.scss";
-
-/* Reset some default styling */
-.gjs-editor-cont{
+  }
+  </script>
+  <style>
+  .gjs-one-bg {
+  background-color: #161d31;
+  }
+  .gjs-two-color {
+  color: #d0d2d6 !important;
+  }
+  .gjs-editor-cont {
     width: 100% !important;
     height: 100vh !important;
-}
-
-/* We can remove the border we've set at the beginnig */
-#gjs {
-  border: none;
-}
-/* Theming */
-
-/* Primary color for the background */
-.gjs-one-bg {
-  background-color: #090446;
-}
-
-
-/* Secondary color for the text color */
-.gjs-two-color {
-  color: #f1f1f1 !important;
-}
-
-/* Tertiary color for the background */
-.gjs-three-bg {
-  background-color: #8e87e1;
-  color: rgb(255, 255, 255);
-}
-
-.gjs-off-prv{
-  background-color: #090446;
-}
-
-/* Quaternary color for the text color */
-.gjs-four-color,
-.gjs-four-color-h:hover {
-  color: #8e87e1;
-}
-
-.gjs-btn-import {
-  margin-top: 10px;
-}
-
-.gjs-pn-options{
-  margin-right: 10px;
-}
-
-.gjs-pn-commands{
-  height: 47px;
-}
-
-.fa-desktop {
+  }
+  .gjs-four-color,
+  .gjs-four-color-h:hover {
+  color: #7367f0 !important;
+  }
+  
+  .gjs-cv-canvas{
+    width: 99%;
+    
+  }
+  .gjs-pn-commands{
+    height: 47px;
+    width: 100%;
+  }
+  .gjs-pn-options{
+    right: 1%;
+  }
+  
+  .gjs-pn-btn.gjs-pn-active {
+    background-color: #283046;
+    box-shadow: 0 0 3px rgb(0 0 0 / 25%) inset;
+  }
+  
+  
+  .fa-desktop {
     content: url('~@/assets/icons/screen.svg');
-}
-.fa-tablet {
+  }
+  .fa-tablet {
     content: url('~@/assets/icons/tablet.svg');
-}
-.fa-mobile {
+  }
+  .fa-mobile {
     content: url('~@/assets/icons/mobile.svg');
-}
-.fa-pen {
+  }
+  .fa-pen {
   content: url('~@/assets/icons/pen-tool.svg');
-}
-
-.fa-setting {
+  }
+  
+  .fa-setting {
   content: url('~@/assets/icons/settings.svg');
-}
-
-.fa-layers {
+  }
+  
+  .fa-layers {
   content: url('~@/assets/icons/layers.svg');
-}
-.fa-add {
+  }
+  .fa-add {
   content: url('~@/assets/icons/plus-square.svg');
-}
-.fa-square {
+  }
+  .fa-square {
   content: url('~@/assets/icons/square.svg');
-}
-.fa-eye {
+  }
+  .fa-eye {
   content: url('~@/assets/icons/eye.svg');
-}
-.fa-eye-slash {
+  }
+  .fa-eye-slash {
   content: url('~@/assets/icons/eye-off.svg') !important;
-}
-.fa-full {
+  }
+  .fa-full {
   content: url('~@/assets/icons/maximize.svg');
-}
-.fa-code {
+  }
+  .fa-code {
   content: url('~@/assets/icons/code.svg');
-}
-.fa-undo {
+  }
+  .fa-undo {
   content: url('~@/assets/icons/rotate-ccw.svg');
-}
-.fa-redo {
+  }
+  .fa-redo {
   content: url('~@/assets/icons/rotate-cw.svg');
-}
-.fa-import {
+  }
+  .fa-import {
   content: url('~@/assets/icons/download.svg');
-}
-.fa-clear {
+  }
+  .fa-clear {
   content: url('~@/assets/icons/trash.svg');
-}
-.fa-save {
+  }
+  .fa-save {
   content: url('~@/assets/icons/save-success.svg');
-}
-</style>
+  }
+  .fa-arrow-left {
+  content: url('~@/assets/icons/arrow-left.svg');
+  }
+  .fa-arrow-right {
+  content: url('~@/assets/icons/arrow-right.svg');
+  }
+  
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,.2);
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(0,0,0,.1);
+  }
+  </style>
+  

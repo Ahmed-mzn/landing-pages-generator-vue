@@ -27,17 +27,17 @@
                     md="6"
                 >
                     <div class="d-flex align-items-center justify-content-end">
-                    <b-form-input
-                        v-model="filter"
-                        class="d-inline-block mr-1"
-                        placeholder="بحث..."
-                    />
-                    <b-button
-                        variant="primary"
-                        @click="addModalShow = true"
-                    >
-                        <span class="text-nowrap">أضف منتج</span>
-                    </b-button>
+                        <b-form-input
+                            v-model="filter"
+                            class="d-inline-block mr-1"
+                            placeholder="بحث..."
+                        />
+                        <b-button
+                            variant="primary"
+                            @click="addModalShow = true"
+                        >
+                            <span class="text-nowrap">أضف منتج</span>
+                        </b-button>
                     </div>
                 </b-col>
             </b-row>
@@ -366,6 +366,7 @@
                                     placeholder="اختر صورة أو أسقطها هنا ..."
                                     drop-placeholder="أسقط الصورة هنا ..."
                                     browse-text="تصفح"
+                                    accept="image/*"
                                 >
                                     <template
                                         slot="file-name"

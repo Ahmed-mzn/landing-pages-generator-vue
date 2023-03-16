@@ -15,27 +15,24 @@
                 size="18"
                 class="mr-50"
                 />
-                <span class="font-weight-bold">الإعداد العام</span>
+                <span class="font-weight-bold">الإعدادات العامة</span>
             </template>
-            <b-card>
-                <account-setting-general />
-            </b-card>
+            <account-setting-general />
         </b-tab>
         <!--/ general tab -->
 
         <!-- change password tab -->
         <b-tab lazy>
-            <!-- title -->
             <template #title>
                 <feather-icon
-                icon="LockIcon"
-                size="18"
-                class="mr-50"
+                    icon="AtSignIcon"
+                    size="18"
+                    class="mr-50"
                 />
-                <span class="font-weight-bold">تغيير كلمة المرور</span>
+                <span class="font-weight-bold">النطاقات</span>
             </template>
             <b-card>
-                <account-setting-password />
+                <account-setting-domains />
             </b-card>
         </b-tab>
         <!--/ change password tab -->
@@ -93,7 +90,7 @@
 import { BTabs, BTab, BCard } from 'bootstrap-vue'
 import AccountSettingGeneral from './AccountSettingGeneral.vue'
 import AccountSettingProducts from './AccountSettingProducts.vue'
-import AccountSettingPassword from './AccountSettingPassword.vue'
+import AccountSettingDomains from './AccountSettingDomains.vue'
 import AccountSettingCities from './AccountSettingCities.vue'
 import AccountSettingArchive from './account-setting-archive/AccountSettingArchive.vue'
 
@@ -104,7 +101,7 @@ export default {
         BCard,
         AccountSettingGeneral,
         AccountSettingProducts,
-        AccountSettingPassword,
+        AccountSettingDomains,
         AccountSettingCities,
         AccountSettingArchive
     },

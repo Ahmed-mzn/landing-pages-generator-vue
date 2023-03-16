@@ -32,12 +32,6 @@
                         class="d-inline-block mr-1"
                         placeholder="بحث..."
                     />
-                    <b-button
-                        variant="primary"
-                        @click="addModalShow = true"
-                    >
-                        <span class="text-nowrap">أضف منتج</span>
-                    </b-button>
                     </div>
                 </b-col>
             </b-row>

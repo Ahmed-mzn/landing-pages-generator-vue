@@ -106,7 +106,7 @@
             </b-tab>
         </b-tabs>
 
-    <!-- create template modal -->
+    <!-- update domain modal -->
     <b-modal
       v-model="showDomainModal"
       id="modal-center"
@@ -122,79 +122,48 @@
       <validation-observer ref="simpleRules3">
         <b-form @submit.prevent="handleOkUpdateDomain" class="mt-1 mb-3">
           <b-row>
-            <template v-if="!template.is_child">
                 <b-col cols="12">
-                <b-form-group label="تريد إضافة نطاق خاص بك؟">
-                    <b-form-radio-group
-                    v-model="domainForm.type"
-                    :options="DomainOptions"
-                    @change="domainTypeChange"
-                    class="demo-inline-"
-                    name="radio-inline"
-                    />
-                </b-form-group>
+                    <label class="label">اختر النطاق</label>
                 </b-col>
-                <b-col cols="12" v-if="domainForm.type == 'custom'">
-                <b-form-group
-                    label="اسم النطاق"
-                    label-for="largeInput"
-                >
-                    <validation-provider
-                    #default="{ errors }"
-                    name="اسم النطاق"
-                    rules="required|domain|domainExist"
+                <b-col cols="12">
+                    <b-form-group> 
+                        <validation-provider
+                            #default="{ errors }"
+                            name="اختر نطاق"
+                            rules="required"
+                        >
+                            <v-select
+                                v-model="domainForm.domain"
+                                :state="errors.length > 0 ? false:null"
+                                :dir="'rtl'"
+                                label="name"
+                                :options="domains"
+                            />
+                            <small class="text-danger">{{ errors[0] }}</small>
+                        </validation-provider>
+                    </b-form-group>
+                </b-col>
+                <b-col cols="12">
+                    <b-form-group
+                        label="اسم الصفحة"
+                        label-for="largeInput"
                     >
-                    <b-input-group aria-label="aaa" size="lg" >
-                        <b-form-input
-                        :state="errors.length > 0 ? false:null"
-                        id="largeInput" v-model="domainForm.name" placeholder="مثال: store.com"
-                        />
-                    </b-input-group>
-                    <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
-                </b-form-group>
+                        <validation-provider
+                            #default="{ errors }"
+                            name="اسم الصفحة"
+                            rules="required|alphaNumDash"
+                            vid="template_name"
+                        >
+                        <b-input-group aria-label="aaa" :append="getAppendDomain">
+                            <b-form-input
+                                :state="errors.length > 0 ? false:null"
+                                id="largeInput" v-model="domainForm.template_name" placeholder="اسم الصفحة"
+                            />
+                        </b-input-group>
+                        <small class="text-danger">{{ errors[0] }}</small>
+                        </validation-provider>
+                    </b-form-group>
                 </b-col>
-                <b-col cols="12" v-else>
-                <b-form-group
-                    label="اسم النطاق"
-                    label-for="largeInput"
-                >
-                    <validation-provider
-                    #default="{ errors }"
-                    name="اسم النطاق"
-                    rules="required|alphaNumDash|domainExist2"
-                    >
-                    <b-input-group aria-label="aaa" append="//:https" prepend="sfhat.io" size="lg" >
-                        <b-form-input
-                        :state="errors.length > 0 ? false:null"
-                        id="largeInput" v-model="domainForm.name" placeholder="اسم النطاق"
-                        />
-                    </b-input-group>
-                    <small class="text-danger">{{ errors[0] }}</small>
-                    </validation-provider>
-                </b-form-group>
-                </b-col>
-            </template>
-            <b-col cols="12">
-              <b-form-group
-                label="اسم الصفحة"
-                label-for="largeInput"
-              >
-                <validation-provider
-                  #default="{ errors }"
-                  name="اسم الصفحة"
-                  rules="required|alphaNumDash"
-                >
-                  <b-input-group aria-label="aaa" size="lg" :append="'/https://'+domainForm.name">
-                    <b-form-input
-                      :state="errors.length > 0 ? false:null"
-                      id="largeInput" v-model="domainForm.template_name" placeholder="اسم الصفحة"
-                    />
-                  </b-input-group>
-                  <small class="text-danger">{{ errors[0] }}</small>
-                </validation-provider>
-              </b-form-group>
-            </b-col>
           </b-row>
           <button class="d-none" type="submit">s</button>
         </b-form>
@@ -219,7 +188,7 @@ import ToastificationContent from '@core/components/toastification/Toastificatio
 import { BTabs, BTab, BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BFormRadio,
 BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup, BInputGroupPrepend, BOverlay, BModal, VBModal, BDropdown, BDropdownItem,
 BFormRadioGroup, BCardHeader, BCardTitle, BCardBody, BBadge } from 'bootstrap-vue'
-
+import vSelect from 'vue-select'
 import axios from 'axios'
 export default {
     components:{
@@ -227,7 +196,7 @@ export default {
         ToastificationContent, ValidationProvider,  ValidationObserver, BTabs, BTab,
         BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BFormRadio,
         BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup, BInputGroupPrepend, BOverlay, BModal, VBModal, BDropdown, BDropdownItem,
-        BFormRadioGroup, BCardHeader, BCardTitle, BCardBody, BBadge
+        BFormRadioGroup, BCardHeader, BCardTitle, BCardBody, BBadge, vSelect
     },
     directives: {
         'b-modal': VBModal,
@@ -235,32 +204,40 @@ export default {
     data(){
         return {
             template: {domain:{name: ''}},
-            DomainOptions: [
-                { text: 'نعم', value: 'custom' },
-                { text: 'لا', value: 'normal' }
-            ],
             domainForm:{
-                id: null,
-                name: '',
-                type: '',
+                domain:{
+                    id: null,
+                    name: '',
+                    type: '',
+                },
                 template_name: ''
             },
+            domains: [],
             showDomainModal: false,
             required, url, domain, alphaNumDash, domainExist, domainExist2
         }
+    },
+    computed: {
+        getAppendDomain(){
+            if(this.domainForm.domain){
+                return '/https://'+this.domainForm.domain.name
+            }
+            return '/https://'
+        },
     },
     created(){
         this.getTemplate();
     },
     mounted(){
         localize('ar');
+        this.getDomains()
     },
     methods:{
         handleDomainName(domain){
             if(domain){
                 return domain.name
             } else {
-                return 'no.domain'
+                return ''
             }
         },
         getTemplate(){
@@ -268,12 +245,11 @@ export default {
             .then((response) => {
                 this.template = response.data
                 if(response.data.domain){
-                    this.domainForm.name = response.data.domain.name
-                    this.domainForm.type = response.data.domain.type
+                    this.domainForm.domain = response.data.domain
                     this.domainForm.template_name = response.data.template_name
                 } else {
-                    this.domainForm.name = ''
-                    this.domainForm.type = 'normal'
+                    this.domainForm.domain.name = ''
+                    this.domainForm.domain.type = 'normal'
                     this.domainForm.template_name = response.data.template_name
                 }
             })
@@ -283,57 +259,34 @@ export default {
             })
         },
         handleOkUpdateDomain(bvModalEvt) {
-            // Prevent modal from closing
             bvModalEvt.preventDefault()
-            // Trigger submit handler
-            if(this.domainForm.name == this.template.domain.name){
-                this.updateTemplateName()
-            } else {
-                this.$refs.simpleRules3.validate().then(success => {
-                    if (success) {
-                        this.updateDomain()
-                    }
-                })
-            }
+
+            this.$refs.simpleRules3.validate().then(success => {
+                if (success) {
+                    axios.post(`/domains/${this.domainForm.domain.id}/check_template_name/`, {template_name: this.domainForm.template_name})
+                        .then(response => {
+                            if (response.data.result){
+                                this.$refs.simpleRules3.setErrors({template_name: ['اسم الصفحة مأخوذ الرجاء اختيار واحد آخر']});
+                            } else {
+                                this.updateDomain()
+                            }
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        })
+                }
+            })
         },
         resetModalUpdateDomain(){
+            this.domainForm.domain = this.template.domain
             this.domainForm.template_name = this.template.template_name
-            this.domainForm.name = this.template.domain.name
-            this.domainForm.type = this.template.domain.type
-        },
-        domainTypeChange(){
-            if(this.template.domain.type == this.domainForm.type){
-                this.resetModalUpdateDomain()
-            } else {
-                this.domainForm.name = ''
-            }
-            this.$refs.simpleRules3.reset();
         },
         updateDomain(){
             const data = {
-                name: this.domainForm.name,
-                type: this.domainForm.type
+                template_name: this.domainForm.template_name,
+                domain: this.domainForm.domain.id
             }
-            axios.put(`/domains/${this.template.domain.id}`, data)
-            .then((response) => {
-                this.updateTemplateName()
-                this.getTemplate()
-            })
-            .catch((error) => {
-                this.$toast({
-                    component: ToastificationContent,
-                    props: {
-                    title: 'إنذار',
-                    icon: 'AlertCircleIcon',
-                    text: 'حدث خطأ أثناء تحديث النطاق.',
-                    variant: 'danger',
-                    },
-                })
-                console.log(JSON.stringify(error));
-            })
-        },
-        updateTemplateName(){
-            axios.patch(`/templates/${this.template.id}/`, {template_name: this.domainForm.template_name})
+            axios.patch(`/templates/${this.template.id}/`, data)
             .then(() => {
                 this.$toast({
                     component: ToastificationContent,
@@ -359,7 +312,20 @@ export default {
                 })
                 console.log(JSON.stringify(error));
             })
-        }
+        },
+        getDomains(){
+            axios.get("/domains")
+            .then(response => {
+                this.domains = response.data
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
     }
 }
 </script>
+
+<style lang="scss">
+    @import '~@core/scss/vue/libs/vue-select.scss';
+</style>

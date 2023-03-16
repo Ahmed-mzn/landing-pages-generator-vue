@@ -35,6 +35,22 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/templates/create',
+      name: 'create-template',
+      component: () => import('@/views/CreateTemplate.vue'),
+      meta: {
+        requireLogin: true,
+        navActiveLink: 'landing-app',
+        pageTitle: 'صفحات الهبوط',
+        breadcrumb: [
+          {
+            text: 'إنشاء صفحة',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
       path: '/templates/:id',
       name: 'templates',
       component: () => import('@/views/template-view/Template.vue'),

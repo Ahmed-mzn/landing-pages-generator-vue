@@ -16,7 +16,7 @@
             {{ $route.meta.pageTitle }}
           </h2>
           <div class="breadcrumb-wrapper">
-            <b-breadcrumb>
+            <b-breadcrumb class="breadcrumb-pipes">
               <b-breadcrumb-item to="/">
                 <feather-icon
                   icon="HomeIcon"

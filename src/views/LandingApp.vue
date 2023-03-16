@@ -7,101 +7,13 @@
       variant="white"
       rounded="lg"
     >
-      <template v-if="!appActivated">
-        <b-overlay
-          :show="showFormLoader"
-          rounded="sm"
-          spinner-variant="primary"
-        >
-          <b-card>
-            <validation-observer ref="formValidation">
-              <!-- form -->
-              <b-form class="mt-2">
-                <b-row>
-                  <b-col cols="12">
-                    <div class="d-flex align-items-center mb-2">
-                      <feather-icon
-                        icon="CheckCircleIcon"
-                        size="18"
-                      />
-                      <h4 class="mb-0 ml-75">
-                        تفعيل صفحات الهبوط
-                      </h4>
-                    </div>
-                  </b-col>
-
-                  <b-col sm="6">
-                    <b-form-group>
-                      <div class="d-flex justify-content-between">
-                        <label for="domain">النطاق</label>
-                      </div>
-                      <validation-provider
-                        #default="{ errors }"
-                        name="النطاق"
-                        rules="required"
-                      >
-                        <b-input-group
-                          class="input-group-merge"
-                          :class="errors.length > 0 ? 'is-invalid':null"
-                        >
-                        <b-input-group-prepend is-text>
-                          <feather-icon icon="Link2Icon" />
-                        </b-input-group-prepend>
-                          <b-form-input
-                            id="domain"
-                            v-model="form.domain.name"
-                            :state="errors.length > 0 ? false:null"
-                            class="form-control-merge"
-                            name="domain"
-                            placeholder="النطاق"
-                          />
-                        </b-input-group>
-                        <small class="text-danger">{{ errors[0] }}</small>
-                      </validation-provider>
-                    </b-form-group>
-                  </b-col>
-                  <!-- alert -->
-                  <b-col
-                    cols="12"
-                    class="mt-75"
-                  >
-                    <b-alert
-                      show
-                      variant="warning"
-                      class="mb-50"
-                    >
-                      <h4 class="alert-heading">
-                        يرجى الانتباه.
-                      </h4>
-                      <div class="alert-body">
-                        بعد تفعيل التطبيق ، يرجى الانتظار ما بين دقيقة إلى 5 دقائق حتى يشتغل.
-                      </div>
-                    </b-alert>
-                  </b-col>
-                  <!--/ alert -->
-
-                  <b-col cols="12">
-                    <b-button
-                      variant="primary"
-                      class="mt-2 mr-1"
-                      @click.prevent="submitForm"
-                    >
-                      تفعيل
-                    </b-button>
-                  </b-col>
-                </b-row>
-              </b-form>
-            </validation-observer>
-          </b-card>
-          </b-overlay>
-      </template>
-      <template v-else>
+      <template>
         <b-row align-v="stretch">
           <b-col
             cols="12"
-            xl="8"
-            lg="7"
-            md="7"
+            xl="12"
+            lg="12"
+            md="12"
           >
             <b-card>
               <b-row>
@@ -119,7 +31,7 @@
                       <feather-icon size="30" icon="HomeIcon" />
                     </b-avatar>
                     <div class="d-flex flex-column ml-1">
-                      <div class="mb-1">
+                      <div class="">
                         <h3 class="mb-0">
                           تطبيق صفحات الهبوط
                         </h3>
@@ -142,7 +54,7 @@
                   <b-button
                     variant="primary"
                     class="ml-1 float-right"
-                    @click="showTemplateModal = true"
+                    :to="{name: 'create-template'}"
                   >
                     <feather-icon
                       icon="PlusIcon"
@@ -155,53 +67,6 @@
             </b-card>
           </b-col>
           
-          <b-col
-            cols="12"
-            xl="4"
-            lg="5"
-            md="5"
-          >
-            <b-card>
-              <!-- User Stats -->
-              <div class="d-flex align-items-center justify-content-around">
-                <div class="d-flex align-items-center mr-2">
-                  <b-avatar
-                    variant="light-primary"
-                    rounded
-                  >
-                    <feather-icon
-                      icon="DollarSignIcon"
-                      size="18"
-                    />
-                  </b-avatar>
-                  <div class="ml-1">
-                    <h5 class="mb-0">
-                      SAR 23.3k
-                    </h5>
-                    <small>عدد المبيعات</small>
-                  </div>
-                </div>
-
-                <div class="d-flex align-items-center">
-                  <b-avatar
-                    variant="light-success"
-                    rounded
-                  >
-                    <feather-icon
-                      icon="TrendingUpIcon"
-                      size="18"
-                    />
-                  </b-avatar>
-                  <div class="ml-1">
-                    <h5 class="mb-0">
-                      99.87k
-                    </h5>
-                    <small>عدد الزيارات</small>
-                  </div>
-                </div>
-              </div>
-            </b-card>
-          </b-col>
         </b-row>
 
         <b-row align-v="stretch">
@@ -218,7 +83,7 @@
                   </b-badge>
               </b-card-header>
               <b-card-body>
-                <b-link :to="getTemplateRoute(template)">
+                <b-link :to="{name: 'templates', params: {id: template.id}}">
                   <b-img
                     fluid
                     class="mb-2"
@@ -674,15 +539,17 @@ export default {
           this.appActivated = true
           this.app = response.data
         }
-        this.steps.push(
-          {
-            target: '#step-template-'+this.app.templates[0].id,
-            header: {
-              title: 'مرحبًا',
+        if (response.data.templates.length != 0){
+          this.steps.push(
+            {
+              target: '#step-template-'+this.app.templates[0].id,
+              header: {
+                title: 'مرحبًا',
+              },
+              content: 'انقر هنا للاستمتاع بأول صفحة هبوط.',
             },
-            content: 'انقر هنا للاستمتاع بأول صفحة هبوط.',
-          },
-        )
+          )
+        }
         // this.domainForm.name = this.app.domain.name
         // this.domainForm.id = this.app.domain.id
         // this.domainForm.type = this.app.domain.type
