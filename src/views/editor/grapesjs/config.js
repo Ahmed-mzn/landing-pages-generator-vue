@@ -50,9 +50,9 @@ export default {
         "https://cdn.jsdelivr.net/npm/vue/dist/vue.js",
         "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
         "https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js",
-        "http://sfhat.io/ProductsForm.js",
-        "http://sfhat.io/ProductsForm2.js",
-        "http://sfhat.io/shareButton.js",
+        "https://sfhat.io/ProductsForm.js",
+        "https://sfhat.io/ProductsForm2.js",
+        "https://sfhat.io/shareButton.js",
       ],
     },
     styleManager: {
