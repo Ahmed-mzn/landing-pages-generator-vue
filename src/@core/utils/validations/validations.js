@@ -74,7 +74,7 @@ export const domainExist2 = extend('domainExist2', {
 
 export const alphaNumDash = extend('alphaNumDash', {
   validate: validatorAlphaNumDash,
-  message: '{_field_} يجب ان يحتوي يجب أن تحتوي فقط على أرقام، أحرف أو شرطة',
+  message: '{_field_} يجب ان يحتوي يجب أن تحتوي فقط على أرقام، أحرف أو شرطة(-)',
 })
 
 

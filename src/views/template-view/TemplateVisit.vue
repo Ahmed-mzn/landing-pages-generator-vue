@@ -50,7 +50,7 @@
                     :sort-direction="sortDirection"
                     :filter="filter"
                     show-empty
-                    empty-text="No matching records found"
+                    empty-text="لم يتم العثور على سجلات مطابقة"
                     :filter-included-fields="filterOn"
                     @filtered="onFiltered"
                 >

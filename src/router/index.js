@@ -51,6 +51,22 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/shipping',
+      name: 'shipping',
+      component: () => import('@/views/Shipping.vue'),
+      meta: {
+        requireLogin: true,
+        navActiveLink: 'shipping',
+        pageTitle: 'شركات الشحن',
+        breadcrumb: [
+          {
+            text: 'إنشاء صفحة',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
       path: '/templates/:id',
       name: 'templates',
       component: () => import('@/views/template-view/Template.vue'),

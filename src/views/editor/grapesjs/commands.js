@@ -2,6 +2,7 @@ export default (state, axios) => {
     state.editor.Commands.add('save-in-db', {
         run: editor => {
             // editor.store();
+            state.loading = true
             const data = {
                 html: state.editor.getHtml(),
                 css: state.editor.getCss(),
@@ -16,13 +17,18 @@ export default (state, axios) => {
             .catch(error => {
                 console.log(error);
             })
-            state.loading = true
-            setTimeout(()=> {state.loading=false}, 1000)
+            setTimeout(()=> {state.loading=false}, 2000)
         }
     });
     state.editor.Commands.add('back-to-dashboard', {
         run: editor => {
-            state.$router.push("/landing-app")
+            // state.$router.push("/landing-app")
+            state.$router.go(-1)
+        }
+    });
+    state.editor.Commands.add('add-section', {
+        run: editor => {
+            state.showSectionModal = true
         }
     });
 };

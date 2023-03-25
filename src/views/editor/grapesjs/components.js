@@ -5,7 +5,7 @@ const script = function(props) {
     this.appendChild(app1El);
     const app1Script = document.createElement("script");
     app1Script.type = "text/javascript";
-    app1Script.src = "http://localhost:8080/messi.js";
+    app1Script.src = "http://test.ahmedzeini.com/messi.js";
 
     this.appendChild(app1Script);
 
@@ -19,6 +19,31 @@ const script = function(props) {
     const inputElTemplateType = document.createElement("input");
     inputElTemplateType.value = props.template_code
     inputElTemplateType.id = "props-template-code"
+    inputElTemplateType.style = "display: none;"
+
+    this.appendChild(inputElTemplateType);
+}
+const scriptShare = function(props) {
+    const app1El = document.createElement("div");
+    app1El.id = "app2";
+
+    this.appendChild(app1El);
+    const app1Script = document.createElement("script");
+    app1Script.type = "text/javascript";
+    app1Script.src = "http://test.ahmedzeini.com/messi2.js";
+
+    this.appendChild(app1Script);
+
+    const inputEl = document.createElement("input");
+    inputEl.value = props.template
+    inputEl.id = "props-template-id"
+    inputEl.style = "display: none;"
+    
+    this.appendChild(inputEl);
+
+    const inputElTemplateType = document.createElement("input");
+    inputElTemplateType.value = props.template_code
+    inputElTemplateType.id = "props-share-template-code"
     inputElTemplateType.style = "display: none;"
 
     this.appendChild(inputElTemplateType);
@@ -101,6 +126,39 @@ export default (editor, template_id) => {
                 script: script,
                 template: template_id,
                 template_code: 'template_two',
+                traits: [
+                    {
+                        type: 'select',
+                        name: 'template',
+                        options: [
+                            { value: template_id, name: 'dont change !' },
+                        ],
+                        attributes: {style: 'display: none'}
+                    },
+                    {
+                        type: 'select',
+                        name: 'template_code',
+                        options: [
+                            { value: 'template_two', name: 'dont change !' },
+                        ],
+                        attributes: {style: 'display: none'}
+                    },
+                ],
+                'script-props': ['template', 'template_code'],
+            }
+        } 
+    });
+    editor.Components.addType('shareTemplate',{
+        isComponent: el => el.tagName === 'shareTemplate',
+        model: {
+            defaults: {
+                copyable: false,
+                resizable: false,
+                editable: false,
+                hoverable: true,
+                script: scriptShare,
+                template: template_id,
+                template_code: 'share-template',
                 traits: [
                     {
                         type: 'select',

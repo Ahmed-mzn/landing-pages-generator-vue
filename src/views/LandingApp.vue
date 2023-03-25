@@ -76,7 +76,7 @@
             >
               <b-card-header>
                 <h6>{{handleTemplateName(template.template_name) + ' صفحة '}}</h6>
-                  <b-badge :id="'step-template-'+template.id" :href="'//' + template.domain.name" target="_blank" variant="light-primary">
+                  <b-badge :id="'step-template-'+template.id" :href="template.domain? 'http://'+template.domain.name+'/'+template.template_name : '#'" target="_blank" variant="light-primary">
                     <feather-icon
                       icon="EyeIcon"
                     />
@@ -113,7 +113,7 @@
                           <feather-icon icon="TrashIcon" />
                           <span class="align-middle ml-50">حذف</span>
                         </b-dropdown-item>
-                        <b-dropdown-item :href="'http://'+template.domain.name+'/'+template.template_name" target="_blank">
+                        <b-dropdown-item :href="template.domain? 'http://'+template.domain.name+'/'+template.template_name : '#'" target="_blank">
                           <feather-icon icon="EyeIcon" />
                           <span class="align-middle ml-50">معاينة</span>
                         </b-dropdown-item>

@@ -12,35 +12,74 @@
                     <h4 class="mb-0">
                         صفحة هبوط {{ template.template_name }}
                     </h4>
-                    <span class="card-text">
-                        <feather-icon icon="LinkIcon" size="13" />
-                        <b-link :href="'http://'+handleDomainName(template.domain) + '/' + template.template_name" target="_blank">
-                            http://{{handleDomainName(template.domain) + '/'+ template.template_name}}
-                        </b-link>
-                        <b-badge
-                            href="#"
-                            variant="primary"
-                            class="ml-1"
+                    <template v-if="template.domain">
+                        <span class="card-text">
+                            <feather-icon icon="LinkIcon" size="13" />
+                            <b-link :href="'http://'+handleDomainName(template.domain) + '/' + template.template_name" target="_blank">
+                                http://{{handleDomainName(template.domain) + '/'+ template.template_name}}
+                            </b-link>
+                            <b-badge
+                                href="#"
+                                variant="primary"
+                                class="ml-1"
+                            >
+                                <feather-icon
+                                icon="LinkIcon"
+                                class="mr-25"
+                                />
+                                <span>Copy URL</span>
+                            </b-badge>
+                        </span>
+                        <b-button
+                            v-if="template.domain"
+                            variant="flat-warning"
+                            class="ml-2"
+                            @click="showDomainModal = true"
                         >
                             <feather-icon
-                            icon="LinkIcon"
-                            class="mr-25"
+                            icon="EditIcon"
+                            class="mr-20"
                             />
-                            <span>Copy URL</span>
-                        </b-badge>
-                    </span>
-                    <b-button
-                        v-if="template.domain"
-                        variant="flat-warning"
-                        class="ml-2"
-                        @click="showDomainModal = true"
-                    >
-                        <feather-icon
-                        icon="EditIcon"
-                        class="mr-20"
-                        />
-                        {{!template.is_child ? 'تعديل النطاق' : 'تعديل اسم الصفحة'}}
-                  </b-button>
+                                تعديل النطاق
+                        </b-button>
+                    </template>
+                    <template v-else>
+                        <span class="card-text">
+                            <b-badge
+                                href="#"
+                                variant="danger"
+                                class="ml-1"
+                            >
+                                <feather-icon
+                                icon="LinkIcon"
+                                class="mr-25"
+                                />
+                                <span>لايوجد نطاق</span>
+                            </b-badge>
+                            <b-badge
+                                href="#"
+                                variant="warning"
+                                class="ml-1"
+                            >
+                                <feather-icon
+                                icon="AlertTriangleIcon"
+                                class="mr-25"
+                                />
+                                <span>الصفحة غير منشورة</span>
+                            </b-badge>
+                        </span>
+                        <b-button
+                            variant="flat-warning"
+                            class="ml-2"
+                            @click="showDomainModal = true"
+                        >
+                            <feather-icon
+                            icon="EditIcon"
+                            class="mr-20"
+                            />
+                                إضافة نطاق
+                        </b-button>
+                    </template>
                 </div>
             </div>
         </div>
@@ -60,12 +99,12 @@
                         <feather-icon icon="HomeIcon" />
                         <span>الرئيسية</span>
                     </template>
-                    <template-main :template="template"/>
+                    <template-main :key="reloadComponent" :template="template"/>
                 </b-tab>
                 <b-tab lazy>
                     <template #title>
                         <feather-icon icon="ToolIcon" />
-                        <span>التصميم</span>
+                        <span>إعدادت </span>
                     </template>
                     <template-setting :template="template"/>
                 </b-tab>
@@ -203,6 +242,7 @@ export default {
     },
     data(){
         return {
+            reloadComponent: 0,
             template: {domain:{name: ''}},
             domainForm:{
                 domain:{
@@ -286,7 +326,7 @@ export default {
                 template_name: this.domainForm.template_name,
                 domain: this.domainForm.domain.id
             }
-            axios.patch(`/templates/${this.template.id}/`, data)
+            axios.post(`/templates/${this.template.id}/update_url/`, data)
             .then(() => {
                 this.$toast({
                     component: ToastificationContent,
@@ -299,6 +339,7 @@ export default {
                 })
                 this.getTemplate()
                 this.showDomainModal = false
+                this.reloadComponent += 1
             })
             .catch((error) => {
                 this.$toast({

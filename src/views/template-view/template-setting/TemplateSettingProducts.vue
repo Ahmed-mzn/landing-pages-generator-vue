@@ -1,11 +1,11 @@
 <template>
-    <div class="mt-2">
+    <div>
         <b-overlay
             :show="showFormLoader"
             rounded="sm"
             spinner-variant="primary"
         >
-            <b-row class="mt-3">
+            <b-row>
                 <b-col cols="12">
                     <label class="label">اختر المنتجات</label>
                 </b-col>
@@ -470,7 +470,7 @@ import { required, url, numbers } from '@validations'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import vSelect from 'vue-select'
 import axios from 'axios'
-import { temp } from '@/@core/directives/animations'
+
 export default {
     components:{
         ToastificationContent, ValidationProvider, ValidationObserver, BCard, BCardText, BRow, BCol, BButton, 
@@ -582,7 +582,7 @@ export default {
         assignProduct(){
             this.showFormLoader = true
             this.selectedProducts.forEach(element => {
-                axios.post(`/templates/${this.$route.params.id}/assign_product/${element.id}`)
+                axios.post(`/templates/${this.template.id}/assign_product/${element.id}`)
                 .then(response => {
                     this.$emit('reloadComp')
                     this.$toast({
@@ -714,7 +714,7 @@ export default {
                 buttonsStyling: false,
             }).then(result => {
                 if (result.value) {
-                    axios.delete(`/templates/${this.$route.params.id}/assign_product/${id}`)
+                    axios.delete(`/templates/${this.template.id}/assign_product/${id}`)
                     .then((response) =>{
                         this.$emit('reloadComp')
                         this.$swal({
@@ -790,7 +790,7 @@ export default {
             })
         },
         getProducts(){
-            axios.get(`/products/?template_id=${this.$route.params.id}`)
+            axios.get(`/products/?template_id=${this.template.id}`)
             .then((response) => {
                 this.products = response.data
                 this.getAllProducts()

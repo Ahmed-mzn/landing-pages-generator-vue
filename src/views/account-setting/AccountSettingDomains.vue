@@ -27,23 +27,28 @@
                         cols="12"
                         class="d-flex align-items-center justify-content-start"
                     >
-                        <b-button
-                            variant="flat-primary"
-                            class="btn-icon rounded-circle mr-1"
-                            size="sm"
-                            v-b-tooltip.hover.v-primary
-                            title="DNS معلومات"
-                            v-if="data.value == 'custom'"
-                        >
+                    <b-dropdown
+                        no-caret
+                        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
+                        variant="link"
+                    >
+                        <template #button-content>
+                            <feather-icon
+                                icon="MoreVerticalIcon"
+                                size="16"
+                                class="text-body align-middle mr-25"
+                            />
+                        </template>
+
+                        <b-dropdown-item v-if="data.item.type == 'custom'" @click="dnsModalShow = true" >
                             <feather-icon icon="InfoIcon" />
-                        </b-button>
-                        <b-button
-                            variant="flat-danger"
-                            class="btn-icon rounded-circle"
-                            size="sm"
-                        >
+                            <span class="align-middle ml-50">DNS معلومات</span>
+                        </b-dropdown-item>
+                        <b-dropdown-item @click="deleteDomain(data.item.id)">
                             <feather-icon icon="Trash2Icon" />
-                        </b-button>
+                            <span class="align-middle ml-50">حذف</span>
+                        </b-dropdown-item>
+                    </b-dropdown>
                     </b-col>
                 </b-row>
             </template>
@@ -205,19 +210,104 @@
             </b-form>
         </validation-observer>
         </b-modal>
+
+        <!-- dns domain modal -->
+        <b-modal
+            v-model="dnsModalShow"
+            id="modal-center2"
+            centered
+            size="lg"
+            cancel-variant="outline-secondary"
+            title="التعليمات لإعداد سجلات DNS Records"
+            ok-title="حسنا"
+            ok-only
+        >
+            <div class="p-1">
+                <h3 class="mb-3">اتبع هذه التعليمات لإعداد سجلات DNS RECORDS الخاصة بك</h3>
+                <app-timeline>
+                    <app-timeline-item
+                        title="تسجيل الدخول إلى مزود المجال"
+                        subtitle="قم بتسجيل الدخول إلى موقع الويب الخاص بمسجل النطاق"
+                        icon="LogInIcon"
+                        variant="danger"
+                    />
+
+                    <app-timeline-item
+                        title="إعدادات DNS Records"
+                        subtitle="انتقل إلى قسم سجلات DNS Records"
+                        icon="Navigation2Icon"
+                        variant="info"
+                    />
+
+                    <app-timeline-item
+                        title="إضافة سجل"
+                        subtitle="أضف سجل CNAME جديدًا"
+                        icon="PlusCircleIcon"
+                        variant="warning"
+                    />
+
+                    <app-timeline-item
+                        title="حقل HOST"
+                        subtitle="في حقل HOST ، اكتب أي شيء تريده"
+                        icon="Edit3Icon"
+                    />
+
+                    <app-timeline-item
+                        title="ربط نطاق بخوادمنا"
+                        subtitle="في الحقل POINTS TO / VALUE ، اكتب"
+                        icon="LinkIcon"
+                        variant="info"
+                    >
+                        <b-row>
+                            <b-col cols="12">
+                                <b-form-group
+                                    label-cols="5"
+                                    label-cols-lg="5"
+                                    label-size="Default"
+                                    label="في الحقل POINTS TO / VALUE ، اكتب"
+                                    label-for="input-sm"
+                                >
+                                    <b-input-group size="sm">
+                                        <b-form-input id="input-sm" readonly v-model="server_host" />
+                                        <b-input-group-prepend>
+                                            <b-button @click="copyServerHost(server_host)" variant="outline-primary">
+                                                <feather-icon icon="CopyIcon" />
+                                            </b-button>
+                                        </b-input-group-prepend>
+                                    </b-input-group>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                    </app-timeline-item>
+
+                    <app-timeline-item
+                        title="الانتهاء من الإعداد"
+                        subtitle="بمجرد الانتهاء من كل هذه الخطوات ، احفظ وانقر فوق التالي"
+                        icon="CheckCircleIcon"
+                        variant="success"
+                    />
+                </app-timeline>
+            </div>
+        </b-modal>
     </div>
 </template>
 
 
 <script>
+import { useClipboard } from '@vueuse/core'
+import { useToast } from 'vue-toastification/composition'
+
 import { BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BTabs, BTab, BInputGroupPrepend, BFormCheckboxGroup, BFormCheckbox, 
-    BFormRadio, BMedia,
+    BFormRadio, BMedia, BDropdown, BDropdownItem,
     BInputGroup, BFormInput, BFormGroup, BFormRadioGroup, BForm, BImg, BOverlay, BModal, VBModal, BTable, BBadge, VBTooltip } from 'bootstrap-vue'
+
+import AppTimeline from '@core/components/app-timeline/AppTimeline.vue'
+import AppTimelineItem from '@core/components/app-timeline/AppTimelineItem.vue'
 
 import { FormWizard, TabContent } from 'vue-form-wizard'
 import { ValidationProvider, ValidationObserver, localize } from 'vee-validate'
 import { required, url, domain, alphaNumDash, domainExist, domainExist2 } from '@validations'
-
+import Ripple from 'vue-ripple-directive'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import axios from 'axios'
 import 'vue-form-wizard/dist/vue-form-wizard.min.css'
@@ -227,14 +317,17 @@ export default {
         ValidationProvider, ValidationObserver, FormWizard, TabContent, ToastificationContent,
         BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BTabs, BTab, BImg, BOverlay, BModal, VBModal, BTable, BBadge, VBTooltip,
         BInputGroup, BFormInput, BFormGroup, BFormRadioGroup, BForm, BInputGroupPrepend, BFormCheckboxGroup, BFormCheckbox,
-        BFormRadio, BMedia
+        BFormRadio, BMedia, BDropdown, BDropdownItem, AppTimeline, AppTimelineItem
     },
     directives: {
         'b-modal': VBModal,
         'b-tooltip': VBTooltip,
+        Ripple
     },
     data(){
         return {
+            server_host: '37873y8u.sfhat.io',
+            dnsModalShow: false,
             DomainOptions: [
                 { text: 'نعم', value: 'custom' },
                 { text: 'لا', value: 'normal' }
@@ -260,14 +353,67 @@ export default {
             domainExist2
         }
     },
+    setup(){
+        const { copy } = useClipboard()
+        const toast = useToast()
+        const copyServerHost = server_host => {
+            copy(server_host)
+
+            toast({
+                component: ToastificationContent,
+                props: {
+                    title: 'تم نسخ اسم المضيف',
+                    icon: 'CopyIcon',
+                    variant: 'success',
+                },
+            })
+        }
+
+        return {
+            copyServerHost
+        }
+    },
     mounted(){
         this.getDomains()
     },
     methods:{
+        deleteDomain(id){
+            this.$swal({
+                title: 'هل أنت متأكد؟',
+                text: "لن تتمكن من التراجع عن هذا!",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: 'إلغاء',
+                confirmButtonText: 'نعم ، احذفه!',
+                customClass: {
+                    confirmButton: 'btn btn-primary',
+                    cancelButton: 'btn btn-outline-danger ml-1',
+                },
+                buttonsStyling: false,
+            }).then(result => {
+                if (result.value) {
+                    axios.delete(`/domains/${id}`)
+                    .then((response) =>{
+                        this.$swal({
+                            icon: 'success',
+                            title: 'تم الحذف!',
+                            text: 'تم حذف النطاق بنجاح.',
+                            confirmButtonText: 'حسنا',
+                            customClass: {
+                                confirmButton: 'btn btn-success',
+                            },
+                        })
+                        this.getDomains();
+                    })
+                    .catch((error) => {
+                        console.log(JSON.stringify(error));
+                    })
+                }
+            })
+        },
         getDomains(){
             axios.get('/domains/')
             .then(response => {
-                console.log(response);
                 this.domains = response.data
             })
             .catch(error => {

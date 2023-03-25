@@ -9,13 +9,7 @@
         >
             <b-row>
                 <b-col cols="8">
-                    <h3>الصفحات المرتبطة (
-                        <span class="text-primary">
-                            <a :href="'http://' + handleDomainName(template.domain)" target="_blank">
-                                {{ 'http://' + handleDomainName(template.domain) }}
-                            </a>
-                        </span>)
-                    </h3>
+                    <h3>الصفحات المرتبطة</h3>
                 </b-col>
                 <b-col cols="4">
                     <div class="float-right">
@@ -27,7 +21,7 @@
                         <feather-icon
                             icon="SettingsIcon"
                         />
-                            
+                            التحكم بالتوجهات
                         </b-button>
                         <b-button
                             variant="primary"
@@ -50,7 +44,7 @@
                         no-body
                     >
                         <b-card-header>
-                            <h6>{{handleTemplateName(template.template_name) + ' صفحة '}}(<span class="text-primary">الأساسية</span>)</h6>
+                            <h6>{{handleTemplateName(template.template_name)}}   (<span class="text-primary">الأساسية</span>)</h6>
                             <b-badge variant="light-primary">
                                 <feather-icon
                                     icon="TrendingUpIcon"
@@ -60,7 +54,7 @@
                             </b-badge>
                         </b-card-header>
                         <b-card-body>
-                            <b-link>
+                            <b-link :to="getTemplateRoute(template)">
                                 <b-img
                                     fluid
                                     class="mb-1"
@@ -70,7 +64,7 @@
                             <b-card-text>
                                 <b-row>
                                     <b-col cols="9">
-                                        <small class="text-muted">{{moment(template.updated_at).locale('ar').startOf('day').fromNow()}}</small>
+                                        <small class="text-muted">{{moment(template.updated_at).locale('ar').fromNow()}}</small>
                                     </b-col>
                                     <!-- <b-link @click="moreTemplate"><feather-icon class="float-right" icon="MoreVerticalIcon" /></b-link> -->
                                     <b-col cols="3">
@@ -109,7 +103,7 @@
                         no-body
                     >
                         <b-card-header>
-                            <h6>{{handleTemplateName(t.template_name) + ' صفحة '}}</h6>
+                            <h6>{{handleTemplateName(t.template_name)}}</h6>
                             <b-badge variant="light-primary">
                                 <feather-icon
                                     icon="TrendingUpIcon"
@@ -129,7 +123,7 @@
                             <b-card-text>
                                 <b-row>
                                     <b-col cols="9">
-                                        <small class="text-muted">{{moment(t.updated_at).locale('ar').startOf('day').fromNow()}}</small>
+                                        <small class="text-muted">{{moment(t.updated_at).locale('ar').fromNow()}}</small>
                                     </b-col>
                                     <!-- <b-link @click="moreTemplate"><feather-icon class="float-right" icon="MoreVerticalIcon" /></b-link> -->
                                     <b-col cols="3">
@@ -148,6 +142,10 @@
                                             <b-dropdown-item @click="createCopyTemplate(t)" >
                                                 <feather-icon icon="CopyIcon" />
                                                 <span class="align-middle ml-50">اعمل نسخة</span>
+                                            </b-dropdown-item>
+                                            <b-dropdown-item @click="openRenameTemplateModal(t)" >
+                                                <feather-icon icon="EditIcon" />
+                                                <span class="align-middle ml-50">إعادة تسمية</span>
                                             </b-dropdown-item>
                                             <b-dropdown-item @click="deleteTemplate(t)" >
                                                 <feather-icon icon="TrashIcon" />
@@ -183,6 +181,47 @@
                 </b-col>
             </b-row>
         </b-overlay>
+        <!-- rename template modal -->
+        <b-modal
+            v-model="showRenameTemplateModal"
+            id="modal-center"
+            centered
+            size="lg"
+            cancel-variant="outline-secondary"
+            title="تحديث اسم صفحة الهبوط"
+            cancel-title="إلغاء"
+            ok-title="تحديث"
+            @hidden="resetModalRenameTemplate"
+            @ok="handleOkRenameTemplate"
+        >
+        <validation-observer ref="simpleRules5">
+            <b-form @submit.stop.prevent="renameTemplate()" class="mt-1 mb-3">
+                <b-row>
+                    <b-col cols="12">
+                    <b-form-group
+                        label="اسم الصفحة"
+                        label-for="largeInput"
+                    >
+                        <validation-provider
+                        #default="{ errors }"
+                        name="اسم الصفحة"
+                        rules="required|alphaNumDash"
+                        >
+                        <b-input-group>
+                            <b-form-input
+                            :state="errors.length > 0 ? false:null"
+                            id="largeInput" v-model="rename_template.template_name" placeholder="اسم الصفحة"
+                            />
+                        </b-input-group>
+                        <small class="text-danger">{{ errors[0] }}</small>
+                        </validation-provider>
+                    </b-form-group>
+                    </b-col>
+                </b-row>
+            </b-form>
+        </validation-observer>
+        </b-modal>
+
         <!-- create template modal -->
         <b-modal
             v-model="showTemplateModal"
@@ -209,7 +248,7 @@
                         name="اسم الصفحة"
                         rules="required|alphaNumDash"
                         >
-                        <b-input-group aria-label="aaa" size="lg" :append="'/https://'+handleDomainName(template.domain)">
+                        <b-input-group>
                             <b-form-input
                             :state="errors.length > 0 ? false:null"
                             id="largeInput" v-model="templateForm.template_name" placeholder="اسم الصفحة"
@@ -220,74 +259,10 @@
                     </b-form-group>
                     </b-col>
                 </b-row>
-                <h1 class="mb-2">اختر الفئة</h1>
-                <b-card no-body class="p-1" :class="templateForm.template_code == 'template_one' ? 'popular':''">
-                    <b-link @click="seletcTemplate('template_one')">
-                        <b-row class="d-flex flex-row">
-                            <b-col cols="10">
-                                <b-media>
-                                    <template #aside>
-                                    <b-avatar
-                                        rounded
-                                        variant="light-info"
-                                        size="55"
-                                    >
-                                        <feather-icon size="25" icon="BriefcaseIcon" />
-                                    </b-avatar>
-                                    </template>
-                                    <h6 class="media-heading ">
-                                        صفحة هبوط عروض أفقيًا
-                                    </h6>
-                                    <small class="text-muted">
-                                    وصف هنا أيضا.
-                                    </small>
-                                </b-media>
-                            </b-col>
-                            <b-col cols="2" class="align-self-center">
-                                <b-form-radio
-                                    v-model="templateForm.template_code"
-                                    name="some-radios"
-                                    value="template_one"
-                                />
-                            </b-col>
-                        </b-row>
-                    </b-link>
-                </b-card>
-                <b-card no-body class="p-1" :class="templateForm.template_code == 'template_two' ? 'popular':''">
-                    <b-link @click="seletcTemplate('template_two')">
-                        <b-row @click="seletcTemplate('template_two')" class="d-flex flex-row ">
-                            <b-col cols="10">
-                                <b-media>
-                                    <template #aside>
-                                    <b-avatar
-                                        rounded
-                                        variant="light-warning"
-                                        size="55"
-                                    >
-                                        <feather-icon size="25" icon="ShoppingBagIcon" />
-                                    </b-avatar>
-                                    </template>
-                                    <h6 class="media-heading">
-                                        صفحة هبوط عروض عموديا
-                                    </h6>
-                                    <small class="text-muted">
-                                    وصف هنا أيضا.
-                                    </small>
-                                </b-media>
-                            </b-col>
-                            <b-col cols="2" class="align-self-center">
-                                <b-form-radio
-                                    v-model="templateForm.template_code"
-                                    name="some-radios"
-                                    value="template_two"
-                                />
-                            </b-col>
-                        </b-row>
-                    </b-link>
-                </b-card>
             </b-form>
         </validation-observer>
         </b-modal>
+
         <!-- variant modal -->
         <b-modal
             v-model="showVariantModal"
@@ -301,7 +276,7 @@
             @ok="handleOkVariant"
         >
         <validation-observer ref="simpleRules4">
-            <b-form @submit.stop.prevent="createTemplate()">
+            <b-form>
                 <b-row>
                     <b-col md="12">
                         <b-form-group
@@ -319,22 +294,28 @@
                                 :state="errors.length > 0 ? false:null"
                                 @keyup="resetVariant"
                                 type="number"
-                                placeholder="عدد التوجهات"
+                                placeholder="عدد إجمالي التوجهات"
                             />
                             <small class="text-danger">{{ errors[0] }}</small>
                             </validation-provider>
                         </b-form-group>
                     </b-col>
                     <b-col cols="12" v-for="t in variant.templates" :key="t.id">
-                        <h6>{{' صفحة هبوط ' + t.name}}</h6>
-                        <vue-slider
-                            v-model="t.redirect_numbers"
-                            :tooltip-formatter="formatterTooltip(t)"
-                            direction="rtl"
-                            :max="parseInt(variant.total)"
-                            :min="0"
-                            @change="variantChange(t)"
-                        />
+                        <b-row class="p-25">
+                            <b-col cols="4">
+                                <h6>{{' صفحة ' + t.name}}</h6>
+                            </b-col>
+                            <b-col cols="8">
+                                <vue-slider
+                                    v-model="t.redirect_numbers"
+                                    :tooltip-formatter="formatterTooltip(t)"
+                                    direction="rtl"
+                                    :max="parseInt(variant.total)"
+                                    :min="0"
+                                    @change="variantChange(t)"
+                                />
+                            </b-col>
+                        </b-row>
                     </b-col>
                 </b-row>
             </b-form>
@@ -368,6 +349,7 @@ export default {
         return  {
             show: true,
             showTemplateModal: false,
+            showRenameTemplateModal: false,
             showVariantModal: false,
             templateForm:{
                 template: null,
@@ -375,6 +357,10 @@ export default {
                 template_name: '',
                 parent_template: null,
                 is_copy: false
+            },
+            rename_template: {
+                id: 0,
+                template_name: ''
             },
             templates: [],
             template:{
@@ -399,6 +385,64 @@ export default {
         this.getTemplates()
     },
     methods:{
+        openRenameTemplateModal(template){
+            this.showRenameTemplateModal = true
+            this.rename_template.template_name = template.template_name
+            this.rename_template.id = template.id
+        },
+        resetModalRenameTemplate(){
+            this.rename_template.template_name = ''
+            this.rename_template.id = 0
+        },
+        handleOkRenameTemplate(bvModalEvt){
+            bvModalEvt.preventDefault()
+            this.$refs.simpleRules5.validate().then(success => {
+                if (success) {
+                    this.renameTemplate()
+                }
+            })
+        },
+        renameTemplate(){
+            axios.patch(`/templates/${this.rename_template.id}/`, this.rename_template)
+            .then(response => {
+                if(response.status == 400 || response.status == 500){
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                        title: 'إنذار',
+                        icon: 'AlertCircleIcon',
+                        text: 'حدث خطأ أثناء تحديث اسم صفحة الهبوط.',
+                        variant: 'danger',
+                        },
+                    })
+                } else{
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: 'إشعار',
+                            icon: 'CheckIcon',
+                            text: 'تم تحديث اسم صفحة الهبوط بنجاح.',
+                            variant: 'success',
+                        },
+                    })
+                    this.showRenameTemplateModal = false
+                    this.getTemplate();
+                    this.getTemplates();
+                }
+            })
+            .catch(error => {
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                    title: 'إنذار',
+                    icon: 'AlertCircleIcon',
+                    text: 'حدث خطأ أثناء تحديث اسم صفحة الهبوط.',
+                    variant: 'danger',
+                    },
+                })
+                console.log(error);
+            })
+        },
         variantChange(template){
             let newVariants = this.variant.templates.filter(t => t.id != template.id)
             var sum;
@@ -443,7 +487,6 @@ export default {
             }
         },
         resetVariantModal(){
-            console.log("reset call");
             this.variant.templates.splice(0)
             this.variant.total = this.template.total_redirect_numbers
             const obj = {
@@ -530,7 +573,7 @@ export default {
         },
         handleTemplateName(name){
             if(name){
-                if (name.length > 10) {
+                if (name.length > 120) {
                     return '...' + name.substring(0,8);
                 } else {
                     return name
@@ -538,17 +581,10 @@ export default {
             }
         },
         getTemplateRoute(template){
-            if(template.main_image == null || template.medals_image == null || 
-                template.second_image == null || template.meta_title == '' || 
-                template.customer_website == '' || template.primary_color == '' ||
-                template.review_text == '' || template.description == ''
-                || template.features.length == 0 || template.products.length == 0
-                || template.reviews.length == 0){
-                return {name: 'templates-setup', params: {id: template.id}}
+            if(template.id){
+                return {name: 'editor', params: {id: template.id}}
             }
-            else{
-                return {name: 'templates', params: {id: template.id}}
-            }
+            return null
         },
         createCopyTemplate(template){
             this.templateForm.parent_template = this.$route.params.id

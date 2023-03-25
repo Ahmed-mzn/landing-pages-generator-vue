@@ -50,30 +50,31 @@ export default {
         "https://cdn.jsdelivr.net/npm/vue/dist/vue.js",
         "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
         "https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js",
-        "http://localhost:8080/ProductsForm.js",
-        "http://localhost:8080/ProductsForm2.js",
+        "http://test.ahmedzeini.com/ProductsForm.js",
+        "http://test.ahmedzeini.com/ProductsForm2.js",
+        "http://test.ahmedzeini.com/shareButton.js",
       ],
     },
     styleManager: {
         appendTo: '#style-manager-container',
         sectors: [{
-                name: 'General',
+                name: 'الأساسية',
                 open: false,
                 buildProps: ['float', 'display', 'position', 'top', 'right', 'left', 'bottom']
             },{
-                name: 'Dimension',
+                name: 'البعد والحجم',
                 open: false,
                 buildProps: [ 'width', 'height', 'max-width', 'min-height', 'margin', 'padding']
             },{
-                name: 'Typography',
+                name: 'الطباعة',
                 open: false,
                 buildProps: ['font-family', 'font-size', 'font-weight', 'letter-spacing', 'color', 'line-height', 'text-align', 'text-shadow']
             },{
-            name: 'Decorations',
+            name: 'التزين',
             open: false,
             buildProps: ['border-radius-c', 'background-color', 'border-radius', 'border', 'box-shadow', 'background'],
             },{
-            name: 'Extra',
+            name: 'إضافي',
             open: false,
             buildProps: ['opacity', 'transition', 'perspective', 'transform'],
             properties: [{

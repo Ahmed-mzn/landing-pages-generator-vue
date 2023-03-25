@@ -222,17 +222,17 @@ const productsForm = {
             }
         },
         leaving(){
-            this.session.template = this.template.id
-            // fetch('https://landing.socialbot.dev/api/v1/public/create_visit', {
-            //     method: 'POST',
-            //     body: JSON.stringify(this.session),
-            //     credentials: "same-origin",
-            //     headers: {
-            //         "Accept": "application/json",
-            //         'Content-Type': 'application/json'
-            //     },
-            //     keepalive: true,
-            // })
+            this.session.template = this.id
+            fetch('http://localhost:8000/api/v1/public/create_visit', {
+                method: 'POST',
+                body: JSON.stringify(this.session),
+                credentials: "same-origin",
+                headers: {
+                    "Accept": "application/json",
+                    'Content-Type': 'application/json'
+                },
+                keepalive: true,
+            })
             this.session.duration = 0;
         },
         getTemplate(){

@@ -10,6 +10,11 @@ export default [
     icon: 'FileIcon',
   },
   {
+    title: 'شركات الشحن',
+    route: 'shipping',
+    icon: 'TruckIcon',
+  },
+  {
     title: 'إعدادت الحساب',
     route: 'account-setting',
     icon: 'SettingsIcon',

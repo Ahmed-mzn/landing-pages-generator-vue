@@ -1,84 +1,100 @@
 <template>
     <div>
-        <b-row>
-            <b-col cols="10" md="8" lg="10" xl="10" style="width: 100%;margin 0;padding: 0;padding-left: 10px;">
-                <div id="gjs2">
+        <b-overlay
+            :show="loading"
+            rounded="sm"
+            spinner-variant="primary"
+            variant="transparent"
+        >
+            <b-row>
+                <b-col cols="12" md="8" lg="9" xl="9" style="width: 100%;margin 0;padding: 0;padding-left: 10px;">
+                    <div id="gjs2">
+                    </div>
+                </b-col>
+                <b-col cols="12" md="4" lg="3" xl="3" style="width: 100%;margin 0;padding: 0;padding-right: 10px;">
+                    <b-tabs v-model="tabIndex" fill style="width: 100%;">
+                        <b-tab>
+                            <template #title>
+                                <feather-icon icon="ToolIcon" />
+                                <span>التصميم</span>
+                            </template>
+                            <div id="style-manager" style="width: 100%;height: 90vh; overflow: auto;">
+                                <div class="container">
+                                    <b-row>
+                                        <b-col cols="3">
+                                            <b-form-input
+                                                id="input-sm"
+                                                size="sm"
+                                                type="color"
+                                                v-model="primary_color"
+                                                @input="primaryColorChange"
+                                            />
+                                        </b-col>
+                                        <b-col style="text-align: right;" cols="9">
+                                            <label style="font-size: 1rem;">لون الأساسية</label>
+                                        </b-col>
+                                        <b-col cols="3" class="mt-1">
+                                            <b-form-input
+                                                id="input-sm"
+                                                size="sm"
+                                                type="color"
+                                                v-model="secondary_color"
+                                                @input="secondaryColorChange"
+                                            />
+                                        </b-col>
+                                        <b-col style="text-align: right;" class="mt-1" cols="9">
+                                            <label style="font-size: 1rem;">لون ثانوية</label>
+                                        </b-col>
+                                    </b-row>
+                                </div>
+                                <div id="selectors-container"></div>
+                                <div id="traits-container"></div>
+                                <div id="style-manager-container"></div>
+                            </div>
+                        </b-tab>
+                        <b-tab>
+                            <template #title>
+                                <feather-icon icon="GridIcon" />
+                                <span>العناصر</span>
+                            </template>
+                            <div class="pr-2" style="height: 90vh;overflow: auto;">
+                                <p style="font-size: 1.5rem;" class="text-center">قم بسحب وإسقاط عنصر لإضافتها</p>
+                                <b-input-group class="input-group-merge">
+                                    <b-input-group-prepend is-text>
+                                        <feather-icon icon="SearchIcon" />
+                                    </b-input-group-prepend>
+                                    <b-form-input size="sm" v-model="block_query" @keyup="searchBlock" placeholder="Search" />
+                                </b-input-group>
+                                <div id="blocks"></div>
+                            </div>
+                        </b-tab>
+                        <b-tab>
+                            <template #title>
+                                <feather-icon icon="LayersIcon" />
+                                <span>الأقسام</span>
+                            </template>
+                            <div class="pr-2">
+                                <p style="font-size: 1.5rem;" class="text-center">قم بالسحب والإفلات لإعادة ترتيب العناصر</p>
+                                <div id="layers" style="width: 100%;">
+                                    <div id="layers-container"></div>
+                                    <b-button @click="showSectionModal = true" class="mt-2" variant="primary" size="sm" block>إضافة قسم</b-button>
+                                </div>
+                            </div>
+                        </b-tab>
+                    </b-tabs>
+                </b-col>
+            </b-row>
+            <template #overlay>
+                <div class="text-center">
+                    <b-avatar
+                        size="lg"
+                        :src="require('@/assets/images/logo_round.jpg')"
+                    />
+                    <br>
+                    <b-spinner class="mt-1" variant="primary"/>
                 </div>
-            </b-col>
-            <b-col cols="2" md="4" lg="2" xl="2" style="width: 100%;margin 0;padding: 0;padding-right: 10px;">
-                <b-tabs v-model="tabIndex" fill style="width: 100%;">
-                    <b-tab>
-                        <template #title>
-                            <feather-icon icon="ToolIcon" />
-                        </template>
-                        <div id="style-manager" style="width: 100%;height: 90vh; overflow: auto;">
-                            <div class="container">
-                                <b-form-group
-                                    label-cols="9"
-                                    label-cols-lg="9"
-                                    label-size="md"
-                                    label="Primary Color"
-                                    label-for="input-sm"
-                                >
-                                    <b-form-input
-                                        id="input-sm"
-                                        size="sm"
-                                        type="color"
-                                        v-model="primary_color"
-                                        @input="primaryColorChange"
-                                    />
-                                </b-form-group>
-                                <b-form-group
-                                    label-cols="9"
-                                    label-cols-lg="9"
-                                    label-size="md"
-                                    label="Secondary Color"
-                                    label-for="input-sm"
-                                >
-                                    <b-form-input
-                                        id="input-sm"
-                                        size="sm"
-                                        type="color"
-                                        v-model="secondary_color"
-                                        @input="secondaryColorChange"
-                                    />
-                                </b-form-group>
-                            </div>
-                            <div id="selectors-container"></div>
-                            <div id="traits-container"></div>
-                            <div id="style-manager-container"></div>
-                        </div>
-                    </b-tab>
-                    <b-tab>
-                        <template #title>
-                            <feather-icon icon="GridIcon" />
-                        </template>
-                        <div class="pr-2" style="height: 90vh;overflow: auto;">
-                            <p style="font-size: 0.95rem;" class="text-center">Drag and Drop a block to add it</p>
-                            <b-input-group class="input-group-merge">
-                                <b-input-group-prepend is-text>
-                                    <feather-icon icon="SearchIcon" />
-                                </b-input-group-prepend>
-                                <b-form-input size="sm" v-model="block_query" @keyup="searchBlock" placeholder="Search" />
-                            </b-input-group>
-                            <div id="blocks"></div>
-                        </div>
-                    </b-tab>
-                    <b-tab>
-                        <template #title>
-                            <feather-icon icon="LayersIcon" />
-                        </template>
-                        <div class="pr-2">
-                            <p style="font-size: 0.95rem;" class="text-center">Drag and Drop to rearrange bl</p>
-                            <div id="layers" style="width: 100%;">
-                                <div id="layers-container"></div>
-                                <b-button @click="showSectionModal = true" class="mt-2" variant="primary" size="sm" block>add section</b-button>
-                            </div>
-                        </div>
-                    </b-tab>
-                </b-tabs>
-            </b-col>
-        </b-row>
+            </template>
+        </b-overlay>
   
         <!-- modal Scrolling Content inside Modal-->
         <b-modal
@@ -159,14 +175,14 @@
   
   import { BTabs, BTab, BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BFormRadio,
   BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup, BInputGroupPrepend, BOverlay, BModal, VBModal, BDropdown, BDropdownItem,
-  BFormRadioGroup, BCardHeader, BCardTitle, BCardBody, BBadge, BFormCheckboxGroup, BFormCheckbox, } from 'bootstrap-vue'
+  BFormRadioGroup, BCardHeader, BCardTitle, BCardBody, BBadge, BFormCheckboxGroup, BFormCheckbox, BSpinner } from 'bootstrap-vue'
   import axios from 'axios';
   export default {
     components:{
         ToastificationContent, BTabs, BTab,
         BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BFormRadio,
         BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup, BInputGroupPrepend, BOverlay, BModal, VBModal, BDropdown, BDropdownItem,
-        BFormRadioGroup, BCardHeader, BCardTitle, BCardBody, BBadge, BFormCheckboxGroup, BFormCheckbox,
+        BFormRadioGroup, BCardHeader, BCardTitle, BCardBody, BBadge, BFormCheckboxGroup, BFormCheckbox, BSpinner
     },
     directives: {
         'b-modal': VBModal,
@@ -174,6 +190,7 @@
     },
     data(){
         return {
+            loading: true,
             template: null,
             editor: null,
             tabIndex: 0,
@@ -215,7 +232,7 @@
   
         panels(this.editor)
         commands(this, axios)
-        components(this.editor, 30);
+        components(this.editor, this.$route.params.id);
   
         for(let i=0; i<blocks.length; i++){
           this.editor.BlockManager.add(blocks[i].label, blocks[i])
@@ -239,11 +256,12 @@
                     this.editor.addComponents(response.data.html)
                 } else {
                     try{
-                    this.editor.loadProjectData(JSON.parse(response.data.project_data))
+                        this.editor.loadProjectData(JSON.parse(response.data.project_data))
                     } catch(error){
                         console.log('canot convert project data to json');
                     }
                 }
+                setTimeout(()=> {this.loading=false}, 2000)
             })
             .catch(error => {
                 console.log(error);
@@ -397,6 +415,9 @@
   }
   .fa-arrow-right {
   content: url('~@/assets/icons/arrow-right.svg');
+  }
+  .fa-plus-circle {
+  content: url('~@/assets/icons/plus-circle.svg');
   }
   
   ::-webkit-scrollbar {
