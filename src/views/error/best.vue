@@ -89,8 +89,8 @@ export default {
                 "https://cdn.jsdelivr.net/npm/vue/dist/vue.js",
                 "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
                 "https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js",
-                "http://test.ahmedzeini.com/ProductsForm.js",
-                "http://test.ahmedzeini.com/ProductsForm2.js",
+                "http://sfhat.io/ProductsForm.js",
+                "http://sfhat.io/ProductsForm2.js",
               ],
             }
         });
