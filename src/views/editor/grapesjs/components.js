@@ -5,7 +5,7 @@ const script = function(props) {
     this.appendChild(app1El);
     const app1Script = document.createElement("script");
     app1Script.type = "text/javascript";
-    app1Script.src = "http://sfhat.io/messi.js";
+    app1Script.src = "https://sfhat.io/messi.js";
 
     this.appendChild(app1Script);
 
@@ -30,7 +30,7 @@ const scriptShare = function(props) {
     this.appendChild(app1El);
     const app1Script = document.createElement("script");
     app1Script.type = "text/javascript";
-    app1Script.src = "http://sfhat.io/messi2.js";
+    app1Script.src = "https://sfhat.io/messi2.js";
 
     this.appendChild(app1Script);
 
