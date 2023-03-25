@@ -50,9 +50,9 @@ export default {
         "https://cdn.jsdelivr.net/npm/vue/dist/vue.js",
         "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
         "https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js",
-        "https://https://landing.socialbot.dev/static/assets/js/ProductsForm.js",
-        "https://https://landing.socialbot.dev/static/assets/js/ProductsForm2.js",
-        "https://https://landing.socialbot.dev/static/assets/js/shareButton.js",
+        "https://landing.socialbot.dev/static/assets/js/ProductsForm.js",
+        "https://landing.socialbot.dev/static/assets/js/ProductsForm2.js",
+        "https://landing.socialbot.dev/static/assets/js/shareButton.js",
       ],
     },
     styleManager: {
