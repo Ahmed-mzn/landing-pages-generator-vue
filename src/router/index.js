@@ -53,7 +53,7 @@ const router = new VueRouter({
     {
       path: '/shipping',
       name: 'shipping',
-      component: () => import('@/views/Shipping.vue'),
+      component: () => import('@/views/ship/Shipping.vue'),
       meta: {
         requireLogin: true,
         navActiveLink: 'shipping',
@@ -103,6 +103,81 @@ const router = new VueRouter({
         breadcrumb: [
           {
             text: 'إعدادت',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/products',
+      name: 'products',
+      component: () => import('@/views/Products.vue'),
+      meta: {
+        requireLogin: true,
+        pageTitle: 'إعدادت',
+        breadcrumb: [
+          {
+            text: 'المنتجات',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/domains',
+      name: 'domains',
+      component: () => import('@/views/tools/Domains.vue'),
+      meta: {
+        requireLogin: true,
+        pageTitle: 'إعدادت',
+        breadcrumb: [
+          {
+            text: 'النطاقات',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/coupouns',
+      name: 'coupouns',
+      component: () => import('@/views/tools/Coupons.vue'),
+      meta: {
+        requireLogin: true,
+        pageTitle: 'القسائم (كوبون)',
+        breadcrumb: [
+          {
+            text: 'كوبون',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/affiliates',
+      name: 'affiliates',
+      component: () => import('@/views/tools/affiliates/Affiliates.vue'),
+      meta: {
+        requireLogin: true,
+        pageTitle: 'التسويق بالعمولة',
+        breadcrumb: [
+          {
+            text: 'العملاء',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
+      path: '/warehouses',
+      name: 'warehouses',
+      component: () => import('@/views/ship/Warehouses.vue'),
+      meta: {
+        requireLogin: true,
+        pageTitle: 'الشحن',
+        breadcrumb: [
+          {
+            text: 'عنوان المستودعات',
             active: true,
           },
         ],

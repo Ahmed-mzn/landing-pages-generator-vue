@@ -251,8 +251,10 @@
             axios.get(`/templates/${this.$route.params.id}`)
             .then(response => {
                 this.template = response.data
+                console.log(response.data);
                 if (response.data.project_data == '' || response.data.project_data == null){
-                    this.editor.setStyle(response.data.css)
+                    console.log('ok');
+                    // this.editor.setStyle(response.data.css)
                     this.editor.addComponents(response.data.html)
                 } else {
                     try{

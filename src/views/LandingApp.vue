@@ -87,7 +87,8 @@
                   <b-img
                     fluid
                     class="mb-2"
-                    :src="require('@/assets/images/pages/skeleton400_still.gif')"
+                    :src="template.preview_image"
+                    style="width:100%; height:160px;"
                   />
                 </b-link>
                 <b-card-text>

@@ -121,7 +121,7 @@
                     <feather-icon icon="ShoppingCartIcon" />
                     <span>الطلبات</span>
                 </template>
-                <b-card>
+                <b-card no-body class="mb-0">
                     <template-orders :template="template"/>
                 </b-card>
             </b-tab>
@@ -130,7 +130,7 @@
                     <feather-icon icon="TrendingUpIcon" />
                     <span>الزيارات</span>
                 </template>
-                <b-card>
+                <b-card no-body class="mb-0">
                     <template-visit :template="template"/>
                 </b-card>
             </b-tab>
@@ -139,7 +139,7 @@
                     <feather-icon icon="ExternalLinkIcon" />
                     <span>المشاركات</span>
                 </template>
-                <b-card>
+                <b-card no-body class="mb-0">
                     <template-shares :template="template"/>
                 </b-card>
             </b-tab>

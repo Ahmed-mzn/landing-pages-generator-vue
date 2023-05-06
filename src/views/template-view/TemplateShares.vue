@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="mb-2">
+        <div class="m-2">
 
             <!-- Table Top -->
             <b-row>
@@ -81,23 +81,25 @@
             </b-col>
         </b-row>
 
-        <b-row>
-            <b-col
-                cols="12"
-            >
-                <b-pagination
-                    v-model="currentPage"
-                    :total-rows="totalRows"
-                    :per-page="perPage"
-                    class="mb-0 mt-1 mt-sm-0"
-                    pills
-                    first-number
-                    last-number
-                    prev-class="next-item"
-                    next-class="prev-item"
-                />
-            </b-col>
-        </b-row>
+        <div class="mx-2 mb-2">
+            <b-row>
+                <b-col
+                    cols="12"
+                >
+                    <b-pagination
+                        v-model="currentPage"
+                        :total-rows="totalRows"
+                        :per-page="perPage"
+                        class="mb-0 mt-1 mt-sm-0"
+                        pills
+                        first-number
+                        last-number
+                        prev-class="next-item"
+                        next-class="prev-item"
+                    />
+                </b-col>
+            </b-row>
+        </div>
     </div>
 </template>
 

@@ -30,19 +30,11 @@
                 </b-avatar>
                 <div class="user-page-info">
                     <h6 class="mb-0">
-                    {{city.name}}
+                    {{city.main_city.name_ar}}
                     </h6>
                     <small class="text-muted">السعودية</small>
                 </div>
                 <div class="ml-auto">
-                    <b-button
-                        variant="flat-success"
-                        class="btn-icon rounded-circle mr-1"
-                        size="sm"
-                        @click="showEditModal(city)"
-                        >
-                        <feather-icon icon="EditIcon" />
-                    </b-button>
                     <b-button
                         variant="flat-danger"
                         class="btn-icon rounded-circle"
@@ -56,25 +48,35 @@
             <validation-observer ref="simpleRules">
                 <b-form class="mt-3">
                     <b-row>
-                        <b-col cols="12">
-                            <b-form-group
-                                label="اسم المدينة"
-                                label-for="name"
+                        <b-col cols="12" class="mb-2">
+                            <v-select
+                                v-model="selectedCities"
+                                dir="rtl"
+                                multiple
+                                :options="mainCities"
+                                label="name_ar"
+                                placeholder="حدد المدن"
                             >
-                                <validation-provider
-                                #default="{ errors }"
-                                name="اسم المدينة"
-                                rules="required"
-                                >
-                                <b-form-input
-                                    v-model="city.name"
-                                    :state="errors.length > 0 ? false:null"
-                                    placeholder="اسم المدينة"
-                                    id="name"
-                                />
-                                <small class="text-danger">{{ errors[0] }}</small>
-                                </validation-provider>
-                            </b-form-group>
+                                <template #option="{ name_ar, name_en }">
+                                    <div
+                                        class="d-flex justify-content-start align-items-center"
+                                    >
+                                        <b-avatar
+                                            variant="light-secondary"
+                                            class="mr-50"
+                                            size="40"
+                                        >
+                                            <feather-icon class="text-dark" icon="MapPinIcon" />
+                                        </b-avatar>
+                                        <div class="user-page-info">
+                                            <h6 class="mb-0">
+                                            {{name_ar}}
+                                            </h6>
+                                            <small class="text-muted">{{name_en}}</small>
+                                        </div>
+                                    </div>
+                                </template>
+                            </v-select>
                         </b-col>
                         <b-col cols="12">
                             <b-button
@@ -89,45 +91,6 @@
                 </b-form>
             </validation-observer>
         </b-overlay>
-        <!-- basic modal -->
-        <b-modal
-            id="modal-1"
-            ref="modal-edit"
-            v-model="editModalShow"
-            title="تحديث المدينة"
-            ok-title="احفظ التغييرات"
-            cancel-title="إلغاء"
-            cancel-variant="outline-secondary"
-            @hidden="resetModal"
-            @ok="handleOk"
-        >
-            <validation-observer ref="simpleRules2">
-                <b-form class="mt-3" @submit.stop.prevent="updateCity()">
-                    <b-row>
-                        <b-col cols="12">
-                            <b-form-group
-                                label="اسم المدينة"
-                                label-for="name"
-                            >
-                                <validation-provider
-                                #default="{ errors }"
-                                name="اسم المدينة"
-                                rules="required"
-                                >
-                                <b-form-input
-                                    v-model="cityEdit.name"
-                                    :state="errors.length > 0 ? false:null"
-                                    placeholder="اسم المدينة"
-                                    id="name"
-                                />
-                                <small class="text-danger">{{ errors[0] }}</small>
-                                </validation-provider>
-                            </b-form-group>
-                        </b-col>
-                    </b-row>
-                </b-form>
-            </validation-observer>
-        </b-modal>
     </div>
 </template>
 
@@ -136,113 +99,30 @@ import {
     BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BBadge, BTabs, BTab, BMedia, BImg, BFormInput, BFormGroup, BForm,
     BOverlay, VBModal, BFormRating, BModal, BAlert
 } from 'bootstrap-vue'
-import { ValidationProvider, ValidationObserver, localize, extend } from 'vee-validate'
-import { required, url, numbers } from '@validations'
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
-
+import vSelect from 'vue-select'
 import axios from 'axios'
 export default {
     components:{
-        ToastificationContent,
-        ValidationProvider,
-        ValidationObserver,
-        BCard,
-        BCardText,
-        BRow,
-        BCol,
-        BButton,
-        BLink,
-        BAvatar,
-        BBadge,
-        BTabs,
-        BTab,
-        BMedia,
-        BImg,
-        BFormInput,
-        BFormGroup,
-        BForm,
-        BOverlay,
-        VBModal,
-        BModal,
-        BFormRating, BAlert
+        ToastificationContent, ValidationProvider, ValidationObserver, BCard, BCardText, BRow, BCol, BButton, BLink, BAvatar, 
+        BBadge, BTabs, BTab, BMedia, BImg, BFormInput, BFormGroup, BForm, BOverlay, VBModal, BModal, BFormRating, BAlert, vSelect
     },
     directives: {
         'b-modal': VBModal,
     },
     data(){
         return {
+            selectedCities: [],
             showFormLoader: false,
-            cities: [],
-            city: {
-                name: '',
-                app: null
-            },
-            app: null,
-            cityEdit: {
-                id: null,
-                name: '',
-            },
-            editModalShow: false,
-            required,
-            url,
-            numbers
+            mainCities: [],
+            cities: []
         }
     },
     created(){
         this.getCities()
-        this.getApp()
-        localize('ar')
     },
     methods: {
-        showEditModal(city){
-            this.cityEdit.id = city.id
-            this.cityEdit.name = city.name
-            this.editModalShow = true
-        },
-        resetModal(){
-            this.city.name = ''
-        },
-        handleOk(bvModalEvt) {
-            // Prevent modal from closing
-            bvModalEvt.preventDefault()
-            // Trigger submit handler
-            this.updateCity()
-        },
-        updateCity(){
-            this.$refs.simpleRules2.validate().then(success => {
-                if(success){
-                    axios.patch(`/cities/${this.cityEdit.id}/`, this.cityEdit)
-                    .then((response) => {
-                        this.$toast({
-                            component: ToastificationContent,
-                            props: {
-                                title: 'إشعار',
-                                icon: 'CheckIcon',
-                                text: 'تم تحديث المدينة بنجاح.',
-                                variant: 'success',
-                            },
-                        })
-                        this.getCities()
-                        // Hide the modal manually
-                        this.$nextTick(() => {
-                            this.$refs['modal-edit'].toggle('#toggle-btn')
-                        })
-                    })
-                    .catch((error) => {
-                        this.$toast({
-                            component: ToastificationContent,
-                            props: {
-                            title: 'إنذار',
-                            icon: 'AlertCircleIcon',
-                            text: 'حدث خطأ أثناء تحديث المدينة.',
-                            variant: 'danger',
-                            },
-                        })
-                        console.log(JSON.stringify(error));
-                    })
-                }
-            });
-        },
         deleteCity(id){
             this.$swal({
                 title: 'هل أنت متأكد؟',
@@ -279,61 +159,85 @@ export default {
         },
         submitForm(){
             this.showFormLoader = true;
-            this.$refs.simpleRules.validate().then(success => {
-                if (success) {
-                    axios.post('/cities/', this.city)
-                    .then((response) => {
-                        this.$toast({
-                            component: ToastificationContent,
-                            props: {
-                                title: 'إشعار',
-                                icon: 'CheckIcon',
-                                text: 'تم اضافة المدينة بنجاح.',
-                                variant: 'success',
-                            },
-                        })
-                        this.getCities()
-                        this.city.name = ''
-                        this.$refs.simpleRules.reset();
-                        this.showFormLoader = false
+            if(this.selectedCities.length == 0){
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                    title: 'إنذار',
+                    icon: 'AlertCircleIcon',
+                    text: 'لم تقم بإختيار أي مدن المدينة.',
+                    variant: 'danger',
+                    },
+                })
+            } else{
+                axios.post('/cities/bulk/', this.selectedCities)
+                .then((response) => {
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: 'إشعار',
+                            icon: 'CheckIcon',
+                            text: 'تم اضافة المدينة بنجاح.',
+                            variant: 'success',
+                        },
                     })
-                    .catch((error) => {
-                        this.$toast({
-                            component: ToastificationContent,
-                            props: {
+                    this.getCities()
+                    this.selectedCities = []
+                    this.showFormLoader = false
+                })
+                .catch((error) => {
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
                             title: 'إنذار',
                             icon: 'AlertCircleIcon',
                             text: 'حدث خطأ أثناء إضافة المدينة.',
                             variant: 'danger',
-                            },
-                        })
-                        this.showFormLoader = false;
-                        JSON.stringify(error);
+                        },
                     })
-                } else {
                     this.showFormLoader = false;
-                }
-            })
+                    JSON.stringify(error);
+                })
+            }
+            this.showFormLoader = false;
         },
         getCities(){
             axios.get(`/cities/`)
             .then((response) => {
                 this.cities = response.data
+                
+                setTimeout(() => {this.getMainCities();}, 200);
             })
             .catch((error) => {
                 JSON.stringify(error);
             })
         },
-        getApp(){
-            axios.get('/get_app')
-            .then((response) => {
-                this.city.app = response.data.id
-                this.app = response.data
+        getMainCities(){
+            axios.get("/cities/main")
+            .then(response => {
+                this.mainCities = []
+                response.data.forEach(element => {
+                    if (!this.checkCityById(element.id)){
+                        this.mainCities.push(element)
+                    }
+                })
             })
-            .catch((error) => {
-                console.log(JSON.stringify(error));
+            .catch(error => {
+                console.log(error);
             })
         },
+        checkCityById(id){
+            let result = false;
+            this.cities.forEach(element => {
+                if (element.main_city.id == id){
+                    result = true;
+                }
+            })
+            return result;
+        }
     }
 }
 </script>
+<style lang="scss">
+    @import '~@core/scss/vue/libs/vue-select.scss';
+</style>

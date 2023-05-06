@@ -58,7 +58,7 @@
                                 <b-img
                                     fluid
                                     class="mb-1"
-                                    :src="require('@/assets/images/pages/skeleton400_still.gif')"
+                                    :src="template.preview_image"
                                 />
                             </b-link>
                             <b-card-text>
@@ -117,7 +117,7 @@
                                 <b-img
                                     fluid
                                     class="mb-1"
-                                    :src="require('@/assets/images/pages/skeleton400_still.gif')"
+                                    :src="t.preview_image"
                                 />
                             </b-link>
                             <b-card-text>
@@ -324,6 +324,7 @@
     </div>
 </template>
 <script>
+import html2canvas from 'html2canvas';
 import { ValidationProvider, ValidationObserver, localize } from 'vee-validate'
 import VueSlider from 'vue-slider-component'
 import { required, url, integer, alphaNumDash } from '@validations'
@@ -385,6 +386,18 @@ export default {
         this.getTemplates()
     },
     methods:{
+        async getTemplateCaptureImage(template){
+            var url, iframe = document.createElement('iframe');
+
+            document.body.appendChild(iframe);
+
+            var iframedoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframedoc.body.innerHTML = template.html;
+
+            var canvas = await html2canvas(iframedoc.body, {width: 1000, height: 500}).then(canvas => {return canvas})
+            const imageURL = canvas.toDataURL("image/png");
+            return imageURL
+        },
         openRenameTemplateModal(template){
             this.showRenameTemplateModal = true
             this.rename_template.template_name = template.template_name

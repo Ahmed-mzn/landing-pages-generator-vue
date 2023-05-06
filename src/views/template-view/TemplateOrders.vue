@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="mb-2">
+        <div class="m-2">
 
             <!-- Table Top -->
             <b-row>
@@ -58,7 +58,7 @@
                     class="position-relative"
                     :per-page="perPage"
                     :current-page="currentPage"
-                    :items="forms"
+                    :items="orders"
                     :fields="fields"
                     :sort-by.sync="sortBy"
                     :sort-desc.sync="sortDesc"
@@ -68,59 +68,123 @@
                     empty-text="لم يتم العثور على سجلات مطابقة"
                     :filter-included-fields="filterOn"
                     @filtered="onFiltered"
+                    @row-clicked="onRowClicked"
                 >
-                    <template #cell(product)="data">
+
+                    <!-- Column: Id -->
+                    <template #cell(id)="data">
+                        <b-link
+                            class="font-weight-bold"
+                        >
+                        0000{{ data.value }}#
+                        </b-link>
+                    </template>
+
+                    <template #cell(lead)="data">
                         <b-media vertical-align="center">
                             <template #aside>
                                 <b-avatar
                                     size="32"
-                                    :src="data.item.product.image"
+                                    :id="`invoice-row-${data.item.id}`"
                                 />
+                                <b-tooltip
+                                    :target="`invoice-row-${data.item.id}`"
+                                    placement="bottom"
+                                    variant="secondary"
+                                >
+                                    <p class="mb-0">
+                                        {{data.item.lead.name}}
+                                    </p>
+                                    <p class="mb-0">
+                                        هاتف: {{data.item.lead.phone_number}}
+                                    </p>
+                                    <p class="mb-0">
+                                        عنوان: {{data.item.lead.address}}
+                                    </p>
+                                </b-tooltip>
                             </template>
                             <b-link
                                 class="font-weight-bold d-block text-nowrap"
+                                
                             >
-                                {{ data.item.product.title }}
+                                {{ data.item.lead.name }}
                             </b-link>
-                            <small class="text-muted">{{ data.item.product.description.substring(0,15) }}</small>
+                            <small class="text-muted">{{ data.item.lead.phone_number }}</small>
                         </b-media>
                     </template>
+                    <template #cell(status)="data">
+                        <b-badge variant="light-primary">{{data.value}}</b-badge>
+                    </template>
+
                     <template #cell(created_at)="data">
                         {{moment(data.value).format('MMMM Do YYYY, H:MM:SS')}}
                     </template>
-                    <template #cell(name)="data">
-                        {{data.item.lead.name}}
+
+                    <template #cell(shipping_company)="data">
+                        {{ data.value.name }}
                     </template>
-                    <template #cell(phone_number)="data">
-                        <span dir="ltr" class="text-primary">{{ '+966'+data.item.lead.phone_number }}</span>
+
+                    <template #cell(is_paid)="data">
+                        <b-badge :variant="data.value ? 'light-success' : 'light-danger'">
+                            <feather-icon
+                                :icon="data.value ? 'CheckCircleIcon' : 'XCircleIcon'"
+                                class="mr-25"
+                            />
+                            <span v-html="data.value ? 'تم الدفع' : 'غير مدفوع'"></span>
+                        </b-badge>
                     </template>
-                    <template #cell(city)="data">
-                        {{data.item.lead.city}}
+
+                    <!-- Column: Actions -->
+                    <template #cell(actions)="data">
+                        <div class="text-nowrap">
+                            <feather-icon
+                                :id="`invoice-row-${data.item.id}-send-icon`"
+                                icon="SendIcon"
+                                class="cursor-pointer"
+                                size="16"
+                            />
+                            <b-tooltip
+                                title="Send Invoice"
+                                class="cursor-pointer"
+                                :target="`invoice-row-${data.item.id}-send-icon`"
+                            />
+
+                            <feather-icon
+                                :id="`invoice-row-${data.item.id}-preview-icon`"
+                                icon="EyeIcon"
+                                size="16"
+                                class="mx-1"
+                            />
+                            <b-tooltip
+                                title="Preview Invoice"
+                                :target="`invoice-row-${data.item.id}-preview-icon`"
+                            />
+                        </div>
                     </template>
-                    <template #cell(address)="data">
-                        {{data.item.lead.address}}
-                    </template>
+
                 </b-table>
             </b-col>
         </b-row>
 
-        <b-row>
-            <b-col
-                cols="12"
-            >
-                <b-pagination
-                    v-model="currentPage"
-                    :total-rows="totalRows"
-                    :per-page="perPage"
-                    class="mb-0 mt-1 mt-sm-0"
-                    pills
-                    first-number
-                    last-number
-                    prev-class="next-item"
-                    next-class="prev-item"
-                />
-            </b-col>
-        </b-row>
+        <div class="mx-2 mb-2">
+            <b-row>
+                <b-col
+                    cols="12"
+                >
+                    <b-pagination
+                        v-model="currentPage"
+                        :total-rows="totalRows"
+                        :per-page="perPage"
+                        class="mb-0 mt-1 mt-sm-0"
+                        pills
+                        first-number
+                        last-number
+                        prev-class="next-item"
+                        next-class="prev-item"
+                    />
+                </b-col>
+            </b-row>
+        </div>
     </div>
 </template>
 
@@ -129,8 +193,8 @@ require('js-file-download');
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 import {
     BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BBadge, BTabs, BTab, BMedia, BImg, BFormInput, BFormGroup, BForm,
-    BOverlay, BFormCheckbox, BModal, BFormFile, BTable, BFormSelect, BPagination, BInputGroup, 
-        BInputGroupAppend
+    BOverlay, BFormCheckbox, BModal, BFormFile, BTable, BFormSelect, BPagination, BInputGroup, BInputGroupAppend, BTooltip,
+    BDropdown, BDropdownItem
 } from 'bootstrap-vue'
 import vSelect from 'vue-select'
 import axios from 'axios'
@@ -140,7 +204,7 @@ export default {
         BCard, BCardText, BRow, BCol, BButton, ToastificationContent,
         BLink, BAvatar, BBadge, BTabs, BTab, BMedia, BImg, BFormInput, BFormGroup, BForm, BOverlay, 
         BModal, BFormFile, BTable, BFormSelect, BPagination, BInputGroup, 
-        BInputGroupAppend, BFormCheckbox, vSelect
+        BInputGroupAppend, BFormCheckbox, vSelect, BTooltip, BDropdown, BDropdownItem
     },
     props: {
         template: {
@@ -157,7 +221,7 @@ export default {
         },
     },
     mounted(){
-        this.getVisist()
+        this.getOrders()
     },
     data(){
         return{
@@ -171,18 +235,24 @@ export default {
             filter: null,
             filterOn: [],
             fields: [
-                {key: 'product', label: 'المنتج', sortable: true},
-                {key: 'name', label: 'اسم الزبون', sortable: true},
-                {key: 'phone_number', label: 'رقم الهاتف', sortable: true},
-                {key: 'city', label: 'المدينة', sortable: true},
-                {key: 'address', label: 'العنوان'},
-                {key: 'quantity', label: 'الكمية', sortable: true},
+                {key: 'id', label: '#'},
+                {key: 'lead', label: 'المنتج'},
+                {key: 'is_paid', label: 'رقم الهاتف', sortable: true},
+                {key: 'shipping_company', label: 'المدينة', sortable: true},
+                {key: 'amount', label: 'العنوان'},
+                {key: 'status', label: 'الكمية', sortable: true},
                 {key: 'created_at', label: 'التاريخ'},
+                {key: 'actions', label: 'actions'},
             ],
-            forms: []
+            orders: []
         }
     },
     methods:{
+        onRowClicked(item, index, event){
+            console.log(item);
+            console.log(index);
+            console.log(event);
+        },
         download(){
             axios.get("/templates/35/download_excel/", {responseType: 'blob'})
             .then(response => {
@@ -218,11 +288,10 @@ export default {
             this.totalRows = filteredItems.length
             this.currentPage = 1
         },
-        getVisist(){
-            axios.get(`/forms?template_id=${this.template.id}`)
+        getOrders(){
+            axios.get(`/orders?template_id=${this.template.id}`)
             .then((response) => {
-                console.log(response);
-                this.forms = response.data
+                this.orders = response.data
                 this.totalRows = response.data.length
             })
             .catch((error) => {
