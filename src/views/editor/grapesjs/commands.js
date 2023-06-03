@@ -31,4 +31,32 @@ export default (state, axios) => {
             state.showSectionModal = true
         }
     });
+
+    state.editor.Commands.add('open-template-settings', {
+        run: editor => {
+            state.showSettingModal = true
+        }
+    });
+
+    state.editor.Commands.add('preview-template', {
+        run: editor => {
+            if (!state.is_child){
+                window.open('http://'+state.template.domain.name + '/' + state.template.template_name, '_blank');
+            }
+        }
+    });
+
+    state.editor.Commands.add('test', {
+        run: editor => {
+            state.showScrapModal = true
+            // axios.post('/templates/scarp_page/', {website_url: 'https://rashof.com/'})
+            // .then(response => {
+            //     console.log(response);
+            //     editor.setComponents(response.data.content)
+            // })
+            // .catch(error => {
+            //     console.log(error);
+            // })
+        }
+    });
 };

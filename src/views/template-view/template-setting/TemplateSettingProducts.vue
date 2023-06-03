@@ -56,7 +56,6 @@
             <b-button
                 class="mt-2 mb-2"
                 variant="primary"
-                type="submit"
                 @click="assignProduct"
             >
                 أضف المنتجات
@@ -523,6 +522,9 @@ export default {
     created(){
         this.getProducts()
         localize('ar')
+    },
+    mounted(){
+        console.log(this.template);
     },
     methods: {
         validateSetup(){

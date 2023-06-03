@@ -31,7 +31,7 @@
                                 icon="DownloadIcon"
                                 class="mr-50"
                             />
-                            <span class="align-middle">تنزيل</span>
+                            <span class="align-middle" v-html="selected.length == 0 ? 'تنزيل' : `تنزيل (${selected.length})`"></span>
                         </b-button>
                     </div>
                 </b-col>
@@ -71,13 +71,29 @@
                     @row-clicked="onRowClicked"
                 >
 
+                <template v-slot:head(select)="data">
+                    <b-form-checkbox
+                        value="all"
+                        class="custom-control-primary"
+                    />
+                </template>
+
                     <!-- Column: Id -->
                     <template #cell(id)="data">
                         <b-link
                             class="font-weight-bold"
+                            :to="{name: 'order', params: {id: data.item.id}}"
                         >
                         0000{{ data.value }}#
-                        </b-link>
+                        </b-link><br>
+                        <small>{{ moment(data.item.created_at).format('MMMM Do YYYY, H:MM:SS') }}</small><br>
+                        <b-badge :variant="data.item.payment_type == 'cod' ? 'light-warning' : 'light-success'">
+                            <feather-icon
+                                :icon="data.item.payment_type == 'cod' ? 'DollarSignIcon' : 'CreditCardIcon'"
+                                class="mr-25"
+                            />
+                            <span v-html="data.item.payment_type == 'cod' ? 'الدفع عند الاستلام' : 'مسبق الدفع'"></span>
+                        </b-badge>
                     </template>
 
                     <template #cell(lead)="data">
@@ -96,7 +112,7 @@
                                         {{data.item.lead.name}}
                                     </p>
                                     <p class="mb-0">
-                                        هاتف: {{data.item.lead.phone_number}}
+                                        هاتف: {{'966'+data.item.lead.phone_number}}
                                     </p>
                                     <p class="mb-0">
                                         عنوان: {{data.item.lead.address}}
@@ -109,22 +125,39 @@
                             >
                                 {{ data.item.lead.name }}
                             </b-link>
-                            <small class="text-muted">{{ data.item.lead.phone_number }}</small>
+                            <small class="text-muted">{{ '966'+data.item.lead.phone_number }}</small>
                         </b-media>
                     </template>
                     <template #cell(status)="data">
                         <b-badge variant="light-primary">{{data.value}}</b-badge>
                     </template>
 
-                    <template #cell(created_at)="data">
+                    <!-- <template #cell(created_at)="data">
                         {{moment(data.value).format('MMMM Do YYYY, H:MM:SS')}}
-                    </template>
+                    </template> -->
 
                     <template #cell(shipping_company)="data">
-                        {{ data.value.name }}
+                        <b-link :href="data.item.shipping_awb" target="_blank">
+                            {{ data.value.name }}
+                            <br>
+                            <b-img
+                                :src="require(`@/assets/images/channels/${data.item.shipping_company.name}.png`)"
+                                width="60"
+                                alt="placeholder"
+                            />
+                        </b-link>
+                    </template>
+
+                    <template #cell(select)="data">
+                        <b-form-checkbox
+                            v-model="selected"
+                            :value="data.item.id"
+                            class="custom-control-primary"
+                        />
                     </template>
 
                     <template #cell(is_paid)="data">
+                        <strong>{{data.item.amount + ' SAR'}}</strong><br>
                         <b-badge :variant="data.value ? 'light-success' : 'light-danger'">
                             <feather-icon
                                 :icon="data.value ? 'CheckCircleIcon' : 'XCircleIcon'"
@@ -154,6 +187,7 @@
                                 icon="EyeIcon"
                                 size="16"
                                 class="mx-1"
+                                @click="$router.push({name: 'order', params: {id: data.item.id}})"
                             />
                             <b-tooltip
                                 title="Preview Invoice"
@@ -222,11 +256,16 @@ export default {
     },
     mounted(){
         this.getOrders()
+        // fileDownload("https://aymakan.com.sa/pdf/generate/7e2c6727-f595-448f-ac88-04f6d578849b", "test.pdf")
+        axios.get("https://aymakan.com.sa/pdf/generate/7e2c6727-f595-448f-ac88-04f6d578849b")
+        .then(response => {
+            console.log(response);
+        })
     },
     data(){
         return{
-            perPage: 5,
-            pageOptions: [3, 5, 10],
+            perPage: 10,
+            pageOptions: [10, 25, 50, 100],
             totalRows: 1,
             currentPage: 1,
             sortBy: '',
@@ -235,16 +274,18 @@ export default {
             filter: null,
             filterOn: [],
             fields: [
+                {key: 'select', label: ''},
                 {key: 'id', label: '#'},
-                {key: 'lead', label: 'المنتج'},
-                {key: 'is_paid', label: 'رقم الهاتف', sortable: true},
-                {key: 'shipping_company', label: 'المدينة', sortable: true},
-                {key: 'amount', label: 'العنوان'},
-                {key: 'status', label: 'الكمية', sortable: true},
-                {key: 'created_at', label: 'التاريخ'},
-                {key: 'actions', label: 'actions'},
+                {key: 'lead', label: 'العميل'},
+                {key: 'shipping_company', label: 'شركة الشحن', sortable: true},
+                {key: 'is_paid', label: 'حالة الدفع', sortable: true},
+                // {key: 'amount', label: 'المبلغ الإجمالي'},
+                {key: 'status', label: 'الحالة', sortable: true},
+                // {key: 'created_at', label: 'التاريخ'},
+                {key: 'actions', label: 'أجراءات'},
             ],
-            orders: []
+            orders: [],
+            selected: []
         }
     },
     methods:{
@@ -291,6 +332,7 @@ export default {
         getOrders(){
             axios.get(`/orders?template_id=${this.template.id}`)
             .then((response) => {
+                console.log(response);
                 this.orders = response.data
                 this.totalRows = response.data.length
             })

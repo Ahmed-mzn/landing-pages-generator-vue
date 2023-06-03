@@ -184,6 +184,40 @@ const router = new VueRouter({
       },
     },
     {
+      path: '/orders',
+      name: 'orders',
+      component: () => import('@/views/orders/Orders.vue'),
+      meta: {
+        requireLogin: true,
+        pageTitle: 'E-commerce',
+        breadcrumb: [
+          {
+            text: 'الطلبات',
+            active: false,
+          }
+        ],
+      },
+    },
+    {
+      path: '/order/:id',
+      name: 'order',
+      component: () => import('@/views/orders/Order.vue'),
+      meta: {
+        requireLogin: true,
+        pageTitle: 'Template',
+        breadcrumb: [
+          {
+            text: 'عنوان المستودعات',
+            active: false,
+          },
+          {
+            text: 'Order 1',
+            active: true,
+          },
+        ],
+      },
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/views/Login.vue'),

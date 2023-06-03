@@ -4,14 +4,19 @@ export default (editor) => {
       id: "options",
       buttons: [
         {
-          id: "save-in-db-2",
+          id: "save-in-db",
           label: `<button class="btn btn-success btn-sm">حفظ</button>`,
           command: "save-in-db",
         },
         {
           id: "preview-tab",
           label: `<button class="btn btn-primary btn-sm">معاينة</button>`,
-          command: "save-in-db",
+          command: "preview-template",
+        },
+        {
+          id: "test",
+          label: `<button class="btn btn-warning btn-sm">تحميل صفحة</button>`,
+          command: "test",
         },
         {
           id: "add",
@@ -46,6 +51,11 @@ export default (editor) => {
           id: "gjs-open-import-webpage",
           className: "fa-import",
           command: () => editor.runCommand("gjs-open-import-webpage"),
+        },
+        {
+          id: "template-settings",
+          className: "fa-setting",
+          command: () => editor.runCommand("open-template-settings"),
         },
         {
           id: "back-to-dashboard",

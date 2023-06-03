@@ -150,6 +150,33 @@
                 </b-col>
             </b-row>
         </b-modal>
+
+
+        <!-- Scrap web site Modal -->
+        <b-modal
+            id="modal-default"
+            centered
+            title="إضافة قسم"
+            cancel-title="إلغاء"
+            ok-title="ضف"
+            cancel-variant="outline-secondary"
+            v-model="showScrapModal"
+            @ok="handleOkScrap"
+        >
+            <b-form>
+                <b-form-group>
+                    <label for="email">Url:</label>
+                    <b-form-input
+                        id="url"
+                        type="url"
+                        placeholder="Enter url"
+                        v-model="website_url"
+                    />
+                </b-form-group>
+            </b-form>
+        </b-modal>
+
+        <settings :show="showSettingModal" :key="showSettingModal" @hideSettingTemplate="hideSettingTemplate" />
     </div>
   </template>
   
@@ -170,6 +197,8 @@
   import panels from './grapesjs/panels';
   import commands from './grapesjs/commands';
   import config from './grapesjs/config'
+
+  import Settings from './components/Settings.vue';
   
   import Ripple from 'vue-ripple-directive'
   
@@ -179,7 +208,7 @@
   import axios from 'axios';
   export default {
     components:{
-        ToastificationContent, BTabs, BTab,
+        ToastificationContent, BTabs, BTab, Settings,
         BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BImg, BForm, BFormFile, BFormGroup, BFormInput, BFormRadio,
         BAlert, BMedia, BMediaAside, BMediaBody, BInputGroup, BInputGroupPrepend, BOverlay, BModal, VBModal, BDropdown, BDropdownItem,
         BFormRadioGroup, BCardHeader, BCardTitle, BCardBody, BBadge, BFormCheckboxGroup, BFormCheckbox, BSpinner
@@ -211,6 +240,9 @@
                 content: ''
             },
             showSectionModal: false,
+            website_url: '',
+            showScrapModal: false,
+            showSettingModal: false
         }
     },
     beforeDestroy(){
@@ -247,6 +279,23 @@
         this.getSections()
     },
     methods: {
+        hideSettingTemplate(){
+            this.showSettingModal = false
+        },
+        handleOkScrap(bvModalEvt){
+            bvModalEvt.preventDefault()
+            this.loading = true
+            this.showScrapModal=false
+            axios.post('/templates/scarp_page/', {website_url: this.website_url})
+            .then(response => {
+                console.log(response);
+                this.editor.setComponents(response.data.content)
+                setTimeout(()=> {this.loading=false}, 2000)
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
         getTemplate(){
             axios.get(`/templates/${this.$route.params.id}`)
             .then(response => {
@@ -431,5 +480,5 @@
   ::-webkit-scrollbar-track {
     background: rgba(0,0,0,.1);
   }
+  .popular { border: 1px dashed #7367f0; }
   </style>
-  

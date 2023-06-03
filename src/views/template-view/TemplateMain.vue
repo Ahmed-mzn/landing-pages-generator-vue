@@ -58,7 +58,7 @@
                                 <b-img
                                     fluid
                                     class="mb-1"
-                                    :src="template.preview_image"
+                                    :src="template.preview_image_url ? template.preview_image_url : require('@/assets/images/pages/skeleton400_still.gif')"
                                 />
                             </b-link>
                             <b-card-text>
@@ -117,7 +117,7 @@
                                 <b-img
                                     fluid
                                     class="mb-1"
-                                    :src="t.preview_image"
+                                    :src="t.preview_image_url ? t.preview_image_url : require('@/assets/images/pages/skeleton400_still.gif')"
                                 />
                             </b-link>
                             <b-card-text>
@@ -720,6 +720,7 @@ export default {
         getTemplate(){
             axios.get(`/templates/${this.$route.params.id}/`)
             .then(response => {
+                console.log(response);
                 this.template = response.data
             })
             .catch(error => {

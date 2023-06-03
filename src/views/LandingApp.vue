@@ -87,7 +87,7 @@
                   <b-img
                     fluid
                     class="mb-2"
-                    :src="template.preview_image"
+                    :src="template.preview_image_url ? template.preview_image_url : require('@/assets/images/pages/skeleton400_still.gif')"
                     style="width:100%; height:160px;"
                   />
                 </b-link>
@@ -534,6 +534,7 @@ export default {
     getApp(){
       axios.get('/get_app')
       .then((response) => {
+        console.log(response);
         if (response.data.app_id == ''){
           this.appActivated = false
         } else {

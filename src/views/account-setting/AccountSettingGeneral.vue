@@ -1,6 +1,10 @@
 <template>
     <div>
         <b-card>
+            <account-setting-ship />
+        </b-card>
+
+        <b-card>
             <account-setting-password />
         </b-card>
     </div>
@@ -8,10 +12,11 @@
 
 <script>
 import { BTabs, BTab, BCard } from 'bootstrap-vue'
-import AccountSettingPassword from './AccountSettingPassword.vue'
+import AccountSettingPassword from './components/AccountSettingPassword.vue'
+import AccountSettingShip from './components/AccountSettingShip.vue'
 export default {
     components: {
-        AccountSettingPassword,
+        AccountSettingPassword, AccountSettingShip,
         BTabs, BTab, BCard
     }
 }

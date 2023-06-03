@@ -3,10 +3,11 @@
         <div class="d-flex justify-content-start">
             <!-- <b-avatar size="lg" variant="light-primary">
             </b-avatar> -->
-                
-                <b-avatar to="#" variant="default">
-                    <feather-icon href="#" @click="$router.go(-1)" class="text-primary" size="30" icon="ArrowRightIcon" />
-                </b-avatar>
+                <b-link @click="$router.go(-1)">
+                    <b-avatar variant="default">
+                        <feather-icon class="text-primary" size="30" icon="ArrowRightIcon" />
+                    </b-avatar>
+                </b-link>
             <div class="d-flex flex-column ml-1">
                 <div class="mb-1">
                     <h4 class="mb-0">
