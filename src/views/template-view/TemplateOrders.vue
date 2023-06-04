@@ -256,11 +256,6 @@ export default {
     },
     mounted(){
         this.getOrders()
-        // fileDownload("https://aymakan.com.sa/pdf/generate/7e2c6727-f595-448f-ac88-04f6d578849b", "test.pdf")
-        axios.get("https://aymakan.com.sa/pdf/generate/7e2c6727-f595-448f-ac88-04f6d578849b")
-        .then(response => {
-            console.log(response);
-        })
     },
     data(){
         return{

@@ -15,20 +15,19 @@
                 </b-col>
                 <b-col cols="12">
                     <b-tabs v-model="currentTab" class="px-1">
-                        <b-tab title="العقود نشطة">
-                        </b-tab>
-                        <b-tab title="تفعيل العقود">
-                        </b-tab>
+                        <!-- <b-tab title="العقود نشطة"></b-tab> -->
+                        <b-tab title="تفعيل العقود"></b-tab>
                     </b-tabs>
                 </b-col>
             </b-row>
         </b-card>
-        <template v-if="currentTab == 0">
+        <add-channel />
+        <!-- <template v-if="currentTab == 0">
             <enable-channel />
         </template>
         <template v-else>
             <add-channel />
-        </template>
+        </template> -->
     </div>
 </template>
 

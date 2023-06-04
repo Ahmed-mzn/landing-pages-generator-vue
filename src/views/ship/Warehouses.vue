@@ -43,7 +43,7 @@
                             <b-button
                                 variant="primary"
                                 class="ml-1 float-right"
-                                @click="showAddModal = true; actionType='أضف الكوبون'"
+                                @click="showAddModal = true; actionType='أضف العنوان'"
                             >
                                 <feather-icon
                                     icon="PlusIcon"
@@ -76,13 +76,13 @@
                                     class="text-body cursor-pointer"
                                 />
                             </template>
-                            <b-dropdown-item>
+                            <b-dropdown-item @click="openUpdateModal(warehouse)">
+                                <feather-icon icon="EditIcon" />
+                                <span class="align-middle ml-50">تعديل</span>
+                            </b-dropdown-item>
+                            <b-dropdown-item v-if="!warehouse.is_current" @click="deleteWarehouse(warehouse.id)">
                                 <feather-icon icon="TrashIcon" />
                                 <span class="align-middle ml-50">حذف</span>
-                            </b-dropdown-item>
-                            <b-dropdown-item>
-                                <feather-icon icon="EyeIcon" />
-                                <span class="align-middle ml-50">معاينة</span>
                             </b-dropdown-item>
                         </b-dropdown>
                     </b-card-header>
@@ -103,7 +103,7 @@
                                 v-if="warehouse.is_current"
                                 class="profile-badge"
                                 variant="light-primary"
-                            >current</b-badge>
+                            >الحالي</b-badge>
                         </div>
                         <hr class="mb-2">
 
@@ -168,8 +168,9 @@
                             block
                             variant="primary"
                             v-if="!warehouse.is_current"
+                            @click="makeCurrent(warehouse.id)"
                         >
-                            Make current
+                        تفعيل
                         </b-button>
                     </b-card-body>
                 </b-card>
@@ -182,7 +183,7 @@
             id="modal-2"
             ref="modal-add"
             v-model="showAddModal"
-            title="أضف منتج"
+            title="العنوان"
             :ok-title="actionType"
             cancel-title="إلغاء"
             cancel-variant="outline-secondary"
@@ -194,18 +195,18 @@
                     <b-row>
                         <b-col cols="12">
                             <b-form-group
-                                label="title"
+                                label="اسم العنوان"
                                 label-for="title"
                             >
                                 <validation-provider
                                     #default="{ errors }"
-                                    name="title"
+                                    name="اسم العنوان"
                                     rules="required"
                                 >
                                 <b-form-input
                                     v-model="warehouse.title"
                                     :state="errors.length > 0 ? false:null"
-                                    placeholder="title"
+                                    placeholder="اسم العنوان"
                                     id="title"
                                 />
                                 <small class="text-danger">{{ errors[0] }}</small>
@@ -214,18 +215,18 @@
                         </b-col>
                         <b-col cols="12">
                             <b-form-group
-                                label="email"
+                                label="بريد إلكتروني"
                                 label-for="email"
                             >
                                 <validation-provider
                                     #default="{ errors }"
-                                    name="email"
+                                    name="بريد إلكتروني"
                                     rules="required|email"
                                 >
                                 <b-form-input
                                     v-model="warehouse.email"
                                     :state="errors.length > 0 ? false:null"
-                                    placeholder="email"
+                                    placeholder="بريد إلكتروني"
                                     id="email"
                                     dir="ltr"
                                 />
@@ -235,18 +236,18 @@
                         </b-col>
                         <b-col cols="12">
                             <b-form-group
-                                label="phone_number"
+                                label="رقم الهاتف"
                                 label-for="title"
                             >
                                 <validation-provider
                                     #default="{ errors }"
-                                    name="phone_number"
+                                    name="رقم الهاتف"
                                     rules="required"
                                 >
                                 <b-form-input
                                     v-model="warehouse.phone_number"
                                     :state="errors.length > 0 ? false:null"
-                                    placeholder="phone_number"
+                                    placeholder="رقم الهاتف"
                                     id="phone"
                                 />
                                 <small class="text-danger">{{ errors[0] }}</small>
@@ -255,18 +256,18 @@
                         </b-col>
                         <b-col cols="12">
                             <b-form-group
-                                label="name"
+                                label="مسؤول الإتصال"
                                 label-for="title"
                             >
                                 <validation-provider
                                     #default="{ errors }"
-                                    name="name"
+                                    name="مسؤول الإتصال"
                                     rules="required"
                                 >
                                 <b-form-input
                                     v-model="warehouse.name"
                                     :state="errors.length > 0 ? false:null"
-                                    placeholder="name"
+                                    placeholder="مسؤول الإتصال"
                                     id="name"
                                 />
                                 <small class="text-danger">{{ errors[0] }}</small>
@@ -274,7 +275,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col cols="12">
-                            <b-form-group label="نوع الخصم">
+                            <b-form-group label="المدينة">
                                 <v-select
                                     v-model="warehouse.city"
                                     dir="rtl"
@@ -287,18 +288,18 @@
                         </b-col>
                         <b-col cols="12">
                             <b-form-group
-                                label="address"
+                                label="العنوان الكامل"
                                 label-for="title"
                             >
                                 <validation-provider
                                     #default="{ errors }"
-                                    name="address"
+                                    name="العنوان الكامل"
                                     rules="required"
                                 >
                                 <b-form-input
                                     v-model="warehouse.address"
                                     :state="errors.length > 0 ? false:null"
-                                    placeholder="address"
+                                    placeholder="العنوان الكامل"
                                     id="address"
                                 />
                                 <small class="text-danger">{{ errors[0] }}</small>
@@ -355,7 +356,47 @@ export default {
         this.getWarehouses()
     },
     methods: {
-        deleteCoupon(id){
+        openUpdateModal(warehouse){
+            console.log(warehouse);
+            this.warehouse.id = warehouse.id
+            this.warehouse.city = warehouse.city
+            this.warehouse.email = warehouse.email
+            this.warehouse.title = warehouse.title
+            this.warehouse.phone_number = warehouse.phone_number
+            this.warehouse.address = warehouse.address
+            this.warehouse.name = warehouse.name
+            this.actionType = "احفظ التغييرات"
+            this.showAddModal = true
+        },
+        makeCurrent(id){
+            axios.post(`/warehouses/${id}/make_current/`)
+            .then((response) => {   
+                console.log(response); 
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: 'إشعار',
+                        icon: 'CheckIcon',
+                        text: 'تم تفعيل العنوان بنجاح.',
+                        variant: 'success',
+                    },
+                })
+                this.getWarehouses()
+            })
+            .catch((error) => {
+                this.$toast({
+                    component: ToastificationContent,
+                    props: {
+                        title: 'إنذار',
+                        icon: 'AlertCircleIcon',
+                        text: 'هناك خطأ أثناء تفعيل العنوان.',
+                        variant: 'danger',
+                    },
+                })
+                JSON.stringify(error)
+            })
+        },
+        deleteWarehouse(id){
             this.$swal({
                 title: 'هل أنت متأكد؟',
                 text: "لن تتمكن من التراجع عن هذا!",
@@ -370,18 +411,18 @@ export default {
                 buttonsStyling: false,
             }).then(result => {
                 if (result.value) {
-                    axios.delete(`/coupons/${id}/`)
+                    axios.delete(`/warehouses/${id}/`)
                     .then((response) =>{
                         this.$swal({
                             icon: 'success',
                             title: 'تم الحذف!',
-                            text: 'تم حذف الكوبون بنجاح.',
+                            text: 'تم حذف العنوان بنجاح.',
                             confirmButtonText: 'حسنا',
                             customClass: {
                                 confirmButton: 'btn btn-success',
                             },
                         })
-                        this.getCoupons();
+                        this.getWarehouses();
                     })
                     .catch((error) => {
                         console.log(JSON.stringify(error));
@@ -416,7 +457,7 @@ export default {
                             props: {
                                 title: 'إشعار',
                                 icon: 'CheckIcon',
-                                text: 'تم تحديث الكوبون بنجاح.',
+                                text: 'تم تحديث العنوان بنجاح.',
                                 variant: 'success',
                             },
                         })
@@ -429,7 +470,7 @@ export default {
                             props: {
                                 title: 'إنذار',
                                 icon: 'AlertCircleIcon',
-                                text: 'هناك خطأ أثناء تحديث الكوبون.',
+                                text: 'هناك خطأ أثناء تحديث العنوان.',
                                 variant: 'danger',
                             },
                         })

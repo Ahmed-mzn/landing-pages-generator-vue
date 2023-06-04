@@ -1,108 +1,102 @@
 <template>
     <div class="mt-2">
-        <!-- Miscellaneous Charts -->
-        <b-row class="match-height">
-            <b-col
-                lg="2"
-                cols="6"
-            >
-                <card-statistic-order-chart :data="data" />
-            </b-col>
-            <b-col
-                lg="2"
-                cols="6"
-            >
-                <card-statistic-profit-chart :data="data" />
-            </b-col>
-            <b-col
-                lg="8"
-                cols="12"
-            >
-                <card-statistics-group v-if="data.visits" :data="data" />
-            </b-col>
-        </b-row>
-        <!--/ Miscellaneous Charts -->
-        <!-- Stats Card Vertical -->
-        <b-row class="match-height">
-            <b-col
-                xl="2"
-                md="4"
-                sm="6"
-            >
-                <statistic-card-vertical
-                icon="EyeIcon"
-                :statistic="data.visits"
-                statistic-title="الزيارات"
-                color="info"
-                />
-            </b-col>
-            <b-col
-                xl="2"
-                md="4"
-                sm="6"
-            >
-                <statistic-card-vertical
-                color="warning"
-                icon="MessageSquareIcon"
-                statistic="12k"
-                statistic-title="Comments"
-                />
-            </b-col>
-            <b-col
-                xl="2"
-                md="4"
-                sm="6"
-            >
-                <statistic-card-vertical
-                color="danger"
-                icon="ShoppingBagIcon"
-                :statistic="data.orders"
-                statistic-title="الطلبات"
-                />
-            </b-col>
-            <b-col
-                xl="2"
-                md="4"
-                sm="6"
-            >
-                <statistic-card-vertical
-                    color="primary"
-                    icon="ShareIcon"
-                    :statistic="data.shares"
-                    statistic-title="المشاركات"
-                />
-            </b-col>
-            <b-col
-                xl="2"
-                md="4"
-                sm="6"
-            >
-                <statistic-card-vertical
-                    color="success"
-                    icon="AwardIcon"
-                    statistic="689"
-                    statistic-title="المراجعات"
-                />
-            </b-col>
-            <b-col
-                xl="2"
-                md="4"
-                sm="6"
-            >
-                <statistic-card-vertical
-                    hide-chart
-                    color="danger"
-                    icon="TruckIcon"
-                    statistic="2.1k"
-                    statistic-title="عائدات"
-                />
-            </b-col>
-        </b-row>
+        <b-card no-body>
+            <b-row>
+                <b-col cols="12">
+                    <div class="d-flex align-items-center pl-1 pt-1 mb-1">
+                        <feather-icon
+                            icon="TrendingUpIcon"
+                            size="18"
+                        />
+                        <h4 class="mb-0 ml-75">الزيارات</h4>
+                    </div>
+                </b-col>
+                <b-col cols="12 mb-2">
+                    <b-table-simple hover responsive>
+                        <b-thead>
+                            <b-tr>
+                                <b-th>الصفحة</b-th>
+                                <b-th>الزيارات</b-th>
+                                <b-th>الطلبات</b-th>
+                                <b-th>الطلبات المدفوعة</b-th>
+                                <b-th>العملاء</b-th>
+                                <!-- <b-th>income</b-th> -->
+                                <b-th>المشاركات</b-th>
+                            </b-tr>
+                        </b-thead>
+                        <b-tbody>
+                            <b-tr>
+                                <b-td>
+                                    <div
+                                        class="d-flex justify-content-start align-items-center"
+                                    >
+                                        <b-img
+                                            rounded=""
+                                            :src="statistics.template.preview_image"
+                                            blank-color="#ccc"
+                                            width="90"
+                                            alt="placeholder"
+                                            class="mr-2"
+                                        />
+                                        <div class="user-page-info">
+                                            <h6 class="mb-0">{{statistics.template.template_name}}</h6>
+                                            <small class="text-muted">
+                                                <b-link>
+                                                    https://test.com
+                                                </b-link>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </b-td>
+                                <b-td>{{ statistics.template.visits }}</b-td>
+                                <b-td>{{ statistics.template.orders }}</b-td>
+                                <b-td>{{ statistics.template.orders_paid }}</b-td>
+                                <b-td>{{ statistics.template.customers }}</b-td>
+                                <!-- <b-td>{{ statistics.template.income }}</b-td> -->
+                                <b-td>{{ statistics.template.shares }}</b-td>
+                            </b-tr>
+                            <b-tr v-for="template in statistics.templates_child" :key="template.template_name">
+                                <b-td>
+                                    <div
+                                        class="d-flex justify-content-start align-items-center"
+                                    >
+                                        <b-img
+                                            rounded=""
+                                            :src="template.preview_image"
+                                            blank-color="#ccc"
+                                            width="90"
+                                            alt="placeholder"
+                                            class="mr-2"
+                                        />
+                                        <div class="user-page-info">
+                                            <h6 class="mb-0">{{template.template_name}}</h6>
+                                            <small class="text-muted">
+                                                <b-link>
+                                                    https://test.com
+                                                </b-link>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </b-td>
+                                <b-td>{{ template.visits }}</b-td>
+                                <b-td>{{ template.orders }}</b-td>
+                                <b-td>{{ template.orders_paid }}</b-td>
+                                <b-td>{{ template.customers }}</b-td>
+                                <!-- <b-td>{{ template.income }}</b-td> -->
+                                <b-td>{{ template.shares }}</b-td>
+                            </b-tr>
+                        </b-tbody>
+                    </b-table-simple>
+                </b-col>
+            </b-row>
+        </b-card>
     </div>
 </template>
 
 <script>
-import { BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BBadge, BTabs, BTab } from 'bootstrap-vue'
+import { BCard, BCardText, BRow, BCol, BButton, BAvatar, BLink, BBadge, BTabs, BTab, BTableSimple, BThead, BTbody, BTh, BTr, BTd,
+    BImg 
+} from 'bootstrap-vue'
 import StatisticCardVertical from '@core/components/statistics-cards/StatisticCardVertical.vue'
 
 import CardStatisticOrderChart from './CardStatisticOrderChart.vue'
@@ -112,18 +106,8 @@ import axios from 'axios'
 
 export default {
     components:{
-        BCard,
-        BCardText,
-        BRow,
-        BCol,
-        BButton,
-        BLink,
-        BAvatar,
-        BBadge,
-        BTabs,
-        BTab,
-        StatisticCardVertical, 
-        CardStatisticOrderChart, CardStatisticProfitChart, CardStatisticsGroup,
+        BCard, BCardText, BRow, BCol, BButton, BLink, BAvatar, BBadge, BTabs, BTab, BTableSimple, BThead, BTbody, BTh, BTr, BTd,
+        BImg, StatisticCardVertical, CardStatisticOrderChart, CardStatisticProfitChart, CardStatisticsGroup,
     },
     data(){
         return {
@@ -134,7 +118,11 @@ export default {
                 customers: '',
                 income: '',
                 products: '',
-                shares: '',
+                shares: ''
+            },
+            statistics: {
+                template: {},
+                templates_child: []
             }
         }
     },
@@ -144,8 +132,9 @@ export default {
     methods: {
         getStatistics(){
             axios.get(`/templates/${this.$route.params.id}/statistics`)
-            .then(res => {
-                this.data = res.data
+            .then(response => {
+                console.log(response);
+                this.statistics = response.data
             })
             .catch(error => {
                 console.log(error);

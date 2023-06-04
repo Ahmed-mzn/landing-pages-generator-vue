@@ -532,9 +532,51 @@ export default {
             })
         },
         submitVariant(){
-            axios.post("/templates/variant", this.variant)
-            .then(response => {
-                if(response.status == 400 || response.status == 500){
+            var is_valid = true
+            this.variant.templates.forEach(item => {
+                if(item.is_main_template && item.redirect_numbers == 0){
+                    is_valid = false
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: 'إنذار',
+                            icon: 'AlertCircleIcon',
+                            text: 'حدث خطأ صفحات الهبوط الأساسية يجب أن يكون أكثر من 1.',
+                            variant: 'danger',
+                        },
+                    })
+                }
+            })
+            if(is_valid){
+                axios.post("/templates/variant", this.variant)
+                .then(response => {
+                    if(response.status == 400 || response.status == 500){
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                            title: 'إنذار',
+                            icon: 'AlertCircleIcon',
+                            text: 'حدث خطأ أثناء تحديث توجيه صفحات الهبوط.',
+                            variant: 'danger',
+                            },
+                        })
+                    } else{
+                        this.$toast({
+                            component: ToastificationContent,
+                            props: {
+                                title: 'إشعار',
+                                icon: 'CheckIcon',
+                                text: 'تم تحديث توجيه صفحات الهبوط بنجاح.',
+                                variant: 'success',
+                            },
+                        })
+                        this.showVariantModal = false
+                        this.variant.templates.splice(0)
+                        this.getTemplate();
+                        this.getTemplates();
+                    }
+                })
+                .catch(error => {
                     this.$toast({
                         component: ToastificationContent,
                         props: {
@@ -544,34 +586,9 @@ export default {
                         variant: 'danger',
                         },
                     })
-                } else{
-                    this.$toast({
-                        component: ToastificationContent,
-                        props: {
-                            title: 'إشعار',
-                            icon: 'CheckIcon',
-                            text: 'تم تحديث توجيه صفحات الهبوط بنجاح.',
-                            variant: 'success',
-                        },
-                    })
-                    this.showVariantModal = false
-                    this.variant.templates.splice(0)
-                    this.getTemplate();
-                    this.getTemplates();
-                }
-            })
-            .catch(error => {
-                this.$toast({
-                    component: ToastificationContent,
-                    props: {
-                    title: 'إنذار',
-                    icon: 'AlertCircleIcon',
-                    text: 'حدث خطأ أثناء تحديث توجيه صفحات الهبوط.',
-                    variant: 'danger',
-                    },
+                    console.log(error);
                 })
-                console.log(error);
-            })
+            }
         },
         formatterTooltip(t){
             // return `{value} توجيه (${t.redirect_percentage}%)`
@@ -720,7 +737,6 @@ export default {
         getTemplate(){
             axios.get(`/templates/${this.$route.params.id}/`)
             .then(response => {
-                console.log(response);
                 this.template = response.data
             })
             .catch(error => {

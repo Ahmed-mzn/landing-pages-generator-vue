@@ -125,6 +125,7 @@
                             cols="3"
                         >
                             <div class="d-flex align-items-center justify-content-end">
+                                <b-link v-if="selected.length != 0" @click="selected=[];select_all=''" class="mr-1 text-muted"> <feather-icon class="mr-50" icon="XIcon" size="10"/>مسح</b-link>
                                 <b-button
                                     variant="primary"
                                     @click="download"
@@ -490,10 +491,9 @@ export default {
     },
     methods:{
         selectAll(){
-            console.log(this.select_all);
             this.selected = []
             if (this.select_all){
-                for (let i=0; i< this.perPage; i++){
+                for (let i=0; i< this.perPage && i <this.orders.length; i++){
                     this.selected.push(this.orders[i].id)
                 }
             }

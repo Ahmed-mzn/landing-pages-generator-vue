@@ -22,7 +22,7 @@
                             </ul>
                         </div>
                         <div>
-                            <template v-if="channel.is_set">
+                            <template v-if="channel.is_active">
                                 <b-badge variant="light-success" class="ml-1 mb-75">
                                     <feather-icon
                                         icon="CheckIcon"
@@ -37,7 +37,7 @@
                                         icon="XIcon"
                                         class="mr-25"
                                     />
-                                    <span>تم الربط </span>
+                                    <span>لم يتم الربط </span>
                                 </b-badge>
                             </template>
                             <div class="float-right">
@@ -65,6 +65,7 @@
             ok-title="احفظ التغييرات"
             @hidden="resetModal"
             @ok="handleOk"
+            @cancel="disableChannel"
         >
             <validation-observer ref="simpleRules4">
                 <b-form>
@@ -132,9 +133,40 @@ export default {
         }
     },
     mounted(){
+        localize('ar')
         this.getChannels()
     },
     methods: {
+        disableChannel(){
+            if(this.channel.is_set){
+                axios.post(`/channels/${this.channel.id}/disable/`, this.channel)
+                .then(response => {
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: 'إشعار',
+                            icon: 'CheckIcon',
+                            text: 'تم تعطيل تفعيل العقد بنجاح.',
+                            variant: 'success',
+                        },
+                    })
+                    this.showModal = false
+                    this.getChannels()
+                })
+                .catch(error => {
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: 'إنذار',
+                            icon: 'AlertCircleIcon',
+                            text: 'حدث خطأ أثناء تعطيل تفعيل العقد.',
+                            variant: 'danger',
+                        },
+                    })
+                    console.log(error);
+                })
+            }
+        },
         createChannel(){
             axios.post("/channels/", this.channel)
             .then(response => {
@@ -175,6 +207,7 @@ export default {
                         variant: 'success',
                     },
                 })
+                this.getChannels()
                 this.showModal = false
             })
             .catch(error => {
@@ -241,7 +274,7 @@ export default {
                 .then(response => {
                     response.data.forEach(item => {
                         if(this.channels[item.type]){
-                            this.channels[item.type].is_active = true
+                            this.channels[item.type].is_active = item.is_active
                             this.channels[item.type].is_set = true
                             this.channels[item.type].id = item.id
                             var isSet = true
