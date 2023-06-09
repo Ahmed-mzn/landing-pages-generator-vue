@@ -85,31 +85,27 @@
             </div>
         </div>
         <b-tabs>
-            <template v-if="template.is_child">
-                <b-tab lazy active>
-                    <template #title>
-                        <feather-icon icon="ToolIcon" />
-                        <span>التصميم</span>
-                    </template>
-                    <template-setting :template="template"/>
-                </b-tab>
-            </template>
-            <template v-else>
-                <b-tab lazy active>
-                    <template #title>
-                        <feather-icon icon="HomeIcon" />
-                        <span>الرئيسية</span>
-                    </template>
-                    <template-main :key="reloadComponent" :template="template"/>
-                </b-tab>
-                <b-tab lazy>
-                    <template #title>
-                        <feather-icon icon="ToolIcon" />
-                        <span>إعدادت </span>
-                    </template>
-                    <template-setting :template="template"/>
-                </b-tab>
-            </template>
+            <!-- <b-tab lazy active>
+                <template #title>
+                    <feather-icon icon="ToolIcon" />
+                    <span>التصميم</span>
+                </template>
+                <template-setting :template="template"/>
+            </b-tab>
+            <b-tab lazy>
+                <template #title>
+                    <feather-icon icon="ToolIcon" />
+                    <span>إعدادت </span>
+                </template>
+                <template-setting :template="template"/>
+            </b-tab> -->
+            <b-tab lazy active>
+                <template #title>
+                    <feather-icon icon="HomeIcon" />
+                    <span>الرئيسية</span>
+                </template>
+                <template-main :key="reloadComponent" :template="template"/>
+            </b-tab>
             <b-tab lazy>
                 <template #title>
                     <feather-icon icon="ActivityIcon" />
@@ -117,7 +113,7 @@
                 </template>
                 <template-analytics/>
             </b-tab>
-            <b-tab lazy>
+            <!-- <b-tab lazy>
                 <template #title>
                     <feather-icon icon="ShoppingCartIcon" />
                     <span>الطلبات</span>
@@ -125,7 +121,7 @@
                 <b-card no-body class="mb-0">
                     <template-orders :template="template"/>
                 </b-card>
-            </b-tab>
+            </b-tab> -->
             <b-tab lazy>
                 <template #title>
                     <feather-icon icon="TrendingUpIcon" />

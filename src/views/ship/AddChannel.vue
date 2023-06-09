@@ -61,7 +61,7 @@
             centered
             cancel-variant="outline-secondary"
             title="تفعيل العقد"
-            cancel-title="إلغاء"
+            cancel-title="إلغاء العقد"
             ok-title="احفظ التغييرات"
             @hidden="resetModal"
             @ok="handleOk"

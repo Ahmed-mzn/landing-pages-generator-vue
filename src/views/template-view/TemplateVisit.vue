@@ -117,8 +117,8 @@ export default {
     },
     data(){
         return{
-            perPage: 5,
-            pageOptions: [3, 5, 10],
+            perPage: 15,
+            pageOptions: [15, 25, 100],
             totalRows: 1,
             currentPage: 1,
             sortBy: '',

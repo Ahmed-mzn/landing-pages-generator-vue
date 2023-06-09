@@ -59,13 +59,13 @@
                                 :reduce="val => val.id"
                                 label="template_name"
                             >
-                                <template #option="{ preview_image, template_name, is_child, domain }">
+                                <template #option="{ preview_image_url, template_name, is_child, domain }">
                                     <div
                                         class="d-flex justify-content-start align-items-center"
                                     >
                                         <b-img
                                             rounded=""
-                                            :src="preview_image"
+                                            :src="preview_image_url"
                                             blank-color="#ccc"
                                             width="40"
                                             alt="placeholder"
@@ -134,7 +134,7 @@
                                         icon="DownloadIcon"
                                         class="mr-50"
                                     />
-                                    <span class="align-middle" v-html="selected.length == 0 ? 'تنزيل' : `تنزيل (${selected.length})`"></span>
+                                    <span class="align-middle" v-html="selected.length == 0 ? 'تنزيل بوليصات' : `تنزيل بوليصات (${selected.length})`"></span>
                                 </b-button>
                             </div>
                         </b-col>
@@ -184,26 +184,15 @@
                             </template>
 
                             <template #cell(template)="data">
-                                <div
-                                    class="d-flex justify-content-start align-items-center"
-                                >
-                                    <b-img
-                                        rounded=""
-                                        :src="data.item.template.preview_image"
-                                        blank-color="#ccc"
-                                        width="64"
-                                        alt="placeholder"
-                                        class="mr-2"
-                                    />
-                                    <div class="user-page-info">
-                                        <h6 class="mb-0">{{data.item.template.template_name}}</h6>
-                                        <small class="text-muted">
-                                            <b-link :href="'https://' + data.item.template.domain.name + '/' + data.item.template.template_name" target="_blank">
-                                                {{('https://' + data.item.template.domain.name + '/' + data.item.template.template_name).substring(0, 17) + '...'}}
-                                            </b-link>
-                                        </small>
-                                    </div>
-                                </div>
+                                <b-img
+                                    rounded=""
+                                    :src="data.item.template.preview_image"
+                                    blank-color="#ccc"
+                                    width="64"
+                                    alt="placeholder"
+                                    class="mr-2"
+                                />
+                                <h6 class="mb-0 float-right mt-25">{{data.item.template.template_name}}</h6>
                             </template>
 
                             <!-- Column: Id -->
@@ -301,45 +290,29 @@
                             <template #cell(actions)="data">
                                 <div class="text-nowrap">
                                     <template v-if="data.item.status != 'indelivery' && data.item.status != 'delivered'">
-                                        <feather-icon
-                                            :id="`invoice-row-${data.item.id}-send-icon`"
-                                            icon="SendIcon"
-                                            class="cursor-pointer"
-                                            size="16"
+                                        <b-button
+                                            variant="success" size="sm"
                                             @click="shipModal=true; order=data.item"
-                                        />
-                                        <b-tooltip
-                                            title="Ship Order"
-                                            class="cursor-pointer"
-                                            :target="`invoice-row-${data.item.id}-send-icon`"
-                                        />
+                                            class="mr-25"
+                                        >
+                                        إشحن
+                                        </b-button>
                                     </template>
                                     <template v-else>
-                                        <feather-icon
-                                            :id="`invoice-row-${data.item.id}-cancel-icon`"
-                                            icon="XIcon"
-                                            class="cursor-pointer"
-                                            size="16"
+                                        <b-button
+                                            variant="danger" size="sm"
                                             @click="cancelShipModal=true; order=data.item"
-                                        />
-                                        <b-tooltip
-                                            title="Cancel Order"
-                                            class="cursor-pointer"
-                                            :target="`invoice-row-${data.item.id}-cancel-icon`"
-                                        />
+                                            class="mr-25"
+                                        >
+                                        إلغاء
+                                        </b-button>
                                     </template>
-
-                                    <feather-icon
-                                        :id="`invoice-row-${data.item.id}-preview-icon`"
-                                        icon="EyeIcon"
-                                        size="16"
-                                        class="mx-1"
+                                    <b-button
+                                        variant="secondary" size="sm"
                                         @click="$router.push({name: 'order', params: {id: data.item.id}})"
-                                    />
-                                    <b-tooltip
-                                        title="Preview Invoice"
-                                        :target="`invoice-row-${data.item.id}-preview-icon`"
-                                    />
+                                    >
+                                    معاينة
+                                    </b-button>
                                 </div>
                             </template>
 
@@ -384,15 +357,15 @@
         <b-modal
             id="modal-1"
             v-model="shipModal"
-            title="Ship Modal"
-            ok-title="Accept"
-            cancel-title="Cancel"
+            title="شحن الطلب "
+            ok-title="إشحن الطلب "
+            cancel-title="إلغاء"
             @ok="placeOrder"
         >
             <b-card-text>
-                <strong>Order ID:</strong> {{ order.id }} <br/>
-                <strong>Customer:</strong> {{ order.lead.name }} <br/>
-                <strong>Address:</strong> {{ order.lead.address }} <br/>
+                <strong class="mr-1">رقم التعريف الخاص بالطلب:</strong> {{ order.id }} <br/>
+                <strong class="mr-1">العميل:</strong> {{ order.lead.name }} <br/>
+                <strong class="mr-1">العنوان:</strong> {{ order.lead.address }} <br/>
             </b-card-text>
         </b-modal>
 
@@ -400,15 +373,15 @@
         <b-modal
             id="modal-1"
             v-model="cancelShipModal"
-            title="Cancel Order"
-            ok-title="Accept"
-            cancel-title="Cancel"
+            title="إلغاء شحن الطلب"
+            ok-title="تأكيد الغاء"
+            cancel-title="إلغاء"
             @ok="cancelOrder"
         >
             <b-card-text>
-                <strong>Order ID:</strong> {{ order.id }} <br/>
-                <strong>Customer:</strong> {{ order.lead.name }} <br/>
-                <strong>Address:</strong> {{ order.lead.address }} <br/>
+                <strong class="mr-1">رقم التعريف الخاص بالطلب:</strong> {{ order.id }} <br/>
+                <strong class="mr-1">العميل:</strong> {{ order.lead.name }} <br/>
+                <strong class="mr-1">العنوان:</strong> {{ order.lead.address }} <br/>
             </b-card-text>
         </b-modal>
     </div>
@@ -498,9 +471,10 @@ export default {
                 }
             }
         },
-        cancelOrder(){
+        async cancelOrder(){
             if (this.order.id){
-                axios.post(`/orders/${this.order.id}/cancel_order/`)
+                this.loading = true
+                await axios.post(`/orders/${this.order.id}/cancel_order/`)
                 .then(response => {
                     this.getOrders();
                     this.$toast({
@@ -512,15 +486,27 @@ export default {
                             variant: 'success',
                         },
                     })
+                    this.loading = false
                 })
                 .catch(error => {
+                    this.loading = false
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: 'إنذار',
+                            icon: 'AlertCircleIcon',
+                            text: 'حدث خطأ أثناء في العملية.',
+                            variant: 'danger',
+                        },
+                    })
                     console.log(error);
                 })
             }
         },
-        placeOrder(){
+        async placeOrder(){
             if (this.order.id){
-                axios.post(`/orders/${this.order.id}/place_order/`)
+                this.loading = true
+                await axios.post(`/orders/${this.order.id}/place_order/`)
                 .then(response => {
                     this.getOrders();
                     this.$toast({
@@ -532,8 +518,19 @@ export default {
                             variant: 'success',
                         },
                     })
+                    this.loading = false
                 })
                 .catch(error => {
+                    this.loading = false
+                    this.$toast({
+                        component: ToastificationContent,
+                        props: {
+                            title: 'إنذار',
+                            icon: 'AlertCircleIcon',
+                            text: 'حدث خطأ أثناء في العملية.',
+                            variant: 'danger',
+                        },
+                    })
                     console.log(error);
                 })
             }

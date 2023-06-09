@@ -86,10 +86,10 @@
                                                 <feather-icon icon="CopyIcon" />
                                                 <span class="align-middle ml-50">اعمل نسخة</span>
                                             </b-dropdown-item>
-                                            <b-dropdown-item :href="'http://'+handleDomainName(template.domain)+'/'+template.template_name" target="_blank">
+                                            <!-- <b-dropdown-item :href="'http://'+handleDomainName(template.domain)+'/'+template.template_name" target="_blank">
                                                 <feather-icon icon="EyeIcon" />
                                                 <span class="align-middle ml-50">معاينة</span>
-                                            </b-dropdown-item>
+                                            </b-dropdown-item> -->
                                         </b-dropdown>
                                     </b-col>
                                 </b-row>
@@ -151,10 +151,10 @@
                                                 <feather-icon icon="TrashIcon" />
                                                 <span class="align-middle ml-50">حذف</span>
                                             </b-dropdown-item>
-                                            <b-dropdown-item :href="'http://'+handleDomainName(template.domain)+'/'+t.template_name" target="_blank">
+                                            <!-- <b-dropdown-item :href="'http://'+handleDomainName(template.domain)+'/'+t.template_name" target="_blank">
                                                 <feather-icon icon="EyeIcon" />
                                                 <span class="align-middle ml-50">معاينة</span>
-                                            </b-dropdown-item>
+                                            </b-dropdown-item> -->
                                         </b-dropdown>
                                     </b-col>
                                 </b-row>

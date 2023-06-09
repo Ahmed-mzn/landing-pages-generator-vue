@@ -76,6 +76,7 @@
                                         >
                                         <b-input-group aria-label="aaa" :append="getAppendDomain">
                                             <b-form-input
+                                                dir="ltr"
                                                 :state="errors.length > 0 ? false:null"
                                                 id="largeInput" v-model="templateForm.template_name" placeholder="اسم الصفحة"
                                             />
@@ -187,7 +188,7 @@
                                                                 class="mr-50"
                                                             />
                                                             <span class="align-middle">استخدم النموذج</span>
-                                                        </b-button>
+                                                        </b-button><br>
                                                         <b-button @click="previewTheme(theme)" variant="outline-primary" class="mt-1" size="sm" >معاينة</b-button>
                                                     </div>
                                                 </template>

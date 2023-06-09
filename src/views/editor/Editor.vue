@@ -306,6 +306,7 @@
                     // this.editor.setStyle(response.data.css)
                     this.editor.addComponents(response.data.html)
                 } else {
+                    console.log('no');
                     try{
                         this.editor.loadProjectData(JSON.parse(response.data.project_data))
                     } catch(error){

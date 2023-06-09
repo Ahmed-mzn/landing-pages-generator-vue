@@ -32,7 +32,7 @@
                                     >
                                         <b-img
                                             rounded=""
-                                            :src="statistics.template.preview_image"
+                                            :src="statistics.template.preview_image ? statistics.template.preview_image : require('@/assets/images/pages/skeleton400_still.gif')"
                                             blank-color="#ccc"
                                             width="90"
                                             alt="placeholder"
@@ -41,9 +41,7 @@
                                         <div class="user-page-info">
                                             <h6 class="mb-0">{{statistics.template.template_name}}</h6>
                                             <small class="text-muted">
-                                                <b-link>
-                                                    https://test.com
-                                                </b-link>
+                                                <b-link :href="statistics.template.url" target="_blank">{{ statistics.template.url }}</b-link>
                                             </small>
                                         </div>
                                     </div>
@@ -62,7 +60,7 @@
                                     >
                                         <b-img
                                             rounded=""
-                                            :src="template.preview_image"
+                                            :src="template.preview_image ? template.preview_image : require('@/assets/images/pages/skeleton400_still.gif')"
                                             blank-color="#ccc"
                                             width="90"
                                             alt="placeholder"
@@ -71,9 +69,7 @@
                                         <div class="user-page-info">
                                             <h6 class="mb-0">{{template.template_name}}</h6>
                                             <small class="text-muted">
-                                                <b-link>
-                                                    https://test.com
-                                                </b-link>
+                                                <b-link :href="statistics.template.url" target="_blank">{{ statistics.template.url }}</b-link>
                                             </small>
                                         </div>
                                     </div>
